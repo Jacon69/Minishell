@@ -29,6 +29,9 @@ void	print_string(void *str); //Imprime un string Para usarlo con ft_lstiter
 int		ft_pos_chr(const char *str, int c); //Devuelve la posición de un caracter en un string
 char	*ft_strndup(const char *str, size_t n); ///ESTA FUNCION NO ESTA EN LA LIBRERIA LIBFT
 
+/*lexer*/
+char    **lexer(char *line); // Crea
+void	free_token(char **token);
 
 
 

@@ -108,3 +108,39 @@ export $SHLVL
 export FAFA=?fdaslk
 echo $FAFA
 export ewe
+sad "dfdasdff df"
+ecxit
+exit
+adfasf fsdfd sfdfsf fsdfds
+sdfsdffd              sdfsdfdsfs             sdfsdfsdf             dsfsdfds
+"fgsdgdfgfd"
+'sdfsdfdsf'
+'"dsfsdfsd""""""'
+'"dsfsdfsd""""""'
+asdasdas "!dfsdfsd" 
+exit
+weqwe "fdsfs"
+exit
+sdfsdfsdf "sdfdfsdfsd"
+exit
+sdfsdfds "fsffs"
+exit
+sfsdfsd dfdsfsdfs
+"sdfsdfs
+
+"dfsdf
+"dasd"
+"dasd
+"fsdrser"
+"fsdrser" "dsfdsfds"
+"werewr
+"fdsfdds"d sdds
+"fdsfdds"d sdds"
+exit
+"dsfdsf" "fsdfsd"
+sdsd
+ds sds
+"ewe"
+"wewew"
+"ewrwe" "fsfs"
+"erwr""dfsf"

@@ -1,5 +1,21 @@
 #include "environment.h"
 
+void ft_imprimetoken(char *line)
+{
+    char	**token;
+    int		i;
+
+	i = 0;
+    token = lexer(line);
+	if (!token)
+		return;
+	while (token[i])
+	{
+		printf("%i token %s \n",i,token[i]);
+		i++;
+	}
+	ft_free_char(token);
+}
 
 void ft_ejecutar(char *line, t_list  **env)
 {
@@ -75,6 +91,8 @@ void prom(t_list  **env)
             free(line);
             break;
         }
+
+        ft_imprimetoken(line);
         ft_ejecutar(line, env); //PAra pruebas en esta función pongo los comando que quiero probar
 
         // Aquí es donde de se tiene que procesar la linea introducida
