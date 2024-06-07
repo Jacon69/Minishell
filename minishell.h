@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aiturria <aiturria@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 16:17:26 by aiturria          #+#    #+#             */
-/*   Updated: 2024/05/30 10:32:20 by aiturria         ###   ########.fr       */
+/*   Updated: 2024/06/07 09:44:41 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,15 +20,15 @@
 # include <errno.h>   // For errno
 # include <fcntl.h>   // For open
 # include <unistd.h>  // For close
-# include "libft/libft.h"
+# include "Libft/libft.h"
 
 
 typedef struct s_command
 {
 	int		index;
-	char	*command[50];
+	char	*command;
 	char	*path;
-	char	*string;
+	char	**args;
 	int		redir1; //0= NULL, < = 1, << = 2
 	int		redir2; //0= NULL, > = 1, >> = 2
 	int		file;
