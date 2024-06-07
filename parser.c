@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 10:01:14 by alexigar          #+#    #+#             */
-/*   Updated: 2024/06/07 10:30:03 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/06/07 12:57:32 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,24 +27,30 @@ t_command **parser(char **tokens)
 	int			i;
 	int			j;
 	int			k;
-	int			n_tokens;
+	int			n_tokens; //Lo suyo seria pasarme esto que es el numero de tokens
 	t_command 	*current_command;
 	t_command	**command_list;
 
 	i = 0;
 	j = 0;
 	k = 0;
-	n_tokens = count_tokens(tokens);
-	command_list = malloc(sizeof(t_command) * n_tokens);
+	n_tokens = count_tokens(tokens); //Y asi me ahorro esta funcion
+	command_list = malloc(sizeof(t_command *) * (n_tokens + 1));
 	while (tokens[i])
 	{
 		current_command = malloc(sizeof(t_command));
-		current_command -> args = malloc(sizeof(char *) * (n_tokens - i));
+		if (!current_command)
+			return (NULL);
+		current_command -> args = malloc(sizeof(char *) * (n_tokens - i + 1));
 		current_command -> command = NULL;
-		if (!current_command || !command_list || !(current_command -> args))
+		current_command -> path[0] = '\0';
+		current_command -> redir1 = 0;
+		current_command -> redir2 = 0;
+		current_command -> file = 0;
+		if (!command_list || !(current_command -> args))
 			return (NULL); //Va a haber que liberar todo y tirar error
 		current_command -> index = j;
-		while (tokens[i][0] != '|' && tokens[i][0] != '>' && tokens[i][0] != '<' && tokens[i][0] != '&')
+		while (tokens[i][0] != '|' && tokens[i][0] != '>' && tokens[i][0] != '<')
 		{
 			printf("Ha entrado en el bucle\n");
 			if (!(current_command -> command))
@@ -62,8 +68,10 @@ t_command **parser(char **tokens)
 			}
 			i++;
 		}
-		if (!(current_command -> path))
-			getcwd(current_command -> path, 2048);
+		current_command -> args[k] = NULL;
+		if (current_command -> path[0] == '\0')
+			getcwd(current_command -> path, sizeof(current_command -> path));
+		printf("cwd %s\n", current_command -> path);
 		if (tokens[i])
 		{
 			if (tokens[i][0] == '>')
@@ -99,6 +107,7 @@ t_command **parser(char **tokens)
 		command_list[j] = current_command;
 		printf("Ha metido el comando en la lista\n");
 		j++;
+		k = 0;
 	}
 	return (command_list);
 }
