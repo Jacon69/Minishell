@@ -2,7 +2,7 @@
 
 static int	next_delimiter(char const *str, char c, int i)
 {
-	while (str[i] && str[i] != c)
+	while ((str[i] && str[i] != c) || (str[i] && str[i] == c && str[i-1] == '\\'))
 		i++;
 	return (i);
 }
@@ -18,17 +18,31 @@ static int	count_tokens(char *line)
 	{
 		while (line[i]== ' ')
 			i++;
-		if ((line[i] == '"') || (line[i] == '\''))
+		if ((i==0) && ((line[i] == '"') || (line[i] == '\'')))
 		{
+			tokens++;
+		
+			i = next_delimiter(line, line[i] , i+1) + 1;
+		}		
+		else if ((line[i-1] != '\\') && ((line[i] == '"') || (line[i] == '\'')))
+		{
+
 			tokens++;
 			i = next_delimiter(line, line[i] , i+1) + 1;
 		}
 		else if (line[i])
 		{
+					
 			while(line[i]!= ' '&& line[i])
 			{
-				if ((line[i] == '"') || (line[i] == '\'')) //aqui solo puede entrar su hay comillas en medio de un texto
-				break;
+				
+			
+				if (((line[i] == '"') || (line[i] == '\'')) && (line[i-1] != '\\') ) //aqui solo puede entrar su hay comillas en medio de un texto
+				{
+					
+					break;
+				}
+					
 				if ((line[i]==';'||line[i]=='|') || (line[i+1]==';'||line[i+1]=='|'))
 				{
 					i++;
@@ -37,7 +51,7 @@ static int	count_tokens(char *line)
 				i++;
 			}
 			
-			if ((line[i] != '"') && (line[i] != '\'')) 
+			//if (((line[i] != '"') && (line[i] != '\'')) || (((line[i] == '"') || (line[i] == '\''))&&(line[i-1] == '\\')))
 				tokens++;
 
 		}
@@ -56,11 +70,11 @@ static int ft_assig_token(char *line, char  **token, int j, int i)
 
 	simbol[1]='\0';
 	simbol[0] = line[i];
-	if ((line[i] == '"') || (line[i] == '\''))
+	if ((i==0) && ((line[i] == '"') || (line[i] == '\'')))
 	{
 		if (!line[next_delimiter(line, line[i], i+1)])
 		{
-			printf("no cierra comillas \n");
+			printf("1no cierra comillas \n");
 			return (-1);
 		}
 		free(token[j]);//viene inicializado como se añade subcadena nueva lo libero
@@ -71,11 +85,27 @@ static int ft_assig_token(char *line, char  **token, int j, int i)
 		i = next_delimiter(line, line[i] , i+1) + 1;
 		
 	}
+	else if ((line[i-1] != '\\') && ((line[i] == '"') || (line[i] == '\'')))
+	{
+		if (!line[next_delimiter(line, line[i], i+1)])
+		{
+			printf("2no cierra comillas \n");
+			return (-1);
+		}
+		free(token[j]);//viene inicializado como se añade subcadena nueva lo libero
+		token[j]= ft_substr(line, i, next_delimiter(line, line[i], i+1)  - i +1); //malloc
+		
+		if (!token[j])
+			return(-1);
+		i = next_delimiter(line, line[i] , i+1) + 1;
+		
+	}
+	
 	else
 	{
 		while (line[i] != ' ' && line[i])
 		{
-			if ((line[i] == '"') || (line[i] == '\'')) //aqui solo puede entrar su hay comillas en medio de un texto
+			if (((line[i] == '"') || (line[i] == '\'')) && (line[i-1] != '\\')) //aqui solo puede entrar su hay comillas en medio de un texto
 				break;
 			aux = token[j];
 			simbol[0] = line[i];
@@ -106,6 +136,7 @@ char    **lexer(char    *line)
 
 
 	ntoken = count_tokens(line);
+
 	printf("num token %i \n",ntoken);
 	token = (char **) malloc(sizeof(char *) * (ntoken + 1));
  	if (!line || !token)
