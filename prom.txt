@@ -98,3 +98,8 @@ sdad "sdsad
 ewe "afssa
 121 \"fdsf
 exit
+wew"dssd"dsf'dfd"dfsd'dasd      "sdffdsf"
+wew"dssd"dsf'dfd"dfsd'dasd      "sdffdsf\"
+wew"dssd"dsf'dfd"dfsd'dasd      "sdffdsf\\"
+sdsa"dsdfsfdds\"
+exit
