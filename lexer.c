@@ -30,14 +30,28 @@ static int	count_tokens(char *line)
 			while(line[i]!= ' '&& line[i])
 			{
 				
-			
+				if  (line[i] == '<')
+				{
+					if ( line[i+1]== '<' )
+						i++;
+					i++;
+					break;
+				}
+				if  (line[i] == '>')
+				{
+					if ( line[i+1]== '>' )
+						i++;
+					i++;
+					break;
+				}
+
 				if ((line[i] == '"') || (line[i] == '\'') ) //aqui solo puede entrar su hay comillas en medio de un texto
 				{
 					
 					break;
 				}
 					
-				if (line[i]=='|' || line[i+1]=='|')
+				if (line[i]=='|' || line[i+1]=='|'|| line[i+1]=='<'|| line[i+1]=='>')
 				{
 					i++;
 					break;
@@ -93,7 +107,39 @@ static int ft_assig_token(char *line, char  **token, int j, int i)
 			
 			if ((!token[j]))
 				return (-1);
-			if (line[i+1]=='|' || line[i]=='|') //con esta codición me aseguro de que los simbolos ; | vayan solos
+			if  (line[i] == '<')
+			{
+				if ( line[i+1]== '<' )
+				{
+					i++;
+					simbol[0] = line[i];
+					aux = token[j];
+					token[j]= ft_strjoin(token[j],simbol);  //voy añadiendo caracter a caracter  //Malloc
+					if (*aux)
+					free(aux);			
+					if ((!token[j]))
+					return (-1);
+				}
+				i++;
+				break;
+			}
+			if  (line[i] == '>')
+			{
+				if ( line[i+1]== '>' )
+				{
+					i++;
+					simbol[0] = line[i];
+					aux = token[j];
+					token[j]= ft_strjoin(token[j],simbol);  //voy añadiendo caracter a caracter  //Malloc
+					if (*aux)
+					free(aux);			
+					if ((!token[j]))
+					return (-1);
+				};
+				i++;
+				break;
+			}
+			if (line[i+1]=='|' || line[i]=='|'|| line[i+1]=='<'|| line[i+1]=='>') //con esta codición me aseguro de que los simbolos ; | vayan solos
 			{	
 				i++;
 				break;

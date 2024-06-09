@@ -1,105 +1,28 @@
-hjhhj "jjj\"njnj"
-\"dsds
-\"ddsdds@ç"
-"wee""dsd"
-exit
-hjhhj "jjj\"njnj"
-hjhhj "jjj\'njnj"
-hjhhj "jjj\'nj"nj"
-"
-weew"
-w"
-we"
-weew"
-weew"
-wee"
-we"
-we"
-w"
-w"
-exit
-wer"
-we"
-w"
-exit
-we"
-dfsdfsd"
-wewe"
-wewe"
-"WW"
-"W
-fdf"
-"df
-sds"
-ewe"
-sd
-"wewe"
-wew
-ewe
-sds
-dss
-dsds
-sdsd
-sds
-wew
-
-
-ssd
-sd
-dsds eew
-dsds eew"
-ded dede"
-dfd dfdf"
-wer wrew"
-qwe qwer"
-qwe qwew"
-qwe qwer"
-123 "dew" sas/"cdcd "dsd"
-123 "dew" sas/"cdcd 
-123 "dew" sas/"
-123 "dew" sas/"n
-123 "dew" sas/"nm
-123 "dew" sas/"nmkk
-123 "dew" sas/"nmk
-123 "dew" sas/"nm
-121 "wqewq"
-121 "wqewq"
-121 "wqewq\"df"
-121 "wqewq\"
-121 "wqewq\" ll
-121 wqewq\" ll
-121 wqewq" ll
-123 "dew" sas/"nm
-123 "dew" sas/"nm
-as/"nm
-as\"nm
-123 "dew" sas\"nm
-123 "dew" sas\"  
-123 "dew" sas\"  ""  
-123 "dew" sas/"nm ewew! | sdsd;dsds
-123 "dew" sas/"nm ewew!
-123 "dew" sas/"nm 
-123 "dew" sas\"nm ewew! | sdsd;dsds
-123 "dew" sas\"nm ewew! | sdsd;dsds|\\
-121 \"fdsf
- \"fdsf
-    \  "fsd"
-"dad\'dasd  \"cscd"
-asdsa"
-"erwe
-"fdsa"fdd"DFsd"fss"
-"fdsa"fdd"DFsd"fss" dfdfd
-"fdsa"fdd"DFsd"fss" dfdfd fdsdd
-"fdsa"fdd"DFsd"fss" dfdfd fdsdd \"wwrwr
-"fdsa"fdd"DFsd"fss" dfdfd fdsdd \"wwrwr"
-"fdsa"fdd"DFsd"fss" dfdfd fdsdd \"wwrwr
-sdad "sdsad
-"fdsa"fdd"DFsd"fss" dfdfd fdsdd \"wwrwr
-ewe "afssa
-121 \"fdsf
-exit
-wew"dssd"dsf'dfd"dfsd'dasd      "sdffdsf"
-wew"dssd"dsf'dfd"dfsd'dasd      "sdffdsf\"
-wew"dssd"dsf'dfd"dfsd'dasd      "sdffdsf\\"
-sdsa"dsdfsfdds\"
-exit
+environment.c
+environment.h
+environment.o
+lexer.c
+lexer.o
+Libft
+main.c
+main.o
+Makefile
+prom
+prom.c
+prom.o
+prom.txt
+README.md
+utils1.c
+utils1.o
+2
+assa<<fdf>>sdw
+2
+dsd<<
+dsd<<kkk
+dsd<kkk
+ds<sds
+dsd<<dsds
+sdsd<<>><<<sds
+<
+<<<
+ <
