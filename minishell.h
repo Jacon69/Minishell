@@ -31,6 +31,7 @@ typedef struct s_command
 	char	**args;
 	int		redir1; //0= NULL, < = 1, << = 2
 	int		redir2; //0= NULL, > = 1, >> = 2
+	int		piped; //0 no hay pipe, 1 hay pipe
 	int		file;
 	char	*input;
 	char	*output;
