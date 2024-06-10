@@ -1,20 +1,16 @@
 #include "environment.h"
 
-void ft_imprimetoken(char *line)
+void ft_imprimetoken(char **token)
 {
-    char	**token;
+    
     int		i;
 
 	i = 0;
-    token = lexer(line);
-	if (!token)
-		return;
 	while (token[i])
 	{
 		printf("%i token %s \n",i,token[i]);
 		i++;
 	}
-	ft_free_char(token);
 }
 
 void ft_ejecutar(char *line, t_list  **env)
@@ -65,6 +61,8 @@ void ft_ejecutar(char *line, t_list  **env)
 void prom(t_list  **env) 
 {
     char *line;
+    char	**token;
+
     int fd = open("prom.txt", O_WRONLY | O_CREAT | O_APPEND, 0644);
     if (fd == -1) {
         perror("No se pudo abrir el archivo");
@@ -91,11 +89,18 @@ void prom(t_list  **env)
             free(line);
             break;
         }
+        
+        token = lexer(line);  //Malloc
+        if (!token)
+	    	return; ///Preperaar error memoria
+	    ft_imprimetoken(token); //Antes de expandirse
+        expander(token, env);
 
-        ft_imprimetoken(line);
-        ft_ejecutar(line, env); //PAra pruebas en esta función pongo los comando que quiero probar
+        ft_imprimetoken(token); //Expandidof
+        ft_ejecutar(line, env); //PAra pruebas en esta función pongo los comando que quiero probar  // están los built-ins mirar si se pueden lanzar como  procesos
 
         // Aquí es donde de se tiene que procesar la linea introducida
+        ft_free_char(token);
         free(line); // Liberar la memoria de la línea
     }
 

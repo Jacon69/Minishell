@@ -19,6 +19,7 @@ char	**ft_get_env(t_list  **env);
 void    ft_del_v_env(char *var_env, t_list **env);//Borro si existe variable de entorno.
 void    ft_add_v_env(char *var_env, t_list **env);//Añado variable de entorno.
 void	ft_pwd(t_list **env); //Imprime el directorio actual
+char    *ft_get_var_env(t_list **env, char *var_env);
 
 
 
@@ -32,6 +33,7 @@ char	*ft_strndup(const char *str, size_t n); ///ESTA FUNCION NO ESTA EN LA LIBRE
 /*lexer*/
 char    **lexer(char *line); // Crea
 void	free_token(char **token);
+void	expander(char **token, t_list  **env);
 
 
 
