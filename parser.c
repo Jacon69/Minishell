@@ -67,7 +67,7 @@ t_command **parser(char **tokens) //A esta funcion le tiene que llegar NULL como
 		current_command -> path[0] = '\0';
 		current_command -> redir1 = 0;
 		current_command -> redir2 = 0;
-		current_command -> file = 0;
+		current_command -> file = 1; //Por defecto se escribe en la consola
 		current_command -> piped = 0;
 		if (!(current_command -> args))
 		{
@@ -87,7 +87,7 @@ t_command **parser(char **tokens) //A esta funcion le tiene que llegar NULL como
 				k++;
 				if (tokens[i][0] == '/')
 				{
-					current_command -> file = open(tokens[i], O_RDWR);
+					current_command -> file = open(tokens[i], O_RDWR); //Si esto devuelve -1 hay que crear el archivo en el ejecutor
 				}
 			}
 			i++;
@@ -128,6 +128,7 @@ t_command **parser(char **tokens) //A esta funcion le tiene que llegar NULL como
 			if (tokens[i][0] == '|') //El output del comando va a ir al input del siguiente comando
 			{
 				current_command -> piped = 1;
+				i++;
 			}
 		}
 		//El resto de parametros los hace el ejecutor
@@ -140,7 +141,7 @@ t_command **parser(char **tokens) //A esta funcion le tiene que llegar NULL como
 
 int main(void) //Main de prueba
 {
-	char *tokens[] = {"command", "hola", "esto", "es", "un comando", ">>", "/home/alexigar/Desktop/Minishell/holiwi.txt", "asdasd", NULL};
+	char *tokens[] = {"command", "hola", "esto", "es", "un comando", ">>", "/home/alexigar/Desktop/Minishell/holiwi.txt", "command", "asdasd", NULL};
 	t_command **list = parser((char **)tokens);
 	if (list)
 		printf("Index %d\nCommand %s\nPath %s\nString %s\nRedir1 %d\nRedir2 %d\nFile %d\n", list[0] -> index, (char *)(list[0] -> command), list[0] -> path, list[0] -> args[0],

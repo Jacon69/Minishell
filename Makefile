@@ -5,7 +5,7 @@ NAME = prom
 LIBFT_DIR = ./Libft
 LIBFT = $(LIBFT_DIR)/libft.a
 
-SRC = parser.c # Esto se tiene que fusionar con el makefile de la otra branch
+SRC = parser.c executor.c # Esto se tiene que fusionar con el makefile de la otra branch
 OBJ = $(SRC:.c=.o)
 
 # Compilador y flags

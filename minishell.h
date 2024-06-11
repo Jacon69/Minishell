@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 16:17:26 by aiturria          #+#    #+#             */
-/*   Updated: 2024/06/07 12:35:23 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/06/11 12:22:20 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include <errno.h>   // For errno
 # include <fcntl.h>   // For open
 # include <unistd.h>  // For close
+# include <sys/wait.h>
 # include "Libft/libft.h"
 
 
@@ -34,7 +35,8 @@ typedef struct s_command
 	int		piped; //0 no hay pipe, 1 hay pipe
 	int		file;
 	char	*input;
-	char	*output;
+	char	*string_output;
+	int		returned_output;
 	int		infile;
 	int		outfile;
 	int		singleqts;
@@ -62,5 +64,6 @@ char	*ms_findtoken(t_myshell *myshell, char *string, int *len);
 void	ms_redirections(t_command *command, char *token, int *len2);
 void	ms_savewords(t_myshell *myshell, t_command *command, char *token,
 			int *len2);
+void	free_commands(t_command **command_list);
 
 #endif
