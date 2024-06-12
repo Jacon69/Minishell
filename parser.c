@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 10:01:14 by alexigar          #+#    #+#             */
-/*   Updated: 2024/06/07 13:00:13 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/06/12 12:43:07 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,8 @@ void	free_commands(t_command **command_list)
 	i = 0;
 	while (command_list[i])
 	{
-		free(command_list[i] -> args);
+		if (command_list[i] -> args)
+			free(command_list[i] -> args);
 		free(command_list[i]);
 		i++;
 	}
@@ -41,38 +42,38 @@ t_command **parser(char **tokens) //A esta funcion le tiene que llegar NULL como
 	int			i;
 	int			j;
 	int			k;
-	int			n_tokens; //Lo suyo seria pasarme esto que es el numero de tokens
+	int			n_tokens;
 	t_command 	*current_command;
 	t_command	**command_list;
 
 	if (!tokens || !tokens[0])
-		exit(EXIT_FAILURE);
+		exit(EXIT_FAILURE); //salida error
 	i = 0;
 	j = 0;
 	k = 0;
-	n_tokens = count_tokens(tokens); //Y asi me ahorro esta funcion
+	n_tokens = count_tokens(tokens);
 	command_list = malloc(sizeof(t_command *) * (n_tokens + 1));
 	if (!command_list)
-		exit(EXIT_FAILURE);
+		exit(EXIT_FAILURE); //salida error
 	while (tokens[i])
 	{
 		current_command = malloc(sizeof(t_command));
 		if (!current_command)
 		{
 			free_commands(command_list);
-			exit(EXIT_FAILURE);
+			exit(EXIT_FAILURE); //salida error
 		}
 		current_command -> args = malloc(sizeof(char *) * (n_tokens - i + 1));
 		current_command -> command = NULL;
 		current_command -> path[0] = '\0';
 		current_command -> redir1 = 0;
 		current_command -> redir2 = 0;
-		current_command -> file = 1; //Por defecto se escribe en la consola
+		current_command -> file_output = 1; //Por defecto se escribe en la consola
 		current_command -> piped = 0;
 		if (!(current_command -> args))
 		{
 			free_commands(command_list);
-			exit(EXIT_FAILURE); //Va a haber que liberar todo y tirar error
+			exit(EXIT_FAILURE); //salida error
 		}
 		current_command -> index = j;
 		while (tokens[i][0] != '|' && tokens[i][0] != '>' && tokens[i][0] != '<')
@@ -87,7 +88,9 @@ t_command **parser(char **tokens) //A esta funcion le tiene que llegar NULL como
 				k++;
 				if (tokens[i][0] == '/')
 				{
-					current_command -> file = open(tokens[i], O_RDWR); //Si esto devuelve -1 hay que crear el archivo en el ejecutor
+					//TODO 
+					current_command -> file_output = open(tokens[i], O_RDWR); //Si esto devuelve -1 hay que crear el archivo en el ejecutor
+					current_command -> file_input = current_command -> file_output;
 				}
 			}
 			i++;
@@ -111,19 +114,23 @@ t_command **parser(char **tokens) //A esta funcion le tiene que llegar NULL como
 					free_commands(command_list);
 					return (NULL);
 				}
+				//else manejar el archivo
+				//TODO manejar input invalido
 			}
 			if (tokens[i][0] == '<')
 			{
 				if (tokens[i][1] == '<')
-					current_command -> redir1 -= 2; //Este tiene que pedir inputs hasta que encuentre el siguiente argumento
+					current_command -> redir1 -= 2; //Este tiene que pedir inputs hasta que encuentre el siguiente argumento (input desde la consola, heredoc)
 				else
-					current_command -> redir1 -= 1; //Este coge un archivo
+					current_command -> redir1 -= 1; //Este coge un archivo (input desde el archivo)
 				i++;
 				if (tokens[i][0] != '/' && current_command -> redir1 == -1) //Si no hay archivo hay que tirar error blando
 				{
 					free_commands(command_list);
 					return (NULL);
 				}
+				//else manejar el archivo y tirar error blando si hay algo que no cuadra
+				//TODO manejar input invalido
 			}
 			if (tokens[i][0] == '|') //El output del comando va a ir al input del siguiente comando
 			{

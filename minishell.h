@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 16:17:26 by aiturria          #+#    #+#             */
-/*   Updated: 2024/06/11 12:22:20 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/06/12 11:58:13 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,15 +32,12 @@ typedef struct s_command
 	char	**args;
 	int		redir1; //0= NULL, < = 1, << = 2
 	int		redir2; //0= NULL, > = 1, >> = 2
-	int		piped; //0 no hay pipe, 1 hay pipe
-	int		file;
-	char	*input;
+	int		piped; //0 no hay pipe, 1 hay pipe (salida)
+	int		file_input;
+	int		file_output;
+	char	*input; //Entrada desde archivos o pipes
 	char	*string_output;
 	int		returned_output;
-	int		infile;
-	int		outfile;
-	int		singleqts;
-	int		dobleqts;
 }	t_command;
 
 typedef struct s_myshell
