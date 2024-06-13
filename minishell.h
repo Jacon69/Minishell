@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 16:17:26 by aiturria          #+#    #+#             */
-/*   Updated: 2024/06/12 11:58:13 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/06/13 16:45:47 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ typedef struct s_command
 
 typedef struct s_myshell
 {
-	char		**env;
+	t_list		*env;
 	char		*actual_dir;
 	int			nbr_command;
 	int			pipe;

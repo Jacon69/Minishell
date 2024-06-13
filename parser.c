@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 10:01:14 by alexigar          #+#    #+#             */
-/*   Updated: 2024/06/12 12:43:07 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/06/13 16:56:32 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ t_command **parser(char **tokens) //A esta funcion le tiene que llegar NULL como
 				if (tokens[i][0] == '/')
 				{
 					//TODO 
-					current_command -> file_output = open(tokens[i], O_RDWR); //Si esto devuelve -1 hay que crear el archivo en el ejecutor
+					current_command -> file_output = open(tokens[i], O_WRONLY | O_CREAT);
 					current_command -> file_input = current_command -> file_output;
 				}
 			}
