@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int	count_tokens(char **tokens)
+int	count_nbr_tokens(char **tokens) //TODO mandar esto a otro archivo de utils
 {
 	int	i;
 
@@ -32,9 +32,9 @@ void	free_commands(t_command **command_list)
 		if (command_list[i] -> args)
 			free(command_list[i] -> args);
 		if (command_list[i] -> file_input != 1)
-			close(command_list -> file_input);
+			close(command_list[i] -> file_input);
 		if (command_list[i] -> file_output != 1)
-			close(command_list -> file_output);
+			close(command_list[i] -> file_output);
 		free(command_list[i]);
 		i++;
 	}
@@ -55,19 +55,19 @@ t_command **parser(char **tokens) //A esta funcion le tiene que llegar NULL como
 	i = 0;
 	j = 0;
 	k = 0;
-	n_tokens = count_tokens(tokens);
-	command_list = malloc(sizeof(t_command *) * (n_tokens + 1));
+	n_tokens = count_nbr_tokens(tokens);
+	command_list = malloc(sizeof(t_command *) * (n_tokens + 1)); //malloc
 	if (!command_list)
 		exit(EXIT_FAILURE); //salida error
 	while (tokens[i])
 	{
-		current_command = malloc(sizeof(t_command));
+		current_command = malloc(sizeof(t_command)); //malloc
 		if (!current_command)
 		{
 			free_commands(command_list);
 			exit(EXIT_FAILURE); //salida error
 		}
-		current_command -> args = malloc(sizeof(char *) * (n_tokens - i + 1));
+		current_command -> args = malloc(sizeof(char *) * (n_tokens - i + 1)); //malloc
 		current_command -> command = NULL;
 		current_command -> path[0] = '\0';
 		current_command -> redir1 = 0;
@@ -95,7 +95,7 @@ t_command **parser(char **tokens) //A esta funcion le tiene que llegar NULL como
 					if (current_command -> file_input && current_command -> file_output)
 					{
 						free_commands(command_list);
-						return (NULL);
+						return (NULL); //salida error
 					}
 					if (current_command -> file_output)
 						current_command -> file_input = current_command -> file_output;
@@ -117,12 +117,10 @@ t_command **parser(char **tokens) //A esta funcion le tiene que llegar NULL como
 					current_command -> redir2 += 2;
 				else
 					current_command -> redir2 += 1;
+				//TODO abrir los archivos y machacar si hay varios > o <
 				i++;
 				current_command -> file_output = open(tokens[i], O_WRONLY | O_CREAT, 0644);
 					i++;
-				//TODO cada > que encuentre machaca el archivo anterior
-				//else manejar el archivo
-				//TODO manejar input invalido
 			}
 			if (tokens[i][0] == '<')
 			{
@@ -130,9 +128,8 @@ t_command **parser(char **tokens) //A esta funcion le tiene que llegar NULL como
 					current_command -> redir1 -= 2; //Este tiene que pedir inputs hasta que encuentre el siguiente argumento (input desde la consola, heredoc)
 				else
 					current_command -> redir1 -= 1; //Este coge un archivo (input desde el archivo)
+					//TODO abrir el archivo como solo lectura y meter con get_next_line en input
 				i++;
-				//else manejar el archivo y tirar error blando si hay algo que no cuadra
-				//TODO manejar input invalido
 			}
 			if (tokens[i][0] == '|') //El output del comando va a ir al input del siguiente comando
 			{
@@ -146,13 +143,4 @@ t_command **parser(char **tokens) //A esta funcion le tiene que llegar NULL como
 		k = 0;
 	}
 	return (command_list);
-}
-
-int main(void) //Main de prueba
-{
-	char *tokens[] = {"command", "hola", "esto", "es", "un comando", ">>", "/home/alexigar/Desktop/Minishell/holiwi.txt", "command", "asdasd", NULL};
-	t_command **list = parser((char **)tokens);
-	if (list)
-		printf("Index %d\nCommand %s\nPath %s\nString %s\nRedir1 %d\nRedir2 %d\nFile %d\n", list[0] -> index, (char *)(list[0] -> command), list[0] -> path, list[0] -> args[0],
-	list[0] -> redir1, list[0] -> redir2, list[1] -> file);
 }

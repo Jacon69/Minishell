@@ -12,40 +12,6 @@
 
 #include "minishell.h"
 
-int execute_builtin(t_command *com)
-{
-    //Ejecuto el comando que sea y devuelvo
-    if (ft_strncmp(com -> command, "echo", ft_strlen(com -> command)) == 0)
-    {
-        return (0);
-    }
-    else if (ft_strncmp(com -> command, "cd", ft_strlen(com -> command)) == 0)
-    {
-        return (0);
-    }
-    else if (ft_strncmp(com -> command, "pwd", ft_strlen(com -> command)) == 0)
-    {
-        return (0);
-    }
-    else if (ft_strncmp(com -> command, "export", ft_strlen(com -> command)) == 0)
-    {
-        return (0);
-    }
-    else if (ft_strncmp(com -> command, "unset", ft_strlen(com -> command)) == 0)
-    {
-        return (0);
-    }
-    else if (ft_strncmp(com -> command, "env", ft_strlen(com -> command)) == 0)
-    {
-        return (0);
-    }
-    else if (ft_strncmp(com -> command, "exit", ft_strlen(com -> command)) == 0)
-    {
-        return (0);
-    }
-    return (0);
-}
-
 int try_call(char **paths, t_command *command)
 {
     int i;
@@ -53,11 +19,11 @@ int try_call(char **paths, t_command *command)
     i = 0;
     while (paths[i])
     {
-        
+        //TODO
     }
 }
 
-int executor(t_command **command_list, t_list *env) //Recibir variables de entornos
+int executor(t_command **command_list, t_list **env) //Recibir variables de entornos
 {
     int     i;
     char    *function_call;
@@ -67,7 +33,12 @@ int executor(t_command **command_list, t_list *env) //Recibir variables de entor
     i = 0;
     to_return = 0;
     command_list[i] -> input = NULL;
-    function_call = getenv("PATH");
+    function_call = ft_get_var_env(env, "PATH"); //malloc
+    if (!function_call)
+        {
+            free_commands(command_list);
+            exit(EXIT_FAILURE);
+        }
     paths = ft_split(function_call, ':'); //malloc
     if (!paths)
     {
@@ -78,12 +49,6 @@ int executor(t_command **command_list, t_list *env) //Recibir variables de entor
     while (command_list[i])
     {
         //TODO Manejar bien pipes y redirecciones
-        function_call = ft_strjoin("/bin/", command_list[i] -> command); //Esta linea se cambia
-        if (!function_call)
-        {
-            free_commands(command_list);
-            exit(EXIT_FAILURE);
-        }
         //Si el comando es un built-in se ejecuta el built-in, si no intento llamar a execve
         if (ft_strncmp(command_list[i] -> command, "echo", ft_strlen(command_list[i] -> command)) != 0
         && ft_strncmp(command_list[i] -> command, "cd", ft_strlen(command_list[i] -> command)) != 0
@@ -102,7 +67,7 @@ int executor(t_command **command_list, t_list *env) //Recibir variables de entor
         }
         else
         {
-            to_return = execute_builtin(command_list[i]);
+            to_return = ft_build_int(env, *(command_list[i]));
             if (to_return != 0)
                 return (to_return); //Si se ha cambiado a algo que no es 0 devuelvo porque ha fallado algo
         }

@@ -14,14 +14,18 @@
 # define MINISHELL_H
 
 # include <stdio.h>	  // For printf
-# include <unistd.h>  // For write
+# include <unistd.h>  // For write // For close
 # include <stdlib.h>  // For exit
 # include <string.h>  // For strerror
 # include <errno.h>   // For errno
 # include <fcntl.h>   // For open
-# include <unistd.h>  // For close
 # include <sys/wait.h>
 # include "Libft/libft.h"
+
+# include <stdarg.h>
+# include <readline/readline.h>
+# include <readline/history.h>
+# include <dirent.h>	
 
 
 typedef struct s_command
@@ -40,27 +44,40 @@ typedef struct s_command
 	int		returned_output;
 }	t_command;
 
-typedef struct s_myshell
-{
-	t_list		*env;
-	char		*actual_dir;
-	int			nbr_command;
-	int			pipe;
-	int			last_status;
-	t_command	*commands;
-}	t_myshell;
-
 //global funtions
-void	ms_error(t_myshell *myshell, char *error);
-void	ms_freeall(t_myshell *myshell);
+
 
 //parsing
-void	ms_lineprocessing(t_myshell *myshell, char *line);
-void	getcommands(t_myshell *myshell, t_command *command);
-char	*ms_findtoken(t_myshell *myshell, char *string, int *len);
-void	ms_redirections(t_command *command, char *token, int *len2);
-void	ms_savewords(t_myshell *myshell, t_command *command, char *token,
-			int *len2);
+t_command **parser(char **tokens);
+
+//executor
+int executor(t_command **command_list, t_list *env); //Recibir variables de entornos
+
 void	free_commands(t_command **command_list);
+
+int ft_build_int(t_list **env, t_command command_act);
+
+void prom(t_list  **env) ;
+
+/*Funciones gestión Variable de entorno*/
+t_list  **ft_ini_env(char **environment);
+char	**ft_get_env(t_list  **env);    
+void    ft_del_v_env(char *var_env, t_list **env);//Borro si existe variable de entorno.
+void    ft_add_v_env(char *var_env, t_list **env);//Añado variable de entorno.
+void	ft_pwd(t_list **env); //Imprime el directorio actual
+char    *ft_get_var_env(t_list **env, char *var_env);
+
+/*Utils*/
+void    ft_free_char(char **ptr); //Libera la memoria de un array de strings
+void	ft_free_list(t_list **list); //Libera la memoria de la lista de strings
+void	print_string(void *str); //Imprime un string Para usarlo con ft_lstiter
+int		ft_pos_chr(const char *str, int c); //Devuelve la posición de un caracter en un string
+char	*ft_strndup(const char *str, size_t n); ///ESTA FUNCION NO ESTA EN LA LIBRERIA LIBFT
+
+/*lexer*/
+char    **lexer(char *line); // Crea
+void	free_token(char **token);
+void	expander(char **token, t_list  **env);
+
 
 #endif

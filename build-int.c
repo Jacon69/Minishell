@@ -10,7 +10,7 @@ ft_built_echo(t_command command)
 
 		i = 0;
 		jump_line =1;
-	if (!ft_memcmp(command.args[0], "-n", 2))
+	if (!ft_memcmp(command.args[0], "-n", 2))//TODO mirar ue long sea 2
 	{
 		jump_line = 0;
 		i++;
@@ -41,7 +41,7 @@ ft_built_cd(t_command command, t_list **env)
 
 	int	num_dir;
 	
-	line_path=ft_get_var_env(env, command.path);
+	line_path= command.path;
 	route = malloc (2);
 	if (!route)
 		exit;//error mem
@@ -125,29 +125,29 @@ pENDIENTE DE HACER CD ../pROYECTO
 					Relativo
 
 
-else if (command.args[0][0]== '/') //ABSOLUTA
-{
-	aux2 = command.args[0]; 
-	aux2++;
-	
-	aux=route;
-	route= ft_strjoin(route, aux2); //malloc
-	free(aux);
-	if (!route)
-		exit;//error memoria
-}
+	else if (command.args[0][0]== '/') //ABSOLUTA
+	{
+		aux2 = command.args[0]; 
+		aux2++;
+		
+		aux=route;
+		route= ft_strjoin(route, aux2); //malloc
+		free(aux);
+		if (!route)
+			exit;//error memoria
+	}
 
-	// TODO cambio a dirección relativa directorio anterior
-	//TODO Cambio dirección absoluta
-
-
+		// TODO cambio a dirección relativa directorio anterior
+		//TODO Cambio dirección absoluta
 
 
 
-/*Variables de  enviroment que tengo que controlar
-	pwd
-	oldpwd
-	
+
+
+	/*Variables de  enviroment que tengo que controlar
+		pwd
+		oldpwd
+		
 	*/
 
 
@@ -168,7 +168,7 @@ else if (command.args[0][0]== '/') //ABSOLUTA
 	}
 }
 
-void ft_build_int(t_myshell shell, t_command command_act)
+int ft_build_int(t_list **env, t_command command_act)
 
 {
 	char	*comando;
@@ -181,7 +181,7 @@ void ft_build_int(t_myshell shell, t_command command_act)
 	if (ft_memcmp(comando, "echo", 4)== 0)
 		ft_built_echo(command_act);
 	else if (ft_memcmp(comando, "cd", 2)== 0)
-		ft_built_cd(command_act, shell.env);
+		ft_built_cd(command_act, env);
 	else if (ft_memcmp(comando, "pwd", 3)== 0)
 		ft_built_pwd(command_act);
 	else if (ft_memcmp(comando, "export", 6)== 0)

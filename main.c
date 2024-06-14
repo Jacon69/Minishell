@@ -1,6 +1,4 @@
-#include "environment.h"
-#include "./Libft/libft.h"
-
+#include "minishell.h"
 
 
 int main(int narg, char * carg[], char **environment)
@@ -17,10 +15,9 @@ int main(int narg, char * carg[], char **environment)
     
     prom(env); //##PRUEBA## Imprime el prompt y lee una línea de entrada
 
-    var_entorno = ft_get_env(env); //Malloc
-    if (var_entorno == NULL)
-		return (1); //No se ha podido crear el array de variables de entorno.*/
-	ft_free_char(var_entorno);//Liberar var_entorno después de usarla
+   
+   
+
     ft_free_list(env); //Libero la memoria de la lista de variables de entorno.
     
     return(0);
