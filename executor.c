@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 10:12:42 by alexigar          #+#    #+#             */
-/*   Updated: 2024/06/12 12:43:04 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/06/14 10:29:49 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,16 +46,35 @@ int execute_builtin(t_command *com)
     return (0);
 }
 
-int executor(t_command **command_list) //Recibir variables de entornos
+int try_call(char **paths, t_command *command)
+{
+    int i;
+
+    i = 0;
+    while (paths[i])
+    {
+        
+    }
+}
+
+int executor(t_command **command_list, t_list *env) //Recibir variables de entornos
 {
     int     i;
     char    *function_call;
+    char    **paths;
     int     to_return;
 
     i = 0;
     to_return = 0;
     command_list[i] -> input = NULL;
-    function_call = NULL; //Para usarlas aqui
+    function_call = getenv("PATH");
+    paths = ft_split(function_call, ':'); //malloc
+    if (!paths)
+    {
+        free_commands(command_list);
+        exit(EXIT_FAILURE); //salida error
+    }
+    //Split y funcion para intentar llamar a las funciones
     while (command_list[i])
     {
         //TODO Manejar bien pipes y redirecciones

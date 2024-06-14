@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 10:01:14 by alexigar          #+#    #+#             */
-/*   Updated: 2024/06/13 16:56:32 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/06/14 10:29:47 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,10 @@ void	free_commands(t_command **command_list)
 	{
 		if (command_list[i] -> args)
 			free(command_list[i] -> args);
+		if (command_list[i] -> file_input != 1)
+			close(command_list -> file_input);
+		if (command_list[i] -> file_output != 1)
+			close(command_list -> file_output);
 		free(command_list[i]);
 		i++;
 	}
@@ -88,9 +92,14 @@ t_command **parser(char **tokens) //A esta funcion le tiene que llegar NULL como
 				k++;
 				if (tokens[i][0] == '/')
 				{
-					//TODO 
-					current_command -> file_output = open(tokens[i], O_WRONLY | O_CREAT);
-					current_command -> file_input = current_command -> file_output;
+					if (current_command -> file_input && current_command -> file_output)
+					{
+						free_commands(command_list);
+						return (NULL);
+					}
+					if (current_command -> file_output)
+						current_command -> file_input = current_command -> file_output;
+					current_command -> file_output = open(tokens[i], O_WRONLY | O_CREAT, 0644);
 				}
 			}
 			i++;
@@ -109,11 +118,9 @@ t_command **parser(char **tokens) //A esta funcion le tiene que llegar NULL como
 				else
 					current_command -> redir2 += 1;
 				i++;
-				if (tokens[i][0] != '/') //Despues de > y >> solo debe haber un archivo, cualquier otra cosa tira error blando
-				{
-					free_commands(command_list);
-					return (NULL);
-				}
+				current_command -> file_output = open(tokens[i], O_WRONLY | O_CREAT, 0644);
+					i++;
+				//TODO cada > que encuentre machaca el archivo anterior
 				//else manejar el archivo
 				//TODO manejar input invalido
 			}
@@ -124,11 +131,6 @@ t_command **parser(char **tokens) //A esta funcion le tiene que llegar NULL como
 				else
 					current_command -> redir1 -= 1; //Este coge un archivo (input desde el archivo)
 				i++;
-				if (tokens[i][0] != '/' && current_command -> redir1 == -1) //Si no hay archivo hay que tirar error blando
-				{
-					free_commands(command_list);
-					return (NULL);
-				}
 				//else manejar el archivo y tirar error blando si hay algo que no cuadra
 				//TODO manejar input invalido
 			}
