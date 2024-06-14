@@ -1,0 +1,66 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/05/24 16:17:26 by aiturria          #+#    #+#             */
+/*   Updated: 2024/06/13 16:45:47 by alexigar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#ifndef MINISHELL_H
+# define MINISHELL_H
+
+# include <stdio.h>	  // For printf
+# include <unistd.h>  // For write
+# include <stdlib.h>  // For exit
+# include <string.h>  // For strerror
+# include <errno.h>   // For errno
+# include <fcntl.h>   // For open
+# include <unistd.h>  // For close
+# include <sys/wait.h>
+# include "Libft/libft.h"
+
+
+typedef struct s_command
+{
+	int		index;
+	char	*command;
+	char	path[1024];
+	char	**args;
+	int		redir1; //0= NULL, < = 1, << = 2
+	int		redir2; //0= NULL, > = 1, >> = 2
+	int		piped; //0 no hay pipe, 1 hay pipe (salida)
+	int		file_input;
+	int		file_output;
+	char	*input; //Entrada desde archivos o pipes
+	char	*string_output;
+	int		returned_output;
+}	t_command;
+
+typedef struct s_myshell
+{
+	t_list		*env;
+	char		*actual_dir;
+	int			nbr_command;
+	int			pipe;
+	int			last_status;
+	t_command	*commands;
+}	t_myshell;
+
+//global funtions
+void	ms_error(t_myshell *myshell, char *error);
+void	ms_freeall(t_myshell *myshell);
+
+//parsing
+void	ms_lineprocessing(t_myshell *myshell, char *line);
+void	getcommands(t_myshell *myshell, t_command *command);
+char	*ms_findtoken(t_myshell *myshell, char *string, int *len);
+void	ms_redirections(t_command *command, char *token, int *len2);
+void	ms_savewords(t_myshell *myshell, t_command *command, char *token,
+			int *len2);
+void	free_commands(t_command **command_list);
+
+#endif

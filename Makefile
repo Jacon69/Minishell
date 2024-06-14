@@ -5,7 +5,15 @@ NAME = prom
 LIBFT_DIR = ./Libft
 LIBFT = $(LIBFT_DIR)/libft.a
 
-SRC = main.c prom.c environment.c utils1.c lexer.c expander.c
+SRC = main.c \
+		prom.c \
+		environment.c \
+		utils1.c \
+		lexer.c \
+		expander.c \
+		parser.c \
+		executor.c \
+
 OBJ = $(SRC:.c=.o)
 
 # Compilador y flags
