@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aiturria <aiturria@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 16:17:26 by aiturria          #+#    #+#             */
-/*   Updated: 2024/05/30 10:32:20 by aiturria         ###   ########.fr       */
+/*   Updated: 2024/06/13 16:45:47 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,29 +20,29 @@
 # include <errno.h>   // For errno
 # include <fcntl.h>   // For open
 # include <unistd.h>  // For close
-# include "libft/libft.h"
+# include <sys/wait.h>
+# include "Libft/libft.h"
 
 
 typedef struct s_command
 {
 	int		index;
-	char	*command[50];
-	char	*path;
-	char	*string;
+	char	*command;
+	char	path[1024];
+	char	**args;
 	int		redir1; //0= NULL, < = 1, << = 2
 	int		redir2; //0= NULL, > = 1, >> = 2
-	int		file;
-	char	*input;
-	char	*output;
-	int		infile;
-	int		outfile;
-	int		singleqts;
-	int		dobleqts;
+	int		piped; //0 no hay pipe, 1 hay pipe (salida)
+	int		file_input;
+	int		file_output;
+	char	*input; //Entrada desde archivos o pipes
+	char	*string_output;
+	int		returned_output;
 }	t_command;
 
 typedef struct s_myshell
 {
-	char		**env;
+	t_list		*env;
 	char		*actual_dir;
 	int			nbr_command;
 	int			pipe;
@@ -61,5 +61,6 @@ char	*ms_findtoken(t_myshell *myshell, char *string, int *len);
 void	ms_redirections(t_command *command, char *token, int *len2);
 void	ms_savewords(t_myshell *myshell, t_command *command, char *token,
 			int *len2);
+void	free_commands(t_command **command_list);
 
 #endif
