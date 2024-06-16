@@ -1,4 +1,4 @@
-#include "environment.h"
+#include "minishell.h"
 
 static int	next_delimiter(char const *str, char c, int i)
 {

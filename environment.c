@@ -130,14 +130,14 @@ char *ft_get_var_env(t_list **env, char *var_env)
 		{
 			var = ft_substr(p_env->content, ft_strlen(var_env) + 1, ft_strlen(p_env->content)-(ft_strlen(var_env) + 1)); // Malloc
 			if (!var)
-				return NULL;
+				return NULL; ///Error Memoria
 			return (var);
 		}
 		p_env = p_env->next;
 	}
 	var = malloc(sizeof(char));
 	if (!var)
-		return NULL;
+		return NULL; ///Error Memoria
 	var[0] = '\0';
 	return var;
 }
@@ -153,15 +153,19 @@ void ft_add_v_env(char *var_env, t_list **env) // Añado variable de entorno. Lo
 	{
 		ft_free_list(env);
 		perror("Error en malloc");
-		return;
+		
+		ferror("Error memoria");
+		//cierra_todo();
+		exit;//error memoria
+
 	}
 	p_env = *env;
-	while (p_env)
+	while (p_env)  // Recorro la lista para ver si ya existe la variable de entorno
 	{
-		if (ft_strncmp(p_env->content, var, ft_strlen(var)) == 0) // Recorro la lista para ver si ya existe la variable de entorno
+		if (ft_strncmp(p_env->content, var, ft_strlen(var)) == 0) //Si la encuentro
 		{
 			aux = p_env->content;
-			p_env->content = ft_strdup(var_env); // Hago Malloc
+			p_env->content = ft_strdup(var_env); // Hago Malloc Estoy poniendo la variable en el contenido de la lista
 			if (!p_env->content)				 // Protejo malloc
 			{
 				free(var);
@@ -187,13 +191,27 @@ void ft_add_v_env(char *var_env, t_list **env) // Añado variable de entorno. Lo
 	ft_lstadd_back(env, p_env); // Aquí añado el nodo nuevo a la lista
 }
 
-void ft_pwd(t_list **env)
-{
-	char *var;
-	
-	var = ft_get_var_env(env, "PWD");
-	write(1,var, ft_strlen(var));
-	write(1,"\n", 1);
-	return;
 
+
+void ft_save_var_env(char *var, char *val_var, t_list **env) // meto pasando variable y valor
+{
+	char	*str_var;
+	char 	*aux;
+	int		num_len;
+
+	aux = ft_strjoin(var, "=");  //malloc
+	if (!aux)
+	{
+		ferror("error Memoria");
+		return exit;	
+	}
+	str_var = ft_strjoin("=", aux);  //malloc
+	free(aux);
+	if (!str_var)
+	{
+		ferror("error Memoria");
+		return exit;	
+	};						//tratar error memoria
+	ft_add_v_env(str_var, env);
+	free(str_var);
 }

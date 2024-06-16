@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-void ft_imprimetoken(char **token)
+/*void ft_imprimetoken(char **token)
 {
 	
 	int		i;
@@ -11,7 +11,7 @@ void ft_imprimetoken(char **token)
 		printf("%i token %s \n",i,token[i]);
 		i++;
 	}
-}
+}*/
 
 void ft_ejecutar(char *line, t_list  **env)
 {
@@ -58,6 +58,8 @@ void ft_ejecutar(char *line, t_list  **env)
 		printf("Comando no encontrado\n");
 }
 
+
+
 void prom(t_list  **env) 
 {
 	char 		*line;
@@ -88,9 +90,12 @@ void prom(t_list  **env)
 		// ft_imprimetoken(token); //Antes de expandirse
 		expander(token, env);
 		comands = parser(token);
+		
 		last_return = executor(comands,env); //Recibir variables de entornos
+		ft_save_var_env("?", ft_atoi(last_return),env);
+	
+		
 		//TODO guardar en env la variable devuelta para poder imprimirla desde echo $?  TEngo que ponerlo en Expander
-
 
 		//ft_imprimetoken(token); //Expandidof
 		// ft_ejecutar(line, env); //PAra pruebas en esta función pongo los comando que quiero probar  // están los built-ins mirar si se pueden lanzar como  procesos
