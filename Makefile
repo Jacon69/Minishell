@@ -13,6 +13,7 @@ SRC = main.c \
 		expander.c \
 		parser.c \
 		executor.c \
+		utils2.c \
 
 OBJ = $(SRC:.c=.o)
 

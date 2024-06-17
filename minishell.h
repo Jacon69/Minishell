@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 16:17:26 by aiturria          #+#    #+#             */
-/*   Updated: 2024/06/13 16:45:47 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/06/17 12:00:48 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 # include <sys/wait.h>
 # include "Libft/libft.h"
 
-
+/*
 typedef struct s_command
 {
 	int		index;
@@ -61,6 +61,6 @@ char	*ms_findtoken(t_myshell *myshell, char *string, int *len);
 void	ms_redirections(t_command *command, char *token, int *len2);
 void	ms_savewords(t_myshell *myshell, t_command *command, char *token,
 			int *len2);
-void	free_commands(t_command **command_list);
+void	free_commands(t_command **command_list);*/
 
 #endif

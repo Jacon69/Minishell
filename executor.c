@@ -6,58 +6,62 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 10:12:42 by alexigar          #+#    #+#             */
-/*   Updated: 2024/06/14 10:29:49 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/06/17 12:09:18 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include "environment.h"
 
-int execute_builtin(t_command *com)
+int execute_builtin(t_command *com, t_list *env)
 {
     //Ejecuto el comando que sea y devuelvo
     if (ft_strncmp(com -> command, "echo", ft_strlen(com -> command)) == 0)
-    {
-        return (0);
-    }
+        return (ft_built_echo(*com));
     else if (ft_strncmp(com -> command, "cd", ft_strlen(com -> command)) == 0)
-    {
-        return (0);
-    }
+        return (ft_built_cd(*com, *env));
     else if (ft_strncmp(com -> command, "pwd", ft_strlen(com -> command)) == 0)
-    {
-        return (0);
-    }
+        return (ft_built_pwd(*com));
     else if (ft_strncmp(com -> command, "export", ft_strlen(com -> command)) == 0)
-    {
-        return (0);
-    }
+        return (ft_built_export(*com, *env));
     else if (ft_strncmp(com -> command, "unset", ft_strlen(com -> command)) == 0)
-    {
-        return (0);
-    }
+        return (ft_built_unset(*com, *env));
     else if (ft_strncmp(com -> command, "env", ft_strlen(com -> command)) == 0)
-    {
-        return (0);
-    }
+        return (ft_built_env(*com, *env));
     else if (ft_strncmp(com -> command, "exit", ft_strlen(com -> command)) == 0)
     {
-        return (0);
+		free_commands(com);
+		printf("exit\n");
+        exit(EXIT_SUCCESS);
     }
     return (0);
 }
 
-int try_call(char **paths, t_command *command)
+int try_call(char **paths, t_command *com)
 {
-    int i;
+    int 	i;
+	char	*function_call;
 
     i = 0;
     while (paths[i])
     {
-        
+		function_call = ft_strjoin(paths[i], com -> command);
+		if (!function_call)
+			return (-1); //Salida error
+        //Si llamo a execve hay que hacerlo en un fork aparte y pausar el programa principal
+        if (fork() == 0)
+            com -> returned_output = execve(function_call, com -> args, NULL); //Aqui va a haber que cambiar cosas porque execve devuelve int
+        else
+            wait(NULL);
+        //USar un archivo temporal para almacenar los strings
+		if (com -> returned_output != 127)
+			break ;
+		i++;
     }
+	return (com -> returned_output);
 }
 
-int executor(t_command **command_list, t_list *env) //Recibir variables de entornos
+int executor(t_command **command_list, t_list *env)
 {
     int     i;
     char    *function_call;
@@ -67,7 +71,7 @@ int executor(t_command **command_list, t_list *env) //Recibir variables de entor
     i = 0;
     to_return = 0;
     command_list[i] -> input = NULL;
-    function_call = getenv("PATH");
+    function_call = ft_get_var_env(**env, "PATH");
     paths = ft_split(function_call, ':'); //malloc
     if (!paths)
     {
@@ -93,16 +97,11 @@ int executor(t_command **command_list, t_list *env) //Recibir variables de entor
         && ft_strncmp(command_list[i] -> command, "env", ft_strlen(command_list[i] -> command)) != 0
         && ft_strncmp(command_list[i] -> command, "exit", ft_strlen(command_list[i] -> command)) != 0)
         {
-            //Si llamo a execve hay que hacerlo en un fork aparte y pausar el programa principal
-            if (fork() == 0)
-                command_list[i] -> returned_output = execve(function_call, command_list[i] -> args, NULL); //Aqui va a haber que cambiar cosas porque execve devuelve int
-            else
-                wait(NULL);
-            //USar un archivo temporal para almacenar los strings
+           try_call(paths, command_list[i]);
         }
         else
         {
-            to_return = execute_builtin(command_list[i]);
+            to_return = execute_builtin(command_list[i], env);
             if (to_return != 0)
                 return (to_return); //Si se ha cambiado a algo que no es 0 devuelvo porque ha fallado algo
         }

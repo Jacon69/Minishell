@@ -6,21 +6,12 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 10:01:14 by alexigar          #+#    #+#             */
-/*   Updated: 2024/06/14 10:29:47 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/06/17 11:52:43 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-int	count_tokens(char **tokens)
-{
-	int	i;
-
-	i = 0;
-	while (tokens[i])
-		i++;
-	return (i);
-}
+#include "environment.h"
 
 void	free_commands(t_command **command_list)
 {
@@ -32,9 +23,9 @@ void	free_commands(t_command **command_list)
 		if (command_list[i] -> args)
 			free(command_list[i] -> args);
 		if (command_list[i] -> file_input != 1)
-			close(command_list -> file_input);
+			close(command_list[i] -> file_input);
 		if (command_list[i] -> file_output != 1)
-			close(command_list -> file_output);
+			close(command_list[i] -> file_output);
 		free(command_list[i]);
 		i++;
 	}
@@ -49,6 +40,8 @@ t_command **parser(char **tokens) //A esta funcion le tiene que llegar NULL como
 	int			n_tokens;
 	t_command 	*current_command;
 	t_command	**command_list;
+	char		*next_line;
+	char		*aux;
 
 	if (!tokens || !tokens[0])
 		exit(EXIT_FAILURE); //salida error
@@ -61,54 +54,57 @@ t_command **parser(char **tokens) //A esta funcion le tiene que llegar NULL como
 		exit(EXIT_FAILURE); //salida error
 	while (tokens[i])
 	{
-		current_command = malloc(sizeof(t_command));
-		if (!current_command)
+		if (tokens[i][0] != '>' && tokens[i][0] != '<' && tokens[i][0] != '|')
 		{
-			free_commands(command_list);
-			exit(EXIT_FAILURE); //salida error
-		}
-		current_command -> args = malloc(sizeof(char *) * (n_tokens - i + 1));
-		current_command -> command = NULL;
-		current_command -> path[0] = '\0';
-		current_command -> redir1 = 0;
-		current_command -> redir2 = 0;
-		current_command -> file_output = 1; //Por defecto se escribe en la consola
-		current_command -> piped = 0;
-		if (!(current_command -> args))
-		{
-			free_commands(command_list);
-			exit(EXIT_FAILURE); //salida error
-		}
-		current_command -> index = j;
-		while (tokens[i][0] != '|' && tokens[i][0] != '>' && tokens[i][0] != '<')
-		{
-			if (!(current_command -> command) && tokens[i][0] != '/')
+			current_command = malloc(sizeof(t_command));
+			if (!current_command)
 			{
-				current_command -> command = tokens[i];
+				free_commands(command_list);
+				exit(EXIT_FAILURE); //salida error
 			}
-			else
+			current_command -> args = malloc(sizeof(char *) * (n_tokens - i + 1));
+			current_command -> command = NULL;
+			current_command -> path[0] = '\0';
+			current_command -> redir1 = 0;
+			current_command -> redir2 = 0;
+			current_command -> file_output = 1; //Por defecto se escribe en la consola
+			current_command -> piped = 0;
+			if (!(current_command -> args))
 			{
-				current_command -> args[k] = tokens[i];
-				k++;
-				if (tokens[i][0] == '/')
+				free_commands(command_list);
+				exit(EXIT_FAILURE); //salida error
+			}
+			current_command -> index = j;
+			while (tokens[i][0] != '|' && tokens[i][0] != '>' && tokens[i][0] != '<')
+			{
+				if (!(current_command -> command) && tokens[i][0] != '/')
 				{
-					if (current_command -> file_input && current_command -> file_output)
-					{
-						free_commands(command_list);
-						return (NULL);
-					}
-					if (current_command -> file_output)
-						current_command -> file_input = current_command -> file_output;
-					current_command -> file_output = open(tokens[i], O_WRONLY | O_CREAT, 0644);
+					current_command -> command = tokens[i];
 				}
+				else
+				{
+					current_command -> args[k] = tokens[i];
+					k++;
+					if (tokens[i][0] == '/')
+					{
+						if (current_command -> file_input && current_command -> file_output)
+						{
+							free_commands(command_list);
+							return (NULL);
+						}
+						if (current_command -> file_output)
+							current_command -> file_input = current_command -> file_output;
+						current_command -> file_output = open(tokens[i], O_WRONLY | O_CREAT, 0644);
+					}
+				}
+				i++;
+				if (!tokens[i])
+					break ;
 			}
-			i++;
-			if (!tokens[i])
-				break ;
+			current_command -> args[k] = NULL;
+			if (current_command -> path[0] == '\0')
+				getcwd(current_command -> path, sizeof(current_command -> path));
 		}
-		current_command -> args[k] = NULL;
-		if (current_command -> path[0] == '\0')
-			getcwd(current_command -> path, sizeof(current_command -> path));
 		if (tokens[i])
 		{
 			if (tokens[i][0] == '>')
@@ -120,9 +116,8 @@ t_command **parser(char **tokens) //A esta funcion le tiene que llegar NULL como
 				i++;
 				current_command -> file_output = open(tokens[i], O_WRONLY | O_CREAT, 0644);
 					i++;
-				//TODO cada > que encuentre machaca el archivo anterior
-				//else manejar el archivo
-				//TODO manejar input invalido
+				if (tokens[i][0] == '>')
+					close(current_command -> file_output);
 			}
 			if (tokens[i][0] == '<')
 			{
@@ -131,8 +126,23 @@ t_command **parser(char **tokens) //A esta funcion le tiene que llegar NULL como
 				else
 					current_command -> redir1 -= 1; //Este coge un archivo (input desde el archivo)
 				i++;
-				//else manejar el archivo y tirar error blando si hay algo que no cuadra
-				//TODO manejar input invalido
+				current_command -> file_input = open(tokens[i], O_RDONLY);
+				next_line = get_next_line(current_command -> file_input); //malloc
+				if (!next_line)
+				{
+					free_commands(command_list);
+					exit(EXIT_FAILURE); //salida error
+				}
+				current_command -> input = next_line;
+				while (next_line)
+				{
+					aux = next_line;
+					next_line = get_next_line(current_command -> file_input);
+					current_command -> input = ft_strjoin(current_command -> input, next_line);
+					free(aux);
+					aux = NULL;
+				}
+				close(current_command -> file_input);
 			}
 			if (tokens[i][0] == '|') //El output del comando va a ir al input del siguiente comando
 			{
@@ -147,12 +157,12 @@ t_command **parser(char **tokens) //A esta funcion le tiene que llegar NULL como
 	}
 	return (command_list);
 }
-
+/*
 int main(void) //Main de prueba
 {
 	char *tokens[] = {"command", "hola", "esto", "es", "un comando", ">>", "/home/alexigar/Desktop/Minishell/holiwi.txt", "command", "asdasd", NULL};
 	t_command **list = parser((char **)tokens);
 	if (list)
 		printf("Index %d\nCommand %s\nPath %s\nString %s\nRedir1 %d\nRedir2 %d\nFile %d\n", list[0] -> index, (char *)(list[0] -> command), list[0] -> path, list[0] -> args[0],
-	list[0] -> redir1, list[0] -> redir2, list[1] -> file);
-}
+	list[0] -> redir1, list[0] -> redir2, list[1] -> file_output);
+}*/

@@ -2,7 +2,7 @@
 
 
 //echo echo -n cd pwd export unset env exit 
-ft_built_echo(t_command command)
+int	ft_built_echo(t_command command)
 {
 	int jump_line;
 	int	i;
@@ -27,7 +27,7 @@ ft_built_echo(t_command command)
 		return (ok);
 	}
 }
-ft_built_cd(t_command command, t_list **env)
+int	ft_built_cd(t_command command, t_list **env)
 {
 	int jump_line;
 	int	i;
@@ -120,9 +120,9 @@ ft_built_cd(t_command command, t_list **env)
 	{
 		;
 	}
-pENDIENTE DE HACER CD ../pROYECTO
+/*pENDIENTE DE HACER CD ../pROYECTO
 
-					Relativo
+					Relativo*/
 
 
 else if (command.args[0][0]== '/') //ABSOLUTA
