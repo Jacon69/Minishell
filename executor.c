@@ -6,36 +6,11 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 10:12:42 by alexigar          #+#    #+#             */
-/*   Updated: 2024/06/17 12:09:18 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/06/19 11:50:13 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include "environment.h"
-
-int execute_builtin(t_command *com, t_list *env)
-{
-    //Ejecuto el comando que sea y devuelvo
-    if (ft_strncmp(com -> command, "echo", ft_strlen(com -> command)) == 0)
-        return (ft_built_echo(*com));
-    else if (ft_strncmp(com -> command, "cd", ft_strlen(com -> command)) == 0)
-        return (ft_built_cd(*com, *env));
-    else if (ft_strncmp(com -> command, "pwd", ft_strlen(com -> command)) == 0)
-        return (ft_built_pwd(*com));
-    else if (ft_strncmp(com -> command, "export", ft_strlen(com -> command)) == 0)
-        return (ft_built_export(*com, *env));
-    else if (ft_strncmp(com -> command, "unset", ft_strlen(com -> command)) == 0)
-        return (ft_built_unset(*com, *env));
-    else if (ft_strncmp(com -> command, "env", ft_strlen(com -> command)) == 0)
-        return (ft_built_env(*com, *env));
-    else if (ft_strncmp(com -> command, "exit", ft_strlen(com -> command)) == 0)
-    {
-		free_commands(com);
-		printf("exit\n");
-        exit(EXIT_SUCCESS);
-    }
-    return (0);
-}
 
 int try_call(char **paths, t_command *com)
 {
@@ -61,7 +36,7 @@ int try_call(char **paths, t_command *com)
 	return (com -> returned_output);
 }
 
-int executor(t_command **command_list, t_list *env)
+int executor(t_command **command_list, t_list **env)
 {
     int     i;
     char    *function_call;
@@ -71,7 +46,12 @@ int executor(t_command **command_list, t_list *env)
     i = 0;
     to_return = 0;
     command_list[i] -> input = NULL;
-    function_call = ft_get_var_env(**env, "PATH");
+    function_call = ft_get_var_env(env, "PATH");
+    if (!function_call)
+    {
+        free_commands(command_list);
+        exit(EXIT_FAILURE);
+    }
     paths = ft_split(function_call, ':'); //malloc
     if (!paths)
     {
@@ -82,12 +62,6 @@ int executor(t_command **command_list, t_list *env)
     while (command_list[i])
     {
         //TODO Manejar bien pipes y redirecciones
-        function_call = ft_strjoin("/bin/", command_list[i] -> command); //Esta linea se cambia
-        if (!function_call)
-        {
-            free_commands(command_list);
-            exit(EXIT_FAILURE);
-        }
         //Si el comando es un built-in se ejecuta el built-in, si no intento llamar a execve
         if (ft_strncmp(command_list[i] -> command, "echo", ft_strlen(command_list[i] -> command)) != 0
         && ft_strncmp(command_list[i] -> command, "cd", ft_strlen(command_list[i] -> command)) != 0
@@ -101,7 +75,7 @@ int executor(t_command **command_list, t_list *env)
         }
         else
         {
-            to_return = execute_builtin(command_list[i], env);
+            to_return = ft_build_int(command_list[i], env);
             if (to_return != 0)
                 return (to_return); //Si se ha cambiado a algo que no es 0 devuelvo porque ha fallado algo
         }

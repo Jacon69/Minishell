@@ -1,6 +1,6 @@
-#include "environment.h"
+#include "minishell.h"
 
-void ft_imprimetoken(char **token)
+/*void ft_imprimetoken(char **token)
 {
 	
 	int		i;
@@ -11,7 +11,7 @@ void ft_imprimetoken(char **token)
 		printf("%i token %s \n",i,token[i]);
 		i++;
 	}
-}
+}*/
 
 void ft_ejecutar(char *line, t_list  **env)
 {
@@ -44,7 +44,7 @@ void ft_ejecutar(char *line, t_list  **env)
 	}
 	else if (ft_strncmp(args[0], "pwd", 3) == 0)
 	{
-		ft_pwd(env);                         //Crear un ft_pwd
+		//ft_pwd(env);                         //Crear un ft_pwd
 	}
 	else if (ft_strncmp(args[0], "echo", 4) == 0)
 			ft_printf("%s\n", args[1]);
@@ -58,32 +58,27 @@ void ft_ejecutar(char *line, t_list  **env)
 		printf("Comando no encontrado\n");
 }
 
+
+
 void prom(t_list  **env) 
 {
-	char *line;
-	char	**token;
+	char 		*line;
+	char		**token;
+	t_command	**comands;
+	int			last_return;
+	char		str_last_return[20]; 
 
-	int fd = open("prom.txt", O_WRONLY | O_CREAT | O_APPEND, 0644);
-	if (fd == -1) {
-		perror("No se pudo abrir el archivo");
-		return;
-	}
-
+	
 	while (1) {
 		// Mostrar el prompt y leer una línea de entrada
+
+//TODO preparar cadena con pwd para añadir al prom con colorines
+
 		line = readline("prom> "); //hace Malloc
 		if (!line)
 			break; // EOF, probablemente Ctrl+D Ctrl+c
 		if (ft_strlen(line) > 0) // Añadir la línea al historial
-			add_history(line);
-		// Escribir la línea en el archivo y añadir un salto de línea
-		if (write(fd, line, strlen(line)) == -1 || write(fd, "\n", 1) == -1)    
-		{
-			perror("Error al escribir en el archivo");
-			free(line);
-			break;
-		}
-		 
+
 		if (ft_strncmp(line, "exit", 4) == 0) // Si la línea es "exit", salir del bucle
 		{
 			free(line);
@@ -93,17 +88,23 @@ void prom(t_list  **env)
 		token = lexer(line);  //Malloc
 		if (!token)
 			return; ///Preperaar error memoria
-		ft_imprimetoken(token); //Antes de expandirse
+		// ft_imprimetoken(token); //Antes de expandirse
 		expander(token, env);
+		comands = parser(token);
+		
+		last_return = executor(comands,env); //Recibir variables de entornos
+		snprintf(str_last_return, sizeof(str_last_return), "%i", last_return);//convierto num a cadena
+		ft_save_var_env("?", str_last_return,env);
+	
+		
+		//TODO guardar en env la variable devuelta para poder imprimirla desde echo $?  TEngo que ponerlo en Expander
 
-		ft_imprimetoken(token); //Expandidof
-		ft_ejecutar(line, env); //PAra pruebas en esta función pongo los comando que quiero probar  // están los built-ins mirar si se pueden lanzar como  procesos
+		//ft_imprimetoken(token); //Expandidof
+		// ft_ejecutar(line, env); //PAra pruebas en esta función pongo los comando que quiero probar  // están los built-ins mirar si se pueden lanzar como  procesos
 
 		// Aquí es donde de se tiene que procesar la linea introducida
 		ft_free_char(token);
 		free(line); // Liberar la memoria de la línea
 	}
 
-	
-	close(fd);
 }

@@ -6,13 +6,13 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 10:19:58 by alexigar          #+#    #+#             */
-/*   Updated: 2024/06/17 10:20:38 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/06/19 11:50:54 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	count_tokens(char **tokens)
+int	count_nbr_tokens(char **tokens)
 {
 	int	i;
 

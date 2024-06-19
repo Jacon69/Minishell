@@ -14,6 +14,8 @@ SRC = main.c \
 		parser.c \
 		executor.c \
 		utils2.c \
+		build-int.c \
+		get_next_line/get_next_line.c \
 
 OBJ = $(SRC:.c=.o)
 

@@ -6,12 +6,11 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 10:01:14 by alexigar          #+#    #+#             */
-/*   Updated: 2024/06/17 11:52:43 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/06/19 11:51:37 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-#include "environment.h"
 
 void	free_commands(t_command **command_list)
 {
@@ -48,7 +47,7 @@ t_command **parser(char **tokens) //A esta funcion le tiene que llegar NULL como
 	i = 0;
 	j = 0;
 	k = 0;
-	n_tokens = count_tokens(tokens);
+	n_tokens = count_nbr_tokens(tokens);
 	command_list = malloc(sizeof(t_command *) * (n_tokens + 1));
 	if (!command_list)
 		exit(EXIT_FAILURE); //salida error
@@ -157,12 +156,3 @@ t_command **parser(char **tokens) //A esta funcion le tiene que llegar NULL como
 	}
 	return (command_list);
 }
-/*
-int main(void) //Main de prueba
-{
-	char *tokens[] = {"command", "hola", "esto", "es", "un comando", ">>", "/home/alexigar/Desktop/Minishell/holiwi.txt", "command", "asdasd", NULL};
-	t_command **list = parser((char **)tokens);
-	if (list)
-		printf("Index %d\nCommand %s\nPath %s\nString %s\nRedir1 %d\nRedir2 %d\nFile %d\n", list[0] -> index, (char *)(list[0] -> command), list[0] -> path, list[0] -> args[0],
-	list[0] -> redir1, list[0] -> redir2, list[1] -> file_output);
-}*/

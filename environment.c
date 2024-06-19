@@ -1,7 +1,8 @@
-#include "environment.h"
-#include "./Libft/libft.h"
+#include "minishell.h"
 
-char **ft_get_env(t_list **env)
+
+// función que convierte list de var-env en doble cadena de  var-env
+char **ft_get_env(t_list **env) 
 {
 	t_list *p_env;
 	char **var_entorno;
@@ -129,14 +130,14 @@ char *ft_get_var_env(t_list **env, char *var_env)
 		{
 			var = ft_substr(p_env->content, ft_strlen(var_env) + 1, ft_strlen(p_env->content)-(ft_strlen(var_env) + 1)); // Malloc
 			if (!var)
-				return NULL;
+				return NULL; ///Error Memoria
 			return (var);
 		}
 		p_env = p_env->next;
 	}
 	var = malloc(sizeof(char));
 	if (!var)
-		return NULL;
+		return NULL; ///Error Memoria
 	var[0] = '\0';
 	return var;
 }
@@ -147,20 +148,25 @@ void ft_add_v_env(char *var_env, t_list **env) // Añado variable de entorno. Lo
 	char *aux;
 	char *var;
 
-	var = ft_strndup((const char *)var_env, (size_t)ft_pos_chr(var_env, '=')); // Hago Malloc
+	if (ft_memchr(var_env, '=', ft_strlen(var_env))!= NULL)
+		var = ft_strndup((const char *)var_env, (size_t)ft_pos_chr(var_env, '=')); // Hago Malloc
+	else
+		var = ft_strndup((const char *)var_env, ft_strlen(var_env)); 	// Hago Malloc  Al no ser variable de entorno cojo el valor completo
 	if (!var)																   // Protejo malloc
 	{
 		ft_free_list(env);
 		perror("Error en malloc");
-		return;
+		//cierra_todo();
+		exit(EXIT_FAILURE);//error memoria
+
 	}
 	p_env = *env;
-	while (p_env)
+	while (p_env)  // Recorro la lista para ver si ya existe la variable de entorno
 	{
-		if (ft_strncmp(p_env->content, var, ft_strlen(var)) == 0) // Recorro la lista para ver si ya existe la variable de entorno
+		if (ft_strncmp(p_env->content, var, ft_strlen(var)) == 0) //Si la encuentro
 		{
 			aux = p_env->content;
-			p_env->content = ft_strdup(var_env); // Hago Malloc
+			p_env->content = ft_strdup(var_env); // Hago Malloc Estoy poniendo la variable en el contenido de la lista
 			if (!p_env->content)				 // Protejo malloc
 			{
 				free(var);
@@ -186,13 +192,26 @@ void ft_add_v_env(char *var_env, t_list **env) // Añado variable de entorno. Lo
 	ft_lstadd_back(env, p_env); // Aquí añado el nodo nuevo a la lista
 }
 
-void ft_pwd(t_list **env)
-{
-	char *var;
-	
-	var = ft_get_var_env(env, "PWD");
-	write(1,var, ft_strlen(var));
-	write(1,"\n", 1);
-	return;
 
+/* meto pasando variable y valor*/
+void ft_save_var_env(char *var, char *val_var, t_list **env) 
+{
+	char	*str_var;
+	char 	*aux;
+
+	aux = ft_strjoin(var, "=");  //malloc
+	if (!aux)
+	{
+		perror("Error en malloc");
+		exit(EXIT_FAILURE);	
+	}
+	str_var = ft_strjoin( aux,val_var);  //malloc
+	free(aux);
+	if (!str_var)
+	{
+		perror("Error en malloc");
+		exit(EXIT_FAILURE);	
+	};						//tratar error memoria
+	ft_add_v_env(str_var, env);
+	free(str_var);
 }

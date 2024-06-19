@@ -1,4 +1,4 @@
-#include "environment.h"
+#include "minishell.h"
 
 static char *ft_expander_home(char *token, t_list  **env) 
 {
@@ -134,7 +134,7 @@ void	expander(char **token, t_list  **env)
 				token[i]=ft_expander_q(token[i], env);  //malloc
 				free(aux);
 				if (!token[i])
-					exit(2);  ///poner el tratamiento de error
+					exit(EXIT_FAILURE);  ///poner el tratamiento de error
 			}
 			else
 			{
@@ -142,12 +142,12 @@ void	expander(char **token, t_list  **env)
 				token[i]=ft_expander_$(token[i], env);  //malloc
 				free(aux);
 				if (!token[i])
-					exit(2);  ///poner el tratamiento de error
+					exit(EXIT_FAILURE);  ///poner el tratamiento de error
 				aux = token[i];
 				token[i]=ft_expander_home(token[i], env);  //malloc
 				free(aux);
 				if (!token[i])
-					exit(2);  ///poner el tratamiento de error
+					exit(EXIT_FAILURE);  ///poner el tratamiento de error
 			}
         i++;
     }

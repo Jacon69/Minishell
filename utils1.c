@@ -1,4 +1,4 @@
-#include "environment.h"
+#include "minishell.h"
 
 void ft_free_list(t_list **list) //Libera la memoria de la lista de variables de entorno
 {
