@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 10:12:42 by alexigar          #+#    #+#             */
-/*   Updated: 2024/06/14 10:29:49 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/06/19 05:39:34 by jaimecondea      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,13 @@ int try_call(char **paths, t_command *command)
 {
     int i;
 
+    (void)command; // Esto evita el error de compilación por variable no utilizada.
     i = 0;
     while (paths[i])
     {
         //TODO
     }
+    return(0); // Esto evita el error de compilación por variable no utilizada.
 }
 
 int executor(t_command **command_list, t_list **env) //Recibir variables de entornos

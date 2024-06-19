@@ -148,15 +148,16 @@ void ft_add_v_env(char *var_env, t_list **env) // Añado variable de entorno. Lo
 	char *aux;
 	char *var;
 
-	var = ft_strndup((const char *)var_env, (size_t)ft_pos_chr(var_env, '=')); // Hago Malloc
+	if (ft_memchr(var_env, '=', ft_strlen(var_env))!= NULL)
+		var = ft_strndup((const char *)var_env, (size_t)ft_pos_chr(var_env, '=')); // Hago Malloc
+	else
+		var = ft_strndup((const char *)var_env, ft_strlen(var_env)); 	// Hago Malloc  Al no ser variable de entorno cojo el valor completo
 	if (!var)																   // Protejo malloc
 	{
 		ft_free_list(env);
 		perror("Error en malloc");
-		
-		ferror("Error memoria");
 		//cierra_todo();
-		exit;//error memoria
+		exit(EXIT_FAILURE);//error memoria
 
 	}
 	p_env = *env;
@@ -192,25 +193,24 @@ void ft_add_v_env(char *var_env, t_list **env) // Añado variable de entorno. Lo
 }
 
 
-
-void ft_save_var_env(char *var, char *val_var, t_list **env) // meto pasando variable y valor
+/* meto pasando variable y valor*/
+void ft_save_var_env(char *var, char *val_var, t_list **env) 
 {
 	char	*str_var;
 	char 	*aux;
-	int		num_len;
 
 	aux = ft_strjoin(var, "=");  //malloc
 	if (!aux)
 	{
-		ferror("error Memoria");
-		return exit;	
+		perror("Error en malloc");
+		exit(EXIT_FAILURE);	
 	}
-	str_var = ft_strjoin("=", aux);  //malloc
+	str_var = ft_strjoin( aux,val_var);  //malloc
 	free(aux);
 	if (!str_var)
 	{
-		ferror("error Memoria");
-		return exit;	
+		perror("Error en malloc");
+		exit(EXIT_FAILURE);	
 	};						//tratar error memoria
 	ft_add_v_env(str_var, env);
 	free(str_var);

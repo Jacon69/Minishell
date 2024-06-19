@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 16:17:26 by aiturria          #+#    #+#             */
-/*   Updated: 2024/06/13 16:45:47 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/06/19 06:31:48 by jaimecondea      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 # define MINISHELL_H
 
 # define NULL ((void *)0)
+# define EXIT_FAILURE 1
+# define EXIT_SUCCESS 0	
 
 # include <stdio.h>	  // For printf
 # include <unistd.h>  // For write // For close
@@ -53,17 +55,19 @@ typedef struct s_command
 t_command **parser(char **tokens);
 
 //build_in
-int		ft_built_echo(t_command command);
-int 	ft_built_cd(t_command command, t_list **env);
+int		ft_built_echo(t_command *command);
+int 	ft_built_cd(t_command *command, t_list **env);
 int 	ft_built_pwd(t_command *command);
 int		ft_built_export(t_command *command, t_list **env);
 int		ft_built_unset(t_command *command, t_list **env);
 int		ft_built_env(t_command *command, t_list **env);
+int		ft_print_list_env(t_command *command, t_list **env);		//xxxxxxxxxxxx TODO
+int		ft_build_int(t_command *command, t_list **env); //Llama a la ejec de build_in
 
 //Desarrollo
-int		executor(t_command **command_list, t_list *env); //Recibir variables de entornos
+int		executor(t_command **command_list, t_list **env); //Recibir variables de entornos
 void	free_commands(t_command **command_list); //libera la esructura commando
-int		ft_build_int(t_list **env, t_command command_act); //Llama a la ejec de build_in
+
 void	prom(t_list  **env) ; // LLama al prom después de inicializar las var entorno
 
 

@@ -44,7 +44,7 @@ void ft_ejecutar(char *line, t_list  **env)
 	}
 	else if (ft_strncmp(args[0], "pwd", 3) == 0)
 	{
-		ft_pwd(env);                         //Crear un ft_pwd
+		//ft_pwd(env);                         //Crear un ft_pwd
 	}
 	else if (ft_strncmp(args[0], "echo", 4) == 0)
 			ft_printf("%s\n", args[1]);
@@ -66,6 +66,7 @@ void prom(t_list  **env)
 	char		**token;
 	t_command	**comands;
 	int			last_return;
+	char		str_last_return[20]; 
 
 	
 	while (1) {
@@ -92,7 +93,8 @@ void prom(t_list  **env)
 		comands = parser(token);
 		
 		last_return = executor(comands,env); //Recibir variables de entornos
-		ft_save_var_env("?", ft_atoi(last_return),env);
+		snprintf(str_last_return, sizeof(str_last_return), "%i", last_return);//convierto num a cadena
+		ft_save_var_env("?", str_last_return,env);
 	
 		
 		//TODO guardar en env la variable devuelta para poder imprimirla desde echo $?  TEngo que ponerlo en Expander
