@@ -69,7 +69,7 @@ int executor(t_command **command_list, t_list **env) //Recibir variables de ento
         }
         else
         {
-            to_return = ft_build_int(env, *(command_list[i]));
+            to_return = ft_build_int(command_list[i], env);
             if (to_return != 0)
                 return (to_return); //Si se ha cambiado a algo que no es 0 devuelvo porque ha fallado algo
         }

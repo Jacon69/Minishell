@@ -57,28 +57,73 @@ void ft_ejecutar(char *line, t_list  **env)
 	else
 		printf("Comando no encontrado\n");
 }
-
-
-
-void prom(t_list  **env) 
+void prom(t_list  **env)
 {
 	char 		*line;
 	char		**token;
-	t_command	**comands;
+	t_command	**commands;
+	int			last_return;
+	char		str_last_return[20];
+	
+	while (1)
+	{
+		line = readline("prom1> "); //hace Malloc
+		if (!line)
+		{
+			printf("Line es nulo\n");
+			break; // EOF, probablemente Ctrl+D Ctrl+c
+		}
+		add_history(line);
+		if (ft_strncmp(line, "exit", 4) == 0) // Si la línea es "exit", salir del bucle
+		{
+			free(line);
+			break;
+		}
+		token = lexer(line);  //Malloc
+		if (!token)
+		{
+			free(line);
+			return;
+		}
+		commands = parser(token);
+		if (!commands)
+		{
+			free(line);
+			ft_free_char(token);
+			return;
+		}
+		last_return = executor(commands,env); //Recibir variables de entornos
+		//printf("ok es %i \n", last_return);
+		snprintf(str_last_return, sizeof(str_last_return), "%i", last_return);//convierto num a cadena
+		ft_save_var_env("?", str_last_return,env);
+		ft_free_char(token);
+		free(line);
+	}
+}
+
+void prom1(t_list  **env) 
+{
+	char 		*line;
+	char		**token;
+	t_command	**commands;
 	int			last_return;
 	char		str_last_return[20]; 
 
+	
 	
 	while (1) {
 		// Mostrar el prompt y leer una línea de entrada
 
 //TODO preparar cadena con pwd para añadir al prom con colorines
 
-		line = readline("prom> "); //hace Malloc
+		line = readline("prom1> "); //hace Malloc
+		printf("por aqui \n");
 		if (!line)
+		{
+			printf("Line es nulo\n");
 			break; // EOF, probablemente Ctrl+D Ctrl+c
-		if (ft_strlen(line) > 0) // Añadir la línea al historial
-
+		}
+		add_history(line);
 		if (ft_strncmp(line, "exit", 4) == 0) // Si la línea es "exit", salir del bucle
 		{
 			free(line);
@@ -87,15 +132,17 @@ void prom(t_list  **env)
 		
 		token = lexer(line);  //Malloc
 		if (!token)
-			return; ///Preperaar error memoria
-		// ft_imprimetoken(token); //Antes de expandirse
-		expander(token, env);
-		comands = parser(token);
-		
-		last_return = executor(comands,env); //Recibir variables de entornos
+			return; ///Preperaaprintf("por aqui \n");
+		commands = parser(token); //malloc
+		(void)last_return;
+		(void)str_last_return;
+		(void)env;
+		(void)commands;
+		/*last_return = executor(commands,env); //Recibir variables de entornos
 		snprintf(str_last_return, sizeof(str_last_return), "%i", last_return);//convierto num a cadena
-		ft_save_var_env("?", str_last_return,env);
-	
+		
+		ft_save_var_env("?", str_last_return,env);*/
+		
 		
 		//TODO guardar en env la variable devuelta para poder imprimirla desde echo $?  TEngo que ponerlo en Expander
 
@@ -103,8 +150,12 @@ void prom(t_list  **env)
 		// ft_ejecutar(line, env); //PAra pruebas en esta función pongo los comando que quiero probar  // están los built-ins mirar si se pueden lanzar como  procesos
 
 		// Aquí es donde de se tiene que procesar la linea introducida
+		
 		ft_free_char(token);
+		//free_commands(commands);
+		
 		free(line); // Liberar la memoria de la línea
+		
 	}
 
 }

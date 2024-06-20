@@ -72,6 +72,7 @@ t_command **parser(char **tokens) //A esta funcion le tiene que llegar NULL como
 		current_command -> path[0] = '\0';
 		current_command -> redir1 = 0;
 		current_command -> redir2 = 0;
+		current_command -> file_input = 1;
 		current_command -> file_output = 1; //Por defecto se escribe en la consola
 		current_command -> piped = 0;
 		if (!(current_command -> args))

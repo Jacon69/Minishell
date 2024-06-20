@@ -92,7 +92,7 @@ void ft_del_v_env(char *var_env, t_list **env) // Borro si existe variable de en
 		return;
 	}
 
-	printf("str_aux: %s\n", str_aux);
+
 	p_env = *env;
 	aux2 = NULL;
 	while (p_env)
@@ -199,6 +199,7 @@ void ft_save_var_env(char *var, char *val_var, t_list **env)
 	char	*str_var;
 	char 	*aux;
 
+	
 	aux = ft_strjoin(var, "=");  //malloc
 	if (!aux)
 	{
@@ -207,11 +208,12 @@ void ft_save_var_env(char *var, char *val_var, t_list **env)
 	}
 	str_var = ft_strjoin( aux,val_var);  //malloc
 	free(aux);
+
 	if (!str_var)
 	{
 		perror("Error en malloc");
 		exit(EXIT_FAILURE);	
-	};						//tratar error memoria
+	};				//tratar error memoria
 	ft_add_v_env(str_var, env);
 	free(str_var);
 }
