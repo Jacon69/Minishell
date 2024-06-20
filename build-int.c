@@ -15,6 +15,7 @@
 
 //echo echo -n cd pwd export unset env exit 
 int ft_built_echo(t_command *command)
+int ft_built_echo(t_command *command)
 {
 	int jump_line;
 	int	i;
@@ -23,23 +24,33 @@ int ft_built_echo(t_command *command)
 		i = 0;
 		jump_line =1;
 	if (!ft_memcmp(command->args[0], "-n", 2) && ft_strlen(command->args[0])==2)
+	if (!ft_memcmp(command->args[0], "-n", 2) && ft_strlen(command->args[0])==2)
 	{
 		jump_line = 0;
 		i++;
 	}	
 	while(command->args[i])
+	while(command->args[i])
 	{
+		write(command->file_output,command->args[i], ft_strlen(command->args[i]));
+		if (command->args[i+1])
+			ok = write(command->file_output," ",1);
 		write(command->file_output,command->args[i], ft_strlen(command->args[i]));
 		if (command->args[i+1])
 			ok = write(command->file_output," ",1);
 		i++;
 		if (jump_line)
 			ok *= write(command->file_output,"\n",1);
+			ok *= write(command->file_output,"\n",1);
 
+		return((ok <= 0) ? 1 : 0); 
 		return((ok <= 0) ? 1 : 0); 
 	}
 	return(0);
+	return(0);
 }
+
+int ft_built_cd(t_command *command, t_list **env)
 
 int ft_built_cd(t_command *command, t_list **env)
 {
@@ -54,7 +65,10 @@ int ft_built_cd(t_command *command, t_list **env)
 	
 	line_path= command->path; //cojo el path actual del guradado en cmd
 	route = malloc (2); 
+	line_path= command->path; //cojo el path actual del guradado en cmd
+	route = malloc (2); 
 	if (!route)
+		exit(EXIT_FAILURE);//error memoria
 		exit(EXIT_FAILURE);//error memoria
 	route[0]='/';
 	route[1]='\0';
@@ -76,14 +90,31 @@ int ft_built_cd(t_command *command, t_list **env)
 	}
 	if ((((!ft_memcmp(command->args[0], "..", 2) && ft_strlen(command->args[0])==2)) || //cuando tengo .. 
 	(!ft_memcmp(command->args[0], "../", 3)&&(ft_strlen(command->args[0])==3))) && !(command->args[1]))
+	if (!path)
 	{
 		
+		perror("Error memoria");
+		//cierra_todo();
+		exit(EXIT_FAILURE);//error memoria
+	}
+	if ((((!ft_memcmp(command->args[0], "..", 2) && ft_strlen(command->args[0])==2)) || //cuando tengo .. 
+	(!ft_memcmp(command->args[0], "../", 3)&&(ft_strlen(command->args[0])==3))) && !(command->args[1]))
+	{
+		
+		while( i < (num_dir - 1) && ft_strlen(line_path) > 1)  // si line_path es mayor que 1 es no es raiz si es raiz no hace nada
 		while( i < (num_dir - 1) && ft_strlen(line_path) > 1)  // si line_path es mayor que 1 es no es raiz si es raiz no hace nada
 		{
 			aux=route;
 			route= ft_strjoin(route, path[i]); //malloc  voy añadiendo menos el último
+			route= ft_strjoin(route, path[i]); //malloc  voy añadiendo menos el último
 			free(aux);
 			if (!route)
+			{
+				perror("Error memoria");
+				free(path);
+				//cierra_todo();
+				exit(EXIT_FAILURE);//error memoria
+			}
 			{
 				perror("Error memoria");
 				free(path);
@@ -95,9 +126,15 @@ int ft_built_cd(t_command *command, t_list **env)
 	}
 		  
 	else if (((((command->args[0][0]=='.'&& ft_strlen(command->args[0])==1))||(!ft_memcmp(command->args[0], "./", 2) && ft_strlen(command->args[0])==2) ))&& !(command->args[1]))
+	else if (((((command->args[0][0]=='.'&& ft_strlen(command->args[0])==1))||(!ft_memcmp(command->args[0], "./", 2) && ft_strlen(command->args[0])==2) ))&& !(command->args[1]))
 		;//No hace nada
 	else if ((command->args[0][0]== '.') && (command->args[1]))
+	else if ((command->args[0][0]== '.') && (command->args[1]))
 	{
+		perror("Error cd: too many arguments");
+		free(path);
+		free(route);
+		return(1);//Error cd: too many arguments
 		perror("Error cd: too many arguments");
 		free(path);
 		free(route);
@@ -111,7 +148,15 @@ int ft_built_cd(t_command *command, t_list **env)
 		free(route);
 		return(1);//Error cd: too many arguments
 	}
+	else if ((!ft_memcmp(command->args[0], "./", 2) || !ft_memcmp(command->args[0], "../", 3))&& (command->args[1]))
+	{
+		perror("Error cd: too many arguments");
+		free(path);
+		free(route);
+		return(1);//Error cd: too many arguments
+	}
 
+	else if (!ft_memcmp(command->args[0], "./", 2))  ///Es es que comience con ./ o sin barra  Se pone ruta relativa
 	else if (!ft_memcmp(command->args[0], "./", 2))  ///Es es que comience con ./ o sin barra  Se pone ruta relativa
 	{
 		while( i < (num_dir) )  //conStruyo la ruta absoluta
@@ -126,8 +171,15 @@ int ft_built_cd(t_command *command, t_list **env)
 				//cierra_todo();
 				exit(EXIT_FAILURE);//error memoria
 			}
+			{
+				perror("Error memoria");
+				free(path);
+				//cierra_todo();
+				exit(EXIT_FAILURE);//error memoria
+			}
 			if (path[i+1])
 			{
+				aux = route;
 				aux = route;
 				route= ft_strjoin(route, "/"); //malloc
 				free(aux);
@@ -139,8 +191,16 @@ int ft_built_cd(t_command *command, t_list **env)
 					exit(EXIT_FAILURE);//error memoria
 				}
 				}
+				{
+					perror("Error memoria");
+					free(path);
+					//cierra_todo();
+					exit(EXIT_FAILURE);//error memoria
+				}
+				}
 			i++;
 		}
+		aux2 = ft_strchr(command->args[0], '/'); //posiciono aux2 en lo que tengo que añadir a la ruta absoluta actual
 		aux2 = ft_strchr(command->args[0], '/'); //posiciono aux2 en lo que tengo que añadir a la ruta absoluta actual
 		aux2++;
 		
@@ -154,7 +214,14 @@ int ft_built_cd(t_command *command, t_list **env)
 			//cierra_todo();
 			exit(EXIT_FAILURE);//error memoria
 		}
+		{
+			perror("Error memoria");
+			free(path);
+			//cierra_todo();
+			exit(EXIT_FAILURE);//error memoria
+		}
 	}	
+	else if (!ft_memcmp(command->args[0], "../", 3))  ///aquí tiene que haber algo detrás de la barra
 	else if (!ft_memcmp(command->args[0], "../", 3))  ///aquí tiene que haber algo detrás de la barra
 	{
 		while( i < (num_dir - 1) )  //conStruyo la ruta absoluta menos el ultimo dir ya que es ..

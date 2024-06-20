@@ -1,5 +1,7 @@
 #include "minishell.h"
+#include "minishell.h"
 
+/*void ft_imprimetoken(char **token)
 /*void ft_imprimetoken(char **token)
 {
 	
@@ -11,6 +13,7 @@
 		printf("%i token %s \n",i,token[i]);
 		i++;
 	}
+}*/
 }*/
 
 void ft_ejecutar(char *line, t_list  **env)
@@ -44,6 +47,7 @@ void ft_ejecutar(char *line, t_list  **env)
 	}
 	else if (ft_strncmp(args[0], "pwd", 3) == 0)
 	{
+		//ft_pwd(env);                         //Crear un ft_pwd
 		//ft_pwd(env);                         //Crear un ft_pwd
 	}
 	else if (ft_strncmp(args[0], "echo", 4) == 0)

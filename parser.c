@@ -6,21 +6,11 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 10:01:14 by alexigar          #+#    #+#             */
-/*   Updated: 2024/06/14 10:29:47 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/06/19 13:52:40 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-int	count_nbr_tokens(char **tokens) //TODO mandar esto a otro archivo de utils
-{
-	int	i;
-
-	i = 0;
-	while (tokens[i])
-		i++;
-	return (i);
-}
 
 void	free_commands(t_command **command_list)
 {
@@ -49,6 +39,8 @@ t_command **parser(char **tokens) //A esta funcion le tiene que llegar NULL como
 	int			n_tokens;
 	t_command 	*current_command;
 	t_command	**command_list;
+	char		*next_line;
+	char		*aux;
 
 	if (!tokens || !tokens[0])
 		exit(EXIT_FAILURE); //salida error
@@ -56,7 +48,7 @@ t_command **parser(char **tokens) //A esta funcion le tiene que llegar NULL como
 	j = 0;
 	k = 0;
 	n_tokens = count_nbr_tokens(tokens);
-	command_list = malloc(sizeof(t_command *) * (n_tokens + 1)); //malloc
+	command_list = malloc(sizeof(t_command *) * (n_tokens + 1));
 	if (!command_list)
 		exit(EXIT_FAILURE); //salida error
 	while (tokens[i])
@@ -122,6 +114,8 @@ t_command **parser(char **tokens) //A esta funcion le tiene que llegar NULL como
 				i++;
 				current_command -> file_output = open(tokens[i], O_WRONLY | O_CREAT, 0644);
 					i++;
+				if (tokens[i][0] == '>')
+					close(current_command -> file_output);
 			}
 			if (tokens[i][0] == '<')
 			{
@@ -131,6 +125,23 @@ t_command **parser(char **tokens) //A esta funcion le tiene que llegar NULL como
 					current_command -> redir1 -= 1; //Este coge un archivo (input desde el archivo)
 					//TODO abrir el archivo como solo lectura y meter con get_next_line en input
 				i++;
+				current_command -> file_input = open(tokens[i], O_RDONLY);
+				next_line = get_next_line(current_command -> file_input); //malloc
+				if (!next_line)
+				{
+					free_commands(command_list);
+					exit(EXIT_FAILURE); //salida error
+				}
+				current_command -> input = next_line;
+				while (next_line)
+				{
+					aux = next_line;
+					next_line = get_next_line(current_command -> file_input);
+					current_command -> input = ft_strjoin(current_command -> input, next_line);
+					free(aux);
+					aux = NULL;
+				}
+				close(current_command -> file_input);
 			}
 			if (tokens[i][0] == '|') //El output del comando va a ir al input del siguiente comando
 			{

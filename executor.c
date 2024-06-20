@@ -6,26 +6,47 @@
 /*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 10:12:42 by alexigar          #+#    #+#             */
-/*   Updated: 2024/06/19 05:39:34 by jaimecondea      ###   ########.fr       */
+/*   Updated: 2024/06/19 13:53:53 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int try_call(char **paths, t_command *command)
+int try_call(char **paths, t_command *com)
 {
-    int i;
+    int 	i;
+	char	*function_call;
+    int     fd_temp;
 
-    (void)command; // Esto evita el error de compilación por variable no utilizada.
     i = 0;
+    fd_temp = open("tmp", O_RDWR | O_CREAT);
+    if (!fd_temp)
+        return (-1);
     while (paths[i])
     {
-        //TODO
+		function_call = ft_strjoin(paths[i], com -> command);
+		if (!function_call)
+        {
+            close(fd_temp);
+            unlink("tmp");
+			return (-1); //Salida error
+        }
+        //Si llamo a execve hay que hacerlo en un fork aparte y pausar el programa principal
+        if (fork() == 0)
+            com -> returned_output = execve(function_call, com -> args, NULL); //Aqui va a haber que cambiar cosas porque execve devuelve int
+        else
+            wait(NULL);
+        //USar un archivo temporal para almacenar los strings
+		if (com -> returned_output != 127)
+			break ;
+		i++;
     }
-    return(0); // Esto evita el error de compilación por variable no utilizada.
+    close(fd_temp);
+    unlink("tmp");
+	return (com -> returned_output);
 }
 
-int executor(t_command **command_list, t_list **env) //Recibir variables de entornos
+int executor(t_command **command_list, t_list **env)
 {
     int     i;
     char    *function_call;
@@ -35,12 +56,12 @@ int executor(t_command **command_list, t_list **env) //Recibir variables de ento
     i = 0;
     to_return = 0;
     command_list[i] -> input = NULL;
-    function_call = ft_get_var_env(env, "PATH"); //malloc
+    function_call = ft_get_var_env(env, "PATH");
     if (!function_call)
-        {
-            free_commands(command_list);
-            exit(EXIT_FAILURE);
-        }
+    {
+        free_commands(command_list);
+        exit(EXIT_FAILURE);
+    }
     paths = ft_split(function_call, ':'); //malloc
     if (!paths)
     {
@@ -60,12 +81,7 @@ int executor(t_command **command_list, t_list **env) //Recibir variables de ento
         && ft_strncmp(command_list[i] -> command, "env", ft_strlen(command_list[i] -> command)) != 0
         && ft_strncmp(command_list[i] -> command, "exit", ft_strlen(command_list[i] -> command)) != 0)
         {
-            //Si llamo a execve hay que hacerlo en un fork aparte y pausar el programa principal
-            if (fork() == 0)
-                command_list[i] -> returned_output = execve(function_call, command_list[i] -> args, NULL); //Aqui va a haber que cambiar cosas porque execve devuelve int
-            else
-                wait(NULL);
-            //USar un archivo temporal para almacenar los strings
+           try_call(paths, command_list[i]);
         }
         else
         {

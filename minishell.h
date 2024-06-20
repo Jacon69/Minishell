@@ -6,7 +6,7 @@
 /*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 16:17:26 by aiturria          #+#    #+#             */
-/*   Updated: 2024/06/19 06:31:48 by jaimecondea      ###   ########.fr       */
+/*   Updated: 2024/06/19 11:51:13 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 # include <fcntl.h>   // For open
 # include <sys/wait.h>
 # include "Libft/libft.h"
+# include "get_next_line/get_next_line.h"
 
 # include <stdarg.h>
 # include <readline/readline.h>
@@ -85,6 +86,7 @@ void	ft_free_list(t_list **list); //Libera la memoria de la lista de strings
 void	print_string(void *str); //Imprime un string Para usarlo con ft_lstiter
 int		ft_pos_chr(const char *str, int c); //Devuelve la posición de un caracter en un string
 char	*ft_strndup(const char *str, size_t n); ///ESTA FUNCION NO ESTA EN LA LIBRERIA LIBFT
+int		count_nbr_tokens(char **tokens);
 
 /*lexer*/
 char    **lexer(char *line); // Crea
