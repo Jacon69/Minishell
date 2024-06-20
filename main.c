@@ -12,7 +12,7 @@ int main(int narg, char * carg[], char **environment)
 	if (env == NULL)
 		return (1); //No se ha podido crear la lista con las variables de entorno.*/
 	
-	ft_save_var_env("?", 0,env);// Inicializo $?
+	ft_save_var_env("?", "0",env);// Inicializo $?
 	prom(env); //##PRUEBA## Imprime el prompt y lee una línea de entrada
 
    

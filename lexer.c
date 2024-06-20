@@ -161,7 +161,7 @@ char    **lexer(char    *line)
 
 	ntoken = count_tokens(line);
 
-	printf("num token %i \n",ntoken);
+	//printf("num token %i \n",ntoken);
 	token = (char **) malloc(sizeof(char *) * (ntoken + 1));
  	if (!line || !token)
 		return NULL;

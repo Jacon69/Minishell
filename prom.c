@@ -76,7 +76,9 @@ void prom(t_list  **env)
 
 		line = readline("prom> "); //hace Malloc
 		if (!line)
+		{
 			break; // EOF, probablemente Ctrl+D Ctrl+c
+		}
 		if (ft_strlen(line) > 0) // Añadir la línea al historial
 
 		if (ft_strncmp(line, "exit", 4) == 0) // Si la línea es "exit", salir del bucle

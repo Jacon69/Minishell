@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 10:12:42 by alexigar          #+#    #+#             */
-/*   Updated: 2024/06/19 11:50:13 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/06/19 13:53:53 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,21 @@ int try_call(char **paths, t_command *com)
 {
     int 	i;
 	char	*function_call;
+    int     fd_temp;
 
     i = 0;
+    fd_temp = open("tmp", O_RDWR | O_CREAT);
+    if (!fd_temp)
+        return (-1);
     while (paths[i])
     {
 		function_call = ft_strjoin(paths[i], com -> command);
 		if (!function_call)
+        {
+            close(fd_temp);
+            unlink("tmp");
 			return (-1); //Salida error
+        }
         //Si llamo a execve hay que hacerlo en un fork aparte y pausar el programa principal
         if (fork() == 0)
             com -> returned_output = execve(function_call, com -> args, NULL); //Aqui va a haber que cambiar cosas porque execve devuelve int
@@ -33,6 +41,8 @@ int try_call(char **paths, t_command *com)
 			break ;
 		i++;
     }
+    close(fd_temp);
+    unlink("tmp");
 	return (com -> returned_output);
 }
 
