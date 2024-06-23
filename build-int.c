@@ -6,7 +6,7 @@
 /*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 05:32:30 by jaimecondea       #+#    #+#             */
-/*   Updated: 2024/06/19 07:04:56 by jaimecondea      ###   ########.fr       */
+/*   Updated: 2024/06/23 09:42:07 by jaimecondea      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,25 +20,29 @@ int ft_built_echo(t_command *command)
 	int	i;
 	int ok;
 
-		i = 0;
-		jump_line =1;
+	ok = 1;
+	i = 0;
+	jump_line =1; //ponemos \n detraas de cada args
 	if (!ft_memcmp(command->args[0], "-n", 2) && ft_strlen(command->args[0])==2)
 	{
 		jump_line = 0;
 		i++;
-	}	
+	}
+
 	while(command->args[i])
 	{
-		write(command->file_output,command->args[i], ft_strlen(command->args[i]));
+		ok *= write(command->file_output,command->args[i], ft_strlen(command->args[i]));
 		if (command->args[i+1])
-			ok = write(command->file_output," ",1);
+		{
+			if (!	jump_line)
+				ok *= write(command->file_output,"\n",1);
+			else		
+				ok = write(command->file_output," ",1);
+		}
 		i++;
-		if (jump_line)
-			ok *= write(command->file_output,"\n",1);
-
-		return((ok <= 0) ? 1 : 0); 
 	}
-	return(0);
+	ok *= write(command->file_output,"\n",1);
+	return((ok <= 0) ? 1 : 0);
 }
 
 int ft_built_cd(t_command *command, t_list **env)
@@ -293,6 +297,7 @@ int ft_build_int(t_command *command_act, t_list **env )
 		ok = ft_built_env(command_act, env);
 	else if (ft_memcmp(comando, "exit", 4)== 0)
 	{
+		write(1,"exit built_int\n",15);
 		free(command_act);
 		ft_free_list(env);
 		exit(EXIT_SUCCESS); //

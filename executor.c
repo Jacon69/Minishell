@@ -6,7 +6,7 @@
 /*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 10:12:42 by alexigar          #+#    #+#             */
-/*   Updated: 2024/06/19 05:39:34 by jaimecondea      ###   ########.fr       */
+/*   Updated: 2024/06/23 09:40:36 by jaimecondea      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,8 @@ int executor(t_command **command_list, t_list **env) //Recibir variables de ento
     paths = ft_split(function_call, ':'); //malloc
     if (!paths)
     {
+        free(function_call);
+        function_call = NULL;
         free_commands(command_list);
         exit(EXIT_FAILURE); //salida error
     }
@@ -62,13 +64,27 @@ int executor(t_command **command_list, t_list **env) //Recibir variables de ento
         {
             //Si llamo a execve hay que hacerlo en un fork aparte y pausar el programa principal
             if (fork() == 0)
+            {
                 command_list[i] -> returned_output = execve(function_call, command_list[i] -> args, NULL); //Aqui va a haber que cambiar cosas porque execve devuelve int
+                write(1,"estoy aqui2\n",12);
+                free(function_call);
+                function_call = NULL;
+            }
+                    
             else
+            {
+                free(function_call);
+                function_call = NULL;
                 wait(NULL);
+            }
+                
             //USar un archivo temporal para almacenar los strings
         }
         else
         {
+            free(function_call);
+            function_call = NULL;
+            write(1,"estoy aqui3\n",12);
             to_return = ft_build_int(command_list[i], env);
             if (to_return != 0)
                 return (to_return); //Si se ha cambiado a algo que no es 0 devuelvo porque ha fallado algo
@@ -82,9 +98,10 @@ int executor(t_command **command_list, t_list **env) //Recibir variables de ento
         if (command_list[i] -> piped == 1)
             command_list[i + 1] -> input = command_list[i] -> string_output;
         i++;
-        free(function_call);
-        function_call = NULL;
+     /*   free(function_call);
+        function_call = NULL;*/
     }
+    write(1,"estoy aqui1\n",12);
     free_commands(command_list);
     return (to_return); //Si todo ha ido bien devuelvo 0
 }

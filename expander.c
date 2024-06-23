@@ -121,12 +121,13 @@ static char *ft_expander_q(char *token, t_list  **env) //Aquí le quito las comi
 
 void	expander(char **token, t_list  **env)
 {
-    int 	i;
+	int 	i;
 	char	*aux;
 
-    i = 0;
-    while(token[i])
-    {
+	i = 0;
+	write(1,"estoy aqui EXPANDER\n",20);
+	while(token[i])
+	{
 	
 		if (token[i][0]=='"' || token[i][0] =='\'')
 			{
@@ -149,6 +150,7 @@ void	expander(char **token, t_list  **env)
 				if (!token[i])
 					exit(EXIT_FAILURE);  ///poner el tratamiento de error
 			}
-        i++;
-    }
+		printf("toke[ %i]: %s \n",i,token[i]);
+		i++;
+	}
 }
