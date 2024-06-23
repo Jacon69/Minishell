@@ -54,7 +54,7 @@ static char *ft_expander_$(char *token, t_list  **env)
 	int 	var_long;
 	
 	i = 0 ;
-	token = ft_strdup(token);//duplico porque en origen libero token original
+	token = ft_strdup(token);//malloc duplico porque en origen libero token original //
 	while (token[i])
 	{
 		
@@ -62,18 +62,26 @@ static char *ft_expander_$(char *token, t_list  **env)
 		{
 			j = i;
 			var_long = 0;
-			while (token[i] && token[i]!= ' ')
+			while (token[i] && token[i]!= ' ') //cuento tamaño de lo que hay que expandir
 			{
 				var_long++;
 				i++;
 			}
 			aux = ft_substr(token, j + 1, var_long - 1 ) ; // Malloc Lo que viene después de dolar puedo no existir entonces no se hace nada se sustituye por nada
-			
-			var_env = ft_get_var_env(env, aux); //Malloc
-			
-			if (!var_env) //esto es si falla malloc
+			if (!aux) //esto es si falla malloc
+			{
+				free(token);
 				return NULL;
+			}
+				
+			var_env = ft_get_var_env(env, aux); //Malloc
 			free(aux);
+			if (!var_env) //esto es si falla malloc
+			{
+				free(token);
+				return NULL;
+			}
+			
 			aux = token; //para liberar
 
 			aux1 = ft_substr(token, 0, j ); //lo que va por delante // Malloc
@@ -125,7 +133,6 @@ void	expander(char **token, t_list  **env)
 	char	*aux;
 
 	i = 0;
-	write(1,"estoy aqui EXPANDER\n",20);
 	while(token[i])
 	{
 	
@@ -150,7 +157,6 @@ void	expander(char **token, t_list  **env)
 				if (!token[i])
 					exit(EXIT_FAILURE);  ///poner el tratamiento de error
 			}
-		printf("toke[ %i]: %s \n",i,token[i]);
 		i++;
 	}
 }

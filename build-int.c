@@ -6,7 +6,7 @@
 /*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 05:32:30 by jaimecondea       #+#    #+#             */
-/*   Updated: 2024/06/23 09:42:07 by jaimecondea      ###   ########.fr       */
+/*   Updated: 2024/06/23 22:10:40 by jaimecondea      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ int ft_built_echo(t_command *command)
 	ok *= write(command->file_output,"\n",1);
 	return((ok <= 0) ? 1 : 0);
 }
+
 
 int ft_built_cd(t_command *command, t_list **env)
 {
@@ -220,8 +221,8 @@ int ft_built_cd(t_command *command, t_list **env)
 		}
 	}
 
-	ft_save_var_env("pwd", route, env); // aqui guardo lo valores en la variable de entorno. command->path se deberá actualizar
-	ft_save_var_env("oldpwd", line_path, env);
+	ft_save_var_env("PWD", route, env); //   guardo lo valores en la variable de entorno. command->path se deberá actualizar
+	ft_save_var_env("OLDPWD", line_path, env);
 	return(0);
 }
 
@@ -231,7 +232,7 @@ int ft_built_pwd(t_command *command)
 	int ok;
 	
 	ok = write(command->file_output,command->path, ft_strlen(command->path));
-	write(1,"\n", 1);
+	write(command->file_output,"\n", 1);
 	return((ok <= 0) ? 1 : 0);
 }
 
@@ -239,16 +240,17 @@ int ft_built_export(t_command *command, t_list **env)
 {
 	int	ok;
 	
+	if (command->args[0] == NULL)
+	{	
+		ok = ft_print_list_env(command, env);
+		return(ok);
+	}
 	if (ft_memchr(command->args[0], '=', ft_strlen(command->args[0]))!= NULL)
 	{
 		ft_add_v_env(command->args[0], env);
 		return (0);
 	}
-	if (command->args[0] == NULL)
-	{
-		ok = ft_print_list_env(command, env); //TODO ft_print_list_env(t_command *command, t_list **env)
-		return(ok);
-	}
+	//IMPORTANTE queda ver si hay que meter export cuando no hay =
 	return (0);
 
 }
@@ -262,17 +264,9 @@ int ft_built_unset(t_command *command, t_list **env)
 
 int ft_built_env(t_command *command, t_list **env)
 {
-	(void)command; // Esto evita el error de compilación por variable no utilizada.
-	(void)env; // Esto evita el error de compilación por variable no utilizada.
-	return (0);	
+	return( ft_print_list_env(command, env));
 }
 
-int		ft_print_list_env(t_command *command, t_list **env)
-{
-	(void)command; // Esto evita el error de compilación por variable no utilizada.
-	(void)env; // Esto evita el error de compilación por variable no utilizada.
-	return (0);	
-}
 
 int ft_build_int(t_command *command_act, t_list **env )
 
@@ -297,7 +291,7 @@ int ft_build_int(t_command *command_act, t_list **env )
 		ok = ft_built_env(command_act, env);
 	else if (ft_memcmp(comando, "exit", 4)== 0)
 	{
-		write(1,"exit built_int\n",15);
+		write(command_act->file_output,"exit built_int\n",15);
 		free(command_act);
 		ft_free_list(env);
 		exit(EXIT_SUCCESS); //
