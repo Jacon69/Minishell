@@ -163,7 +163,7 @@ int ft_print_list_env(t_command *command, t_list **env) //si hay error devuelve 
 	{
 		dup_env = ft_dup_ord_list(env); //malloc
 		if (!dup_env){
-			perror("Error MEM export")
+			perror("Error MEM export");
 			return (-1);
 		}
 		command->command="env";

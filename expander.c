@@ -36,7 +36,7 @@ static char *ft_expander_home(char *token, t_list  **env)
 			if (!aux1)
 			{
 				free(token);
-				free(var_env)
+				free(var_env);
 				return NULL;
 			}
 			aux2 = ft_substr(token, j + var_long , ft_strlen(token)-(j + var_long) ); // lo que va por detrás // Malloc
@@ -44,7 +44,7 @@ static char *ft_expander_home(char *token, t_list  **env)
 			{
 				free(aux1);
 				free(token);
-				free(var_env)
+				free(var_env);
 				return NULL;
 			}
 			token = ft_strjoin (aux1, var_env);
@@ -54,7 +54,7 @@ static char *ft_expander_home(char *token, t_list  **env)
 				free (aux1);
 				free (aux2);
 				free(var_env);
-				return NULL
+				return NULL;
 			}
 
 			aux = token;
@@ -64,7 +64,7 @@ static char *ft_expander_home(char *token, t_list  **env)
 			free (aux2);
 			free(var_env);
 			if (!token)
-				return NULL
+				return NULL;
 		}
 		i++;	
 	}
@@ -210,4 +210,5 @@ int	expander(char **token, t_list  **env)
 		}
 		i++;
 	}
+	return (1);
 }

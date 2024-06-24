@@ -36,7 +36,7 @@ typedef struct s_command
 {
 	int		index;
 	char	*command;
-	char	path[1024];
+	char	*path;
 	char	**args;
 	int		redir1; //0= NULL, < = 1, << = 2
 	int		redir2; //0= NULL, > = 1, >> = 2

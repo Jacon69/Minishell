@@ -94,7 +94,7 @@ int ft_built_cd(t_command *command, t_list **env)  // 0 es ok 1 es ko  -1 err me
 	if (!path)
 	{
 		
-		free(route)
+		free(route);
 		perror("Error MEM built_in");
 		return (-1);
 	}

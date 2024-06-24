@@ -35,7 +35,7 @@ void	free_commands(t_command **command_list)
 			close(command_list[i] -> file_input);
 		if (command_list[i] -> file_output != 1)
 			close(command_list[i] -> file_output);
-		if (command_list[i] -> path[0] != '\0')
+		if (command_list[i] -> path)
 			free(command_list[i] -> path);
 		free(command_list[i]);
 		i++;
@@ -69,7 +69,7 @@ t_command **parser(char **tokens, t_list **env) //A esta funcion le tiene que ll
 		}
 		current_command -> args = malloc(sizeof(char *) * (n_tokens - i + 1)); //malloc
 		current_command -> command = NULL;
-		current_command -> path[0] = '\0';
+		current_command -> path = NULL;
 		current_command -> redir1 = 0;
 		current_command -> redir2 = 0;
 		current_command -> file_input = 1;
@@ -108,7 +108,7 @@ t_command **parser(char **tokens, t_list **env) //A esta funcion le tiene que ll
 				break ;
 		}
 		current_command -> args[k] = NULL;
-		if (current_command -> path[0] == '\0')
+		if (!current_command -> path)
 		{
 			current_command -> path = ft_get_var_env(env,"PWD"); //malloc
 			if (!current_command -> path)
