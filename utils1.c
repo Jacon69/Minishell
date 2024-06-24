@@ -75,7 +75,7 @@ char	*ft_strndup(const char *str, size_t n)
 	dup[len] = '\0';
 	return (dup);
 }
-
+/*Ordena una copia de la lista de var entorno alfabeticamente*/
 t_list **ft_dup_ord_list(t_list **env)
 {
 	t_list **dup_env;
@@ -83,6 +83,7 @@ t_list **ft_dup_ord_list(t_list **env)
 	t_list *p_env_aux;
 	t_list *p_env_ori;
 	t_list **ref_previa;
+	int exit_bucle;
 
 
 		
@@ -106,10 +107,11 @@ t_list **ft_dup_ord_list(t_list **env)
 		return NULL;
 	}
 	ft_lstadd_back(dup_env, p_env);
-
-	while (p_env_ori->next)
+	while (p_env_ori->next )
 	{
-		p_env_ori=p_env_ori->next;
+		write(1,"paso2 \n",7);
+
+		p_env_ori=p_env_ori->next;//para el próximo bucle
 		p_env_aux = ft_lstnew(ft_strdup(p_env_ori->content));//Malloc
 		if (!p_env_aux)									  // Protejo malloc
 		{
@@ -117,43 +119,51 @@ t_list **ft_dup_ord_list(t_list **env)
 			perror("Error en malloc");
 			return NULL;
 		}
+		write(1,"pos1 \n",6);
+		printf("Imprimo: %s \n",(char*)p_env_aux->content);
 		p_env= *dup_env;
 		if (ft_strncmp(p_env->content,p_env_aux->content, ft_smaller(ft_strlen(p_env->content),ft_strlen(p_env_aux->content))) > 0 )// esto es p_env es mayor ejempli B-A
 		{
 			*dup_env = p_env_aux;  // como es el primero apunto la lista a el nodo que añadimos 
 			p_env_aux->next=p_env;
+			write(1,"imprimo1 \n",10);
 			continue;
 		}
-		else if(p_env->next==NULL)  /// A-B por lo que avanzamos para probar sig nodo
+		else if(p_env->next==NULL)  /// A-B y no hay mas por lo que ponfo el nodo en su posicion y sigo el bucle
 		{
 			p_env->next=p_env_aux;
-			break;
+			write(1,"paso1 \n",7);
+			continue;
 		}
-		while (p_env->next) //Aqui entramos a un whil para ir buscando la pos de ap_env-aux
+		exit_bucle = 1;	
+		while (p_env->next && (exit_bucle == 1)) //Aqui entramos a un while para ir buscando la posición de ap_env-aux ya que A-B y hay nodos después
 		{
+			write(1,"pos2 \n",6);
+			printf("Imprimo2: %s \n",(char*)p_env_aux->content);
+			exit_bucle = 1;	
 			ref_previa= &p_env->next;  //guardo la dir del next previo para poder modificarlo cuando metamos ap_env_aux
 			p_env=p_env->next;
 
 			if (ft_strncmp(p_env->content,p_env_aux->content, ft_smaller(ft_strlen(p_env->content),ft_strlen(p_env_aux->content))) > 0 )
 			{
-				*ref_previa=p_env_aux;  //aquío estamos intercalando
+				*ref_previa=p_env_aux;  //aquí estamos intercalando
 				p_env_aux->next=p_env;
-				break;
+				write(1,"imprimo2 \n",10);
+				exit_bucle = 0;
 			}
-			if(p_env->next==NULL)   //aqui lo ponemos al final
+			else if(p_env->next==NULL)   //aqui lo ponemos al final
 			{
 				p_env->next=p_env_aux;
-				break;
+				write(1,"imprimo3 \n",10);
+				exit_bucle = 0;
 			}
 			// Si sigo en el bucle es que p_env_aux es menor alfabeticamente que p_env y avanzo al siguiente nodo
-
 		}
 	}
 	return dup_env;
-
 }
 
-
+/*imprime la lista de var de entorno desde env y export*/
 int ft_print_list_env(t_command *command, t_list **env) //si hay error devuelve 0 type 0=export 1=env
 {
 	t_list **dup_env;
