@@ -93,17 +93,16 @@ t_list **ft_dup_ord_list(t_list **env)
 		return NULL;
 	dup_env = (t_list **)malloc(sizeof(t_list *)); // Hago Malloc
 	if (!dup_env)								   // Protejo malloc
-	{
-		perror("Error en malloc");
+	
+
 		return NULL;
-	}
+
 	
 
 	p_env = ft_lstnew(ft_strdup(p_env_ori->content)); // Hago Malloc
 	if (!p_env)									  // Protejo malloc
 	{
 		ft_free_list(dup_env);
-		perror("Error en malloc");
 		return NULL;
 	}
 	ft_lstadd_back(dup_env, p_env);
@@ -114,7 +113,6 @@ t_list **ft_dup_ord_list(t_list **env)
 		if (!p_env_aux)									  // Protejo malloc
 		{
 			ft_free_list(dup_env);
-			perror("Error en malloc");
 			return NULL;
 		}
 		p_env= *dup_env;
@@ -164,8 +162,10 @@ int ft_print_list_env(t_command *command, t_list **env) //si hay error devuelve 
 	if (!ft_memcmp(command->command, "export",6))
 	{
 		dup_env = ft_dup_ord_list(env); //malloc
-		if (!dup_env)
-			return (0);
+		if (!dup_env){
+			perror("Error MEM export")
+			return (-1);
+		}
 		command->command="env";
 		ft_print_list_env(command,dup_env );
 		ft_free_list(dup_env);

@@ -38,16 +38,14 @@ int executor(t_command **command_list, t_list **env) //Recibir variables de ento
     function_call = ft_get_var_env(env, "PATH"); //malloc
     if (!function_call)
         {
-            free_commands(command_list);
-            exit(EXIT_FAILURE);
+            return (-1);
         }
     paths = ft_split(function_call, ':'); //malloc
     if (!paths)
     {
         free(function_call);
         function_call = NULL;
-        free_commands(command_list);
-        exit(EXIT_FAILURE); //salida error
+        return (-1); //salida error
     }
     //Split y funcion para intentar llamar a las funciones
     while (command_list[i])
@@ -63,7 +61,7 @@ int executor(t_command **command_list, t_list **env) //Recibir variables de ento
         && ft_strncmp(command_list[i] -> command, "exit", ft_strlen(command_list[i] -> command)) != 0)
         {
             //Si llamo a execve hay que hacerlo en un fork aparte y pausar el programa principal
-            if (fork() == 0)
+            /*if (fork() == 0)
             {
                 command_list[i] -> returned_output = execve(function_call, command_list[i] -> args, NULL); //Aqui va a haber que cambiar cosas porque execve devuelve int
                 free(function_call);
@@ -75,8 +73,8 @@ int executor(t_command **command_list, t_list **env) //Recibir variables de ento
                 free(function_call);
                 function_call = NULL;
                 wait(NULL);
-            }
-                
+            }*/
+            printf("Se ha intentado llamar a %s pero no esta implementado\n", command_list[i] -> command); 
             //USar un archivo temporal para almacenar los strings
         }
         else
@@ -90,7 +88,6 @@ int executor(t_command **command_list, t_list **env) //Recibir variables de ento
         if (command_list[i] -> returned_output == -1)
         {
             //Tiro error suave si ha fallado
-            free_commands(command_list);
             return (1); //O el codigo de error que sea
         }
         if (command_list[i] -> piped == 1)
@@ -99,6 +96,5 @@ int executor(t_command **command_list, t_list **env) //Recibir variables de ento
      /*   free(function_call);
         function_call = NULL;*/
     }
-    free_commands(command_list);
     return (to_return); //Si todo ha ido bien devuelvo 0
 }

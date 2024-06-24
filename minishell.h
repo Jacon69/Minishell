@@ -52,7 +52,7 @@ typedef struct s_command
 
 
 //parsing
-t_command **parser(char **tokens);
+t_command **parser(char **tokens, t_list **env);
 
 //build_in
 int		ft_built_echo(t_command *command);
@@ -89,7 +89,7 @@ char	*ft_strndup(const char *str, size_t n); ///ESTA FUNCION NO ESTA EN LA LIBRE
 /*lexer*/
 char    **lexer(char *line); // Crea
 void	free_token(char **token);
-void	expander(char **token, t_list  **env);
+int		expander(char **token, t_list  **env);
 
 
 #endif

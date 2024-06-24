@@ -38,7 +38,6 @@ void prom(t_list  **env)
 		if (!path_act)
 			return;
 		line = readline(path_act); //hace Malloc
-
 		if (!line)
 		{
 			printf("Line es nulo\n");
@@ -55,7 +54,7 @@ void prom(t_list  **env)
 				free(line);
 				free(path_act);
 				control = 0;
-				continue;
+				return;
 			}		
 
 		add_history(line);
@@ -65,18 +64,40 @@ void prom(t_list  **env)
 		{
 			free(line);
 			free(path_act);
-			return;
+			ft_free_list(env); //Libero la memoria de la lista de variables de entorno.
+			perror("Error Mem en LEXER");
+			exit(1);
 		}
-		expander(token, env);
-		commands = parser(token);
+		if (!expander(token, env)) ///Hago la expansión $ Comillas etc si es 0 es KO
+		{
+			free(line);
+			free(path_act);
+			ft_free_char(token);
+			ft_free_list(env); //Libero la memoria de la lista de variables de entorno.
+			perror("Error Mem en EXPANDER");
+			exit(1);
+		}
+		commands = parser(token, env); //malloc
 		if (!commands)
 		{
 			free(line);
 			free(path_act);
 			ft_free_char(token);
-			return;
+			ft_free_list(env); //Libero la memoria de la lista de variables de entorno.
+			perror("Error Mem en PARSER");
+			exit(1);
 		}
 		last_return = executor(commands,env); //Recibir variables de entornos
+		if (last_return == -1)
+		{
+			free(line);
+			free(path_act);
+			ft_free_char(token);
+			ft_free_list(env); //Libero la memoria de la lista de variables de entorno.
+			free_commands(commands);
+			perror("Error Mem en EXECUTOR");
+			exit(1);
+		}
 		snprintf(str_last_return, sizeof(str_last_return), "%i", last_return);//convierto num a cadena
 		ft_save_var_env("?", str_last_return,env);
 		ft_free_char(token);

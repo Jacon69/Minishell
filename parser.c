@@ -35,13 +35,15 @@ void	free_commands(t_command **command_list)
 			close(command_list[i] -> file_input);
 		if (command_list[i] -> file_output != 1)
 			close(command_list[i] -> file_output);
+		if (command_list[i] -> path[0] != '\0')
+			free(command_list[i] -> path);
 		free(command_list[i]);
 		i++;
 	}
 	free(command_list);
 }
 
-t_command **parser(char **tokens) //A esta funcion le tiene que llegar NULL como ultimo token, si no va a tirar segfault
+t_command **parser(char **tokens, t_list **env) //A esta funcion le tiene que llegar NULL como ultimo token, si no va a tirar segfault
 {
 	int			i;
 	int			j;
@@ -50,22 +52,20 @@ t_command **parser(char **tokens) //A esta funcion le tiene que llegar NULL como
 	t_command 	*current_command;
 	t_command	**command_list;
 
-	if (!tokens || !tokens[0])
-		exit(EXIT_FAILURE); //salida error
 	i = 0;
 	j = 0;
 	k = 0;
 	n_tokens = count_nbr_tokens(tokens);
 	command_list = malloc(sizeof(t_command *) * (n_tokens + 1)); //malloc
 	if (!command_list)
-		exit(EXIT_FAILURE); //salida error
+		return (NULL); //salida error
 	while (tokens[i])
 	{
 		current_command = malloc(sizeof(t_command)); //malloc
 		if (!current_command)
 		{
 			free_commands(command_list);
-			exit(EXIT_FAILURE); //salida error
+			return (NULL); //salida error
 		}
 		current_command -> args = malloc(sizeof(char *) * (n_tokens - i + 1)); //malloc
 		current_command -> command = NULL;
@@ -78,7 +78,7 @@ t_command **parser(char **tokens) //A esta funcion le tiene que llegar NULL como
 		if (!(current_command -> args))
 		{
 			free_commands(command_list);
-			exit(EXIT_FAILURE); //salida error
+			return (NULL); //salida error
 		}
 		current_command -> index = j;
 		while (tokens[i][0] != '|' && tokens[i][0] != '>' && tokens[i][0] != '<')
@@ -109,7 +109,14 @@ t_command **parser(char **tokens) //A esta funcion le tiene que llegar NULL como
 		}
 		current_command -> args[k] = NULL;
 		if (current_command -> path[0] == '\0')
-			getcwd(current_command -> path, sizeof(current_command -> path));
+		{
+			current_command -> path = ft_get_var_env(env,"PWD"); //malloc
+			if (!current_command -> path)
+			{
+				free_commands(command_list);
+				return (NULL); //salida error
+			}
+		}
 		if (tokens[i])
 		{
 			if (tokens[i][0] == '>')
