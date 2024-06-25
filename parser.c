@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 10:01:14 by alexigar          #+#    #+#             */
-/*   Updated: 2024/06/19 13:52:40 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/06/25 19:42:49 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,15 @@ void	free_commands(t_command **command_list)
 			close(command_list[i] -> file_input);
 		if (command_list[i] -> file_output != 1)
 			close(command_list[i] -> file_output);
+		if (command_list[i] -> path)
+			free(command_list[i] -> path);
 		free(command_list[i]);
 		i++;
 	}
 	free(command_list);
 }
 
-t_command **parser(char **tokens) //A esta funcion le tiene que llegar NULL como ultimo token, si no va a tirar segfault
+t_command **parser(char **tokens, t_list **env) //A esta funcion le tiene que llegar NULL como ultimo token, si no va a tirar segfault
 {
 	int			i;
 	int			j;
@@ -41,36 +43,51 @@ t_command **parser(char **tokens) //A esta funcion le tiene que llegar NULL como
 	t_command	**command_list;
 	char		*next_line;
 	char		*aux;
+	int			pipefd[2];
 
 	if (!tokens || !tokens[0])
-		exit(EXIT_FAILURE); //salida error
+		return (NULL); //salida error
 	i = 0;
 	j = 0;
 	k = 0;
 	n_tokens = count_nbr_tokens(tokens);
 	command_list = malloc(sizeof(t_command *) * (n_tokens + 1));
 	if (!command_list)
-		exit(EXIT_FAILURE); //salida error
+		return (NULL); //salida error
 	while (tokens[i])
 	{
 		current_command = malloc(sizeof(t_command)); //malloc
 		if (!current_command)
 		{
 			free_commands(command_list);
-			exit(EXIT_FAILURE); //salida error
+			return (NULL); //salida error
 		}
 		current_command -> args = malloc(sizeof(char *) * (n_tokens - i + 1)); //malloc
 		current_command -> command = NULL;
-		current_command -> path[0] = '\0';
+		current_command -> path = NULL;
 		current_command -> redir1 = 0;
 		current_command -> redir2 = 0;
-		current_command -> file_input = 1;
+		if (j > 0 && command_list[j - 1] -> piped)
+		{
+			if (pipe(pipefd) == 0)
+			{
+				command_list[j - 1] -> file_output = pipefd[1]; //1 escritura
+				current_command -> file_input = pipefd[0]; //0 lecture
+			}
+			else
+			{
+				free_commands(command_list);
+				return (NULL);
+			}
+		}
+		else
+			current_command -> file_input = 1;
 		current_command -> file_output = 1; //Por defecto se escribe en la consola
 		current_command -> piped = 0;
 		if (!(current_command -> args))
 		{
 			free_commands(command_list);
-			exit(EXIT_FAILURE); //salida error
+			return (NULL); //salida error
 		}
 		current_command -> index = j;
 		while (tokens[i][0] != '|' && tokens[i][0] != '>' && tokens[i][0] != '<')
@@ -100,8 +117,15 @@ t_command **parser(char **tokens) //A esta funcion le tiene que llegar NULL como
 				break ;
 		}
 		current_command -> args[k] = NULL;
-		if (current_command -> path[0] == '\0')
-			getcwd(current_command -> path, sizeof(current_command -> path));
+		if (!current_command -> path)
+		{
+			current_command -> path = ft_get_var_env(env, "PWD");
+			if (!current_command -> path)
+			{
+				free_commands(command_list);
+				return (NULL);
+			}
+		}
 		if (tokens[i])
 		{
 			if (tokens[i][0] == '>')
@@ -130,7 +154,7 @@ t_command **parser(char **tokens) //A esta funcion le tiene que llegar NULL como
 				if (!next_line)
 				{
 					free_commands(command_list);
-					exit(EXIT_FAILURE); //salida error
+					return (NULL); //salida error
 				}
 				current_command -> input = next_line;
 				while (next_line)

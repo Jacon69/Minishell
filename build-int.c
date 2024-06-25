@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 05:32:30 by jaimecondea       #+#    #+#             */
-/*   Updated: 2024/06/20 13:06:51 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/06/20 13:46:52 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@ int ft_built_echo(t_command *command)
 	int	i;
 	int ok;
 
-		i = 0;
-		jump_line =1;
+	i = 0;
+	jump_line =1;
 	if (!ft_memcmp(command->args[0], "-n", 2) && ft_strlen(command->args[0])==2)
 	{
 		jump_line = 0;
@@ -29,13 +29,14 @@ int ft_built_echo(t_command *command)
 	}	
 	while(command->args[i])
 	{
+		//printf("Va a imprimir %s\n", command -> args[i]);
 		write(command->file_output,command->args[i], ft_strlen(command->args[i]));
 		if (command->args[i+1])
 			ok = write(command->file_output," ",1);
 		i++;
 		if (jump_line)
 			ok *= write(command->file_output,"\n",1);
-		return((ok <= 0) ? 1 : 0); 
+		//return((ok <= 0) ? 1 : 0); 
 	}
 	return(0);
 }

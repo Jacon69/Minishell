@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
+/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 16:17:26 by aiturria          #+#    #+#             */
-/*   Updated: 2024/06/19 11:51:13 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/06/25 19:37:30 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ typedef struct s_command
 {
 	int		index;
 	char	*command;
-	char	path[1024];
+	char	*path;
 	char	**args;
 	int		redir1; //0= NULL, < = 1, << = 2
 	int		redir2; //0= NULL, > = 1, >> = 2
@@ -53,7 +53,7 @@ typedef struct s_command
 
 
 //parsing
-t_command **parser(char **tokens);
+t_command **parser(char **tokens, t_list **env);
 
 //build_in
 int		ft_built_echo(t_command *command);
