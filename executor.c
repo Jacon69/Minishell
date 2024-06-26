@@ -6,16 +6,42 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 10:12:42 by alexigar          #+#    #+#             */
-/*   Updated: 2024/06/25 19:21:38 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/06/26 12:58:50 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+char    *read_all(int fd)
+{
+    char    *to_return;
+    char    *aux;
+    char    *aux2;
+
+    to_return = get_next_line(fd);
+    aux = to_return;
+    while (aux)
+    {
+        aux = get_next_line(fd);
+        if (aux)
+        {
+            aux2 = ft_strjoin(to_return, aux);
+            free(to_return);
+            to_return = aux2;
+        }
+    }
+    //printf("%s\n", aux2);
+    //free(aux2);
+    free(aux);
+    return (aux2);
+    //return (to_return);
+}
+
 int try_call(char **paths, t_command *com)
 {
     int 	i;
 	char	*function_call;
+    char    *aux;
     int     pipefd[2];
     pid_t   pid;
     int     returned;
@@ -23,7 +49,11 @@ int try_call(char **paths, t_command *com)
     i = 0;
     while (paths[i])
     {
-		function_call = ft_strjoin(paths[i], com -> command);
+        aux = ft_strjoin(paths[i], "/");
+        if (!aux)
+            return (-1);
+		function_call = ft_strjoin(aux, com -> command);
+        free(aux);
 		if (!function_call || pipe(pipefd) == -1)
         {
             return (-1); //Salida error
@@ -40,24 +70,38 @@ int try_call(char **paths, t_command *com)
             close(pipefd[0]);
             dup2(pipefd[1], STDOUT_FILENO);
             dup2(pipefd[1], STDERR_FILENO);
-            close(pipefd[1]);
+            //close(pipefd[1]);
             //pid = getpid();
-            exit(execve(function_call, com -> args, NULL)); //Aqui va a haber que cambiar cosas porque execve devuelve int
+            if (execve(function_call, com -> args, NULL) == -1)
+            {
+                perror("Command not found");
+                close(pipefd[1]);
+                exit(EXIT_FAILURE);
+            }
+            else
+                exit(EXIT_SUCCESS);
         }
         else
         {
             close(pipefd[1]);
             waitpid(pid, &returned, 0);
-            com -> string_output = get_next_line(pipefd[0]);
             com -> returned_output = WEXITSTATUS(returned);
             free(function_call);
             function_call = NULL;
+            if (com -> returned_output == 0)
+            {
+                com -> string_output = read_all(pipefd[0]);
+                if (com -> file_output == STDOUT_FILENO)
+                    printf("%s\n", com -> string_output);
+                return (com -> returned_output);
+            }
         }
-        //USar un archivo temporal para almacenar los strings
-		if (com -> returned_output != 127)
+        if (com -> returned_output == 127)
 			break ;
 		i++;
     }
+    if (com -> returned_output == 1)
+        printf("Error: command not found\n");
     return (com -> returned_output);
 }
 
@@ -98,7 +142,7 @@ int executor(t_command **command_list, t_list **env)
         && ft_strncmp(command_list[i] -> command, "env", ft_strlen(command_list[i] -> command)) != 0
         && ft_strncmp(command_list[i] -> command, "exit", ft_strlen(command_list[i] -> command)) != 0)
         {
-           try_call(paths, command_list[i]);
+            try_call(paths, command_list[i]);
         }
         else
         {
@@ -121,8 +165,8 @@ int executor(t_command **command_list, t_list **env)
         if (command_list[i] -> piped == 1)
             command_list[i + 1] -> input = command_list[i] -> string_output;
         i++;
-        /*free(function_call);
-        function_call = NULL;*/
+        free(function_call);
+        function_call = NULL;
     }
     free_commands(command_list);
     return (to_return); //Si todo ha ido bien devuelvo 0

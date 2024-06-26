@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 10:01:14 by alexigar          #+#    #+#             */
-/*   Updated: 2024/06/25 19:42:49 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/06/26 12:38:55 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,8 +96,8 @@ t_command **parser(char **tokens, t_list **env) //A esta funcion le tiene que ll
 			{
 				current_command -> command = tokens[i];
 			}
-			else
-			{
+			//else
+			//{
 				current_command -> args[k] = tokens[i];
 				k++;
 				if (tokens[i][0] == '/')
@@ -111,7 +111,7 @@ t_command **parser(char **tokens, t_list **env) //A esta funcion le tiene que ll
 						current_command -> file_input = current_command -> file_output;
 					current_command -> file_output = open(tokens[i], O_WRONLY | O_CREAT, 0644);
 				}
-			}
+			//}
 			i++;
 			if (!tokens[i])
 				break ;
