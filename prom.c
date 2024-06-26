@@ -2,7 +2,6 @@
 #include "minishell.h"
 
 /*void ft_imprimetoken(char **token)
-/*void ft_imprimetoken(char **token)
 {
 	
 	int		i;
@@ -13,7 +12,6 @@
 		printf("%i token %s \n",i,token[i]);
 		i++;
 	}
-}*/
 }*/
 
 void prom(t_list  **env)

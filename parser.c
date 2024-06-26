@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 10:01:14 by alexigar          #+#    #+#             */
-/*   Updated: 2024/06/19 13:52:40 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/06/26 12:38:55 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ t_command **parser(char **tokens, t_list **env) //A esta funcion le tiene que ll
 	t_command	**command_list;
 	char		*next_line;
 	char		*aux;
+	int			pipefd[2];
 
 	i = 0;
 	j = 0;
@@ -64,7 +65,21 @@ t_command **parser(char **tokens, t_list **env) //A esta funcion le tiene que ll
 		current_command -> path = NULL;
 		current_command -> redir1 = 0;
 		current_command -> redir2 = 0;
-		current_command -> file_input = 1;
+		if (j > 0 && command_list[j - 1] -> piped)
+		{
+			if (pipe(pipefd) == 0)
+			{
+				command_list[j - 1] -> file_output = pipefd[1]; //1 escritura
+				current_command -> file_input = pipefd[0]; //0 lecture
+			}
+			else
+			{
+				free_commands(command_list);
+				return (NULL);
+			}
+		}
+		else
+			current_command -> file_input = 1;
 		current_command -> file_output = 1; //Por defecto se escribe en la consola
 		current_command -> piped = 0;
 		if (!(current_command -> args))
@@ -79,8 +94,8 @@ t_command **parser(char **tokens, t_list **env) //A esta funcion le tiene que ll
 			{
 				current_command -> command = tokens[i];
 			}
-			else
-			{
+			//else
+			//{
 				current_command -> args[k] = tokens[i];
 				k++;
 				if (tokens[i][0] == '/')
@@ -94,7 +109,7 @@ t_command **parser(char **tokens, t_list **env) //A esta funcion le tiene que ll
 						current_command -> file_input = current_command -> file_output;
 					current_command -> file_output = open(tokens[i], O_WRONLY | O_CREAT, 0644);
 				}
-			}
+			//}
 			i++;
 			if (!tokens[i])
 				break ;
@@ -137,7 +152,7 @@ t_command **parser(char **tokens, t_list **env) //A esta funcion le tiene que ll
 				if (!next_line)
 				{
 					free_commands(command_list);
-					exit(EXIT_FAILURE); //salida error
+					return (NULL); //salida error
 				}
 				current_command -> input = next_line;
 				while (next_line)

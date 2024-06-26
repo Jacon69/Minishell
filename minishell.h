@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
+/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 16:17:26 by aiturria          #+#    #+#             */
-/*   Updated: 2024/06/19 11:51:13 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/06/26 12:39:49 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,8 @@ typedef struct s_command
 
 
 //parsing
-t_command **parser(char **tokens, t_list **env);
+t_command	**parser(char **tokens, t_list **env);
+int			count_nbr_tokens(char **tokens);
 
 //build_in
 int		ft_built_echo(t_command *command);
@@ -86,7 +87,6 @@ void	ft_free_list(t_list **list); //Libera la memoria de la lista de strings
 void	print_string(void *str); //Imprime un string Para usarlo con ft_lstiter
 int		ft_pos_chr(const char *str, int c); //Devuelve la posición de un caracter en un string
 char	*ft_strndup(const char *str, size_t n); ///ESTA FUNCION NO ESTA EN LA LIBRERIA LIBFT
-int		count_nbr_tokens(char **tokens);
 
 /*lexer*/
 char    **lexer(char *line); // Crea

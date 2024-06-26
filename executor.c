@@ -3,47 +3,106 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
+/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 10:12:42 by alexigar          #+#    #+#             */
-/*   Updated: 2024/06/23 12:36:39 by jaimecondea      ###   ########.fr       */
+/*   Updated: 2024/06/26 12:58:50 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+char    *read_all(int fd)
+{
+    char    *to_return;
+    char    *aux;
+    char    *aux2;
+
+    to_return = get_next_line(fd);
+    aux = to_return;
+    while (aux)
+    {
+        aux = get_next_line(fd);
+        if (aux)
+        {
+            aux2 = ft_strjoin(to_return, aux);
+            free(to_return);
+            to_return = aux2;
+        }
+    }
+    //printf("%s\n", aux2);
+    //free(aux2);
+    free(aux);
+    return (aux2);
+    //return (to_return);
+}
+
 int try_call(char **paths, t_command *com)
 {
     int 	i;
 	char	*function_call;
-    int     fd_temp;
+    char    *aux;
+    int     pipefd[2];
+    pid_t   pid;
+    int     returned;
 
     i = 0;
-    fd_temp = open("tmp", O_RDWR | O_CREAT);
-    if (!fd_temp)
-        return (-1);
     while (paths[i])
     {
-		function_call = ft_strjoin(paths[i], com -> command);
-		if (!function_call)
+        aux = ft_strjoin(paths[i], "/");
+        if (!aux)
+            return (-1);
+		function_call = ft_strjoin(aux, com -> command);
+        free(aux);
+		if (!function_call || pipe(pipefd) == -1)
         {
-            close(fd_temp);
-            unlink("tmp");
-			return (-1); //Salida error
+            return (-1); //Salida error
         }
         //Si llamo a execve hay que hacerlo en un fork aparte y pausar el programa principal
-        if (fork() == 0)
-            com -> returned_output = execve(function_call, com -> args, NULL); //Aqui va a haber que cambiar cosas porque execve devuelve int
+        pid = fork();
+        if (pid < 0)
+        {
+            perror("Fork failed");
+            exit(-1);
+        }
+        if (pid == 0)
+        {
+            close(pipefd[0]);
+            dup2(pipefd[1], STDOUT_FILENO);
+            dup2(pipefd[1], STDERR_FILENO);
+            //close(pipefd[1]);
+            //pid = getpid();
+            if (execve(function_call, com -> args, NULL) == -1)
+            {
+                perror("Command not found");
+                close(pipefd[1]);
+                exit(EXIT_FAILURE);
+            }
+            else
+                exit(EXIT_SUCCESS);
+        }
         else
-            wait(NULL);
-        //USar un archivo temporal para almacenar los strings
-		if (com -> returned_output != 127)
+        {
+            close(pipefd[1]);
+            waitpid(pid, &returned, 0);
+            com -> returned_output = WEXITSTATUS(returned);
+            free(function_call);
+            function_call = NULL;
+            if (com -> returned_output == 0)
+            {
+                com -> string_output = read_all(pipefd[0]);
+                if (com -> file_output == STDOUT_FILENO)
+                    printf("%s\n", com -> string_output);
+                return (com -> returned_output);
+            }
+        }
+        if (com -> returned_output == 127)
 			break ;
 		i++;
     }
-    close(fd_temp);
-    unlink("tmp");
-	return (com -> returned_output);
+    if (com -> returned_output == 1)
+        printf("Error: command not found\n");
+    return (com -> returned_output);
 }
 
 int executor(t_command **command_list, t_list **env)
@@ -81,22 +140,7 @@ int executor(t_command **command_list, t_list **env)
         && ft_strncmp(command_list[i] -> command, "env", ft_strlen(command_list[i] -> command)) != 0
         && ft_strncmp(command_list[i] -> command, "exit", ft_strlen(command_list[i] -> command)) != 0)
         {
-            //Si llamo a execve hay que hacerlo en un fork aparte y pausar el programa principal
-            /*if (fork() == 0)
-            {
-                command_list[i] -> returned_output = execve(function_call, command_list[i] -> args, NULL); //Aqui va a haber que cambiar cosas porque execve devuelve int
-                free(function_call);
-                function_call = NULL;
-            }
-                    
-            else
-            {
-                free(function_call);
-                function_call = NULL;
-                wait(NULL);
-            }*/
-            printf("Se ha intentado llamar a %s pero no esta implementado\n", command_list[i] -> command); 
-            //USar un archivo temporal para almacenar los strings
+            try_call(paths, command_list[i]);
         }
         else
         {
@@ -104,11 +148,17 @@ int executor(t_command **command_list, t_list **env)
             function_call = NULL;
             to_return = ft_build_int(command_list[i], env);
             if (to_return != 0)
+            {
+                free(function_call);
+                function_call = NULL;
                 return (to_return); //Si se ha cambiado a algo que no es 0 devuelvo porque ha fallado algo
+            }
         }
         if (command_list[i] -> returned_output == -1)
         {
             //Tiro error suave si ha fallado
+            free(function_call);
+            function_call = NULL;
             return (1); //O el codigo de error que sea
         }
         if (command_list[i] -> piped == 1)

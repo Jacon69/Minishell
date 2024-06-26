@@ -1,10 +1,6 @@
 #include "minishell.h"
 
-#include "minishell.h"
 
-
-// función que convierte list de var-env en doble cadena de  var-env
-char **ft_get_env(t_list **env) 
 // función que convierte list de var-env en doble cadena de  var-env
 char **ft_get_env(t_list **env) 
 {
