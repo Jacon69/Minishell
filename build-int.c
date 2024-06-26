@@ -6,7 +6,7 @@
 /*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 05:32:30 by jaimecondea       #+#    #+#             */
-/*   Updated: 2024/06/19 07:04:56 by jaimecondea      ###   ########.fr       */
+/*   Updated: 2024/06/23 22:10:40 by jaimecondea      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,44 +15,56 @@
 
 //echo echo -n cd pwd export unset env exit 
 int ft_built_echo(t_command *command)
-int ft_built_echo(t_command *command)
-{
-	int jump_line;
+{											
+    int jump_line;
 	int	i;
 	int ok;
 
-		i = 0;
-		jump_line =1;
+	ok = 1;
+	i = 0;
+	jump_line =1; //ponemos \n detraas de cada args
 	if (!ft_memcmp(command->args[0], "-n", 2) && ft_strlen(command->args[0])==2)
 	if (!ft_memcmp(command->args[0], "-n", 2) && ft_strlen(command->args[0])==2)
 	{
 		jump_line = 0;
 		i++;
-	}	
+	}
+
 	while(command->args[i])
 	while(command->args[i])
 	{
-		write(command->file_output,command->args[i], ft_strlen(command->args[i]));
+		ok *= write(command->file_output,command->args[i], ft_strlen(command->args[i]));
+		if (ok>0)
+			ok =1;
+		else
+			ok = 0;
 		if (command->args[i+1])
-			ok = write(command->file_output," ",1);
-		write(command->file_output,command->args[i], ft_strlen(command->args[i]));
-		if (command->args[i+1])
-			ok = write(command->file_output," ",1);
+		{
+			if (!	jump_line)
+			{
+				ok *= write(command->file_output,"\n",1);
+				if (ok>0)
+					ok =1;
+				else
+					ok = 0;
+			}
+			else
+			{
+				ok *= write(command->file_output," ",1);
+				if (ok>0)
+					ok =1;
+				else
+					ok = 0;
+			}		
+		}
 		i++;
-		if (jump_line)
-			ok *= write(command->file_output,"\n",1);
-			ok *= write(command->file_output,"\n",1);
-
-		return((ok <= 0) ? 1 : 0); 
-		return((ok <= 0) ? 1 : 0); 
 	}
-	return(0);
-	return(0);
+	ok *= write(command->file_output,"\n",1);
+	return((ok <= 0) ? 1 : 0);
 }
 
-int ft_built_cd(t_command *command, t_list **env)
 
-int ft_built_cd(t_command *command, t_list **env)
+int ft_built_cd(t_command *command, t_list **env)  // 0 es ok 1 es ko  -1 err men
 {
 	int	i;
 	char **path;
@@ -68,8 +80,10 @@ int ft_built_cd(t_command *command, t_list **env)
 	line_path= command->path; //cojo el path actual del guradado en cmd
 	route = malloc (2); 
 	if (!route)
-		exit(EXIT_FAILURE);//error memoria
-		exit(EXIT_FAILURE);//error memoria
+	{
+		perror("Error built_in");
+		return (-1);
+	}
 	route[0]='/';
 	route[1]='\0';
 	num_dir=0;
@@ -84,9 +98,9 @@ int ft_built_cd(t_command *command, t_list **env)
 	if (!path)
 	{
 		
-		perror("Error memoria");
-		//cierra_todo();
-		exit(EXIT_FAILURE);//error memoria
+		free(route);
+		perror("Error MEM built_in");
+		return (-1);
 	}
 	if ((((!ft_memcmp(command->args[0], "..", 2) && ft_strlen(command->args[0])==2)) || //cuando tengo .. 
 	(!ft_memcmp(command->args[0], "../", 3)&&(ft_strlen(command->args[0])==3))) && !(command->args[1]))
@@ -110,10 +124,9 @@ int ft_built_cd(t_command *command, t_list **env)
 			free(aux);
 			if (!route)
 			{
-				perror("Error memoria");
-				free(path);
-				//cierra_todo();
-				exit(EXIT_FAILURE);//error memoria
+				perror("Error MEM built_in");
+				ft_free_char(path);
+				return (-1);
 			}
 			{
 				perror("Error memoria");
@@ -132,7 +145,7 @@ int ft_built_cd(t_command *command, t_list **env)
 	else if ((command->args[0][0]== '.') && (command->args[1]))
 	{
 		perror("Error cd: too many arguments");
-		free(path);
+		ft_free_char(path);
 		free(route);
 		return(1);//Error cd: too many arguments
 		perror("Error cd: too many arguments");
@@ -144,7 +157,7 @@ int ft_built_cd(t_command *command, t_list **env)
 	else if ((!ft_memcmp(command->args[0], "./", 2) || !ft_memcmp(command->args[0], "../", 3))&& (command->args[1]))
 	{
 		perror("Error cd: too many arguments");
-		free(path);
+		ft_free_char(path);
 		free(route);
 		return(1);//Error cd: too many arguments
 	}
@@ -166,10 +179,9 @@ int ft_built_cd(t_command *command, t_list **env)
 			free(aux);
 			if (!route)
 			{
-				perror("Error memoria");
-				free(path);
-				//cierra_todo();
-				exit(EXIT_FAILURE);//error memoria
+				perror("Error MEM built_in");
+				ft_free_char(path);
+				return(-1);
 			}
 			{
 				perror("Error memoria");
@@ -185,19 +197,11 @@ int ft_built_cd(t_command *command, t_list **env)
 				free(aux);
 				if (!route)
 				{
-					perror("Error memoria");
-					free(path);
-					//cierra_todo();
-					exit(EXIT_FAILURE);//error memoria
+					perror("Error MEM built_in");
+					ft_free_char(path);
+					return(-1);
 				}
-				}
-				{
-					perror("Error memoria");
-					free(path);
-					//cierra_todo();
-					exit(EXIT_FAILURE);//error memoria
-				}
-				}
+			}
 			i++;
 		}
 		aux2 = ft_strchr(command->args[0], '/'); //posiciono aux2 en lo que tengo que añadir a la ruta absoluta actual
@@ -209,10 +213,9 @@ int ft_built_cd(t_command *command, t_list **env)
 		free(aux);
 		if (!route)
 		{
-			perror("Error memoria");
-			free(path);
-			//cierra_todo();
-			exit(EXIT_FAILURE);//error memoria
+			perror("Error MEM built_in");
+			ft_free_char(path);
+			return(-1);
 		}
 		{
 			perror("Error memoria");
@@ -230,12 +233,12 @@ int ft_built_cd(t_command *command, t_list **env)
 			route= ft_strjoin(route, path[i]); //malloc
 			free(aux);
 			if (!route)
-			{
-				perror("Error memoria");
-				free(path);
-				//cierra_todo();
-				exit(EXIT_FAILURE);//error memoria
-			}
+				if (!route)
+				{
+					perror("Error MEM built_in");
+					ft_free_char(path);
+					return(-1);
+				}
 			if (path[i+1])
 			{
 				aux = route;
@@ -243,12 +246,11 @@ int ft_built_cd(t_command *command, t_list **env)
 				free(aux);
 				if (!route)
 				{
-					perror("Error memoria");
-					free(path);
-					//cierra_todo();
-					exit(EXIT_FAILURE);//error memoria
+					perror("Error MEM built_in");
+					ft_free_char(path);
+					return(-1);
 				}
-				}
+			}
 			i++;
 		}
 		aux2 = ft_strchr(command->args[0], '/'); //posiciono aux2 en lo que tengo que añadir a la ruta absoluta actual
@@ -258,11 +260,11 @@ int ft_built_cd(t_command *command, t_list **env)
 		route= ft_strjoin(route, aux2); //malloc
 		free(aux);
 		if (!route)
+		if (!route)
 		{
-			perror("Error memoria");
-			free(path);
-			//cierra_todo();
-			exit(EXIT_FAILURE);//error memoria
+			perror("Error MEM built_in");
+			ft_free_char(path);
+			return(-1);
 		}
 	}
 
@@ -276,15 +278,16 @@ int ft_built_cd(t_command *command, t_list **env)
 		free(aux);
 		if (!route)
 		{
-			perror("Error memoria");
-			free(path);
-			//cierra_todo();
-			exit(EXIT_FAILURE);//error memoria
+			perror("Error MEM built_in");
+			ft_free_char(path);
+			return(-1);
 		}
 	}
+	ft_save_var_env("PWD", route, env); //   guardo lo valores en la variable de entorno. command->path se deberá actualizar
+	ft_save_var_env("OLDPWD", line_path, env);
+	free(route);
+	ft_free_char(path);
 
-	ft_save_var_env("pwd", route, env); // aqui guardo lo valores en la variable de entorno. command->path se deberá actualizar
-	ft_save_var_env("oldpwd", line_path, env);
 	return(0);
 }
 
@@ -294,7 +297,7 @@ int ft_built_pwd(t_command *command)
 	int ok;
 	
 	ok = write(command->file_output,command->path, ft_strlen(command->path));
-	write(1,"\n", 1);
+	write(command->file_output,"\n", 1);
 	return((ok <= 0) ? 1 : 0);
 }
 
@@ -302,16 +305,17 @@ int ft_built_export(t_command *command, t_list **env)
 {
 	int	ok;
 	
+	if (command->args[0] == NULL)
+	{	
+		ok = ft_print_list_env(command, env);
+		return(ok);
+	}
 	if (ft_memchr(command->args[0], '=', ft_strlen(command->args[0]))!= NULL)
 	{
 		ft_add_v_env(command->args[0], env);
 		return (0);
 	}
-	if (command->args[0] == NULL)
-	{
-		ok = ft_print_list_env(command, env); //TODO ft_print_list_env(t_command *command, t_list **env)
-		return(ok);
-	}
+	//IMPORTANTE queda ver si hay que meter export cuando no hay =
 	return (0);
 
 }
@@ -325,17 +329,9 @@ int ft_built_unset(t_command *command, t_list **env)
 
 int ft_built_env(t_command *command, t_list **env)
 {
-	(void)command; // Esto evita el error de compilación por variable no utilizada.
-	(void)env; // Esto evita el error de compilación por variable no utilizada.
-	return (0);	
+	return( ft_print_list_env(command, env));
 }
 
-int		ft_print_list_env(t_command *command, t_list **env)
-{
-	(void)command; // Esto evita el error de compilación por variable no utilizada.
-	(void)env; // Esto evita el error de compilación por variable no utilizada.
-	return (0);	
-}
 
 int ft_build_int(t_command *command_act, t_list **env )
 
@@ -360,9 +356,10 @@ int ft_build_int(t_command *command_act, t_list **env )
 		ok = ft_built_env(command_act, env);
 	else if (ft_memcmp(comando, "exit", 4)== 0)
 	{
+		write(command_act->file_output,"exit built_int\n",15);
 		free(command_act);
 		ft_free_list(env);
-		exit(EXIT_SUCCESS); //
+		return (ok); //¿Otro codigo para salir del programa despues de liberar cosas?
 
 	}
 	

@@ -16,51 +16,6 @@
 }*/
 }*/
 
-void ft_ejecutar(char *line, t_list  **env)
-{
-	char **args;
-
-	args = ft_split(line, ' ');
-	if (!args)
-		return;
-	if (ft_strncmp(args[0], "env",3) == 0)
-	{
-		ft_lstiter(*env, print_string); //##PRUEBA## Imprime la lista de variables de entorno
-	}
-	else if ((ft_strncmp(args[0], "export", 6) == 0) && ((ft_memchr(args[1], '=', ft_strlen(args[1]))!= NULL)))
-	{
-		ft_add_v_env(args[1], env);
-	}
-	else if ((ft_strncmp(args[0], "export", 6) == 0) && (args[1] == NULL))
-	{
-		ft_lstiter(*env, print_string); //##PRUEBA## Imprime la lista de variables de entorno
-	}
-	else if (ft_strncmp(args[0], "export", 6) == 0)
-		return;
-	else if (ft_strncmp(args[0], "unset", 5) == 0)
-	{
-		ft_del_v_env(args[1], env); 
-	}
-	else if (ft_strncmp(args[0], "cd", 2) == 0)
-	{
-	  //  ft_chdir(args[1]);                   //Crear un ft_chdir
-	}
-	else if (ft_strncmp(args[0], "pwd", 3) == 0)
-	{
-		//ft_pwd(env);                         //Crear un ft_pwd
-		//ft_pwd(env);                         //Crear un ft_pwd
-	}
-	else if (ft_strncmp(args[0], "echo", 4) == 0)
-			ft_printf("%s\n", args[1]);
-	else if (ft_strncmp(args[0], "exit", 4) == 0)
-	{
-		ft_free_char(args);
-		ft_free_list(env);
-		exit(0);
-	}
-	else
-		printf("Comando no encontrado\n");
-}
 void prom(t_list  **env)
 {
 	char 		*line;
@@ -68,98 +23,88 @@ void prom(t_list  **env)
 	t_command	**commands;
 	int			last_return;
 	char		str_last_return[20];
+	int			control;
+	char 		*path_act;
+	char		*aux;
 	
-	while (1)
+	control = 1;
+	
+
+	while (control==1)
 	{
-		line = readline("prom1> "); //hace Malloc
+		path_act = ft_get_var_env(env,"PWD"); //malloc
+		if  (!path_act)
+			return;
+		aux= path_act;
+		path_act=ft_strjoin(path_act, " XXX$ ");
+		free(aux);
+		if (!path_act)
+			return;
+		line = readline(path_act); //hace Malloc
 		if (!line)
 		{
 			printf("Line es nulo\n");
 			break; // EOF, probablemente Ctrl+D Ctrl+c
 		}
+		if (line[0] == '\0') 
+			{
+				free(line);
+				free(path_act);
+				continue;
+			}
+		if (!ft_memcmp(line,"exit",4)) 
+			{
+				free(line);
+				free(path_act);
+				control = 0;
+				return;
+			}		
+
 		add_history(line);
-		if (ft_strncmp(line, "exit", 4) == 0) // Si la línea es "exit", salir del bucle
-		{
-			free(line);
-			break;
-		}
+
 		token = lexer(line);  //Malloc
 		if (!token)
 		{
 			free(line);
-			return;
+			free(path_act);
+			ft_free_list(env); //Libero la memoria de la lista de variables de entorno.
+			perror("Error Mem en LEXER");
+			exit(1);
 		}
-		commands = parser(token);
+		if (!expander(token, env)) ///Hago la expansión $ Comillas etc si es 0 es KO
+		{
+			free(line);
+			free(path_act);
+			ft_free_char(token);
+			ft_free_list(env); //Libero la memoria de la lista de variables de entorno.
+			perror("Error Mem en EXPANDER");
+			exit(1);
+		}
+		commands = parser(token, env); //malloc
 		if (!commands)
 		{
 			free(line);
+			free(path_act);
 			ft_free_char(token);
-			return;
+			ft_free_list(env); //Libero la memoria de la lista de variables de entorno.
+			perror("Error Mem en PARSER");
+			exit(1);
 		}
 		last_return = executor(commands,env); //Recibir variables de entornos
-		//printf("ok es %i \n", last_return);
+		if (last_return == -1)
+		{
+			free(line);
+			free(path_act);
+			ft_free_char(token);
+			ft_free_list(env); //Libero la memoria de la lista de variables de entorno.
+			free_commands(commands);
+			perror("Error Mem en EXECUTOR");
+			exit(1);
+		}
 		snprintf(str_last_return, sizeof(str_last_return), "%i", last_return);//convierto num a cadena
 		ft_save_var_env("?", str_last_return,env);
 		ft_free_char(token);
 		free(line);
+		free(path_act);
 	}
-}
-
-void prom1(t_list  **env) 
-{
-	char 		*line;
-	char		**token;
-	t_command	**commands;
-	int			last_return;
-	char		str_last_return[20]; 
-
-	
-	
-	while (1) {
-		// Mostrar el prompt y leer una línea de entrada
-
-//TODO preparar cadena con pwd para añadir al prom con colorines
-
-		line = readline("prom1> "); //hace Malloc
-		printf("por aqui \n");
-		if (!line)
-		{
-			printf("Line es nulo\n");
-			break; // EOF, probablemente Ctrl+D Ctrl+c
-		}
-		add_history(line);
-		if (ft_strncmp(line, "exit", 4) == 0) // Si la línea es "exit", salir del bucle
-		{
-			free(line);
-			break;
-		}
-		
-		token = lexer(line);  //Malloc
-		if (!token)
-			return; ///Preperaaprintf("por aqui \n");
-		commands = parser(token); //malloc
-		(void)last_return;
-		(void)str_last_return;
-		(void)env;
-		(void)commands;
-		/*last_return = executor(commands,env); //Recibir variables de entornos
-		snprintf(str_last_return, sizeof(str_last_return), "%i", last_return);//convierto num a cadena
-		
-		ft_save_var_env("?", str_last_return,env);*/
-		
-		
-		//TODO guardar en env la variable devuelta para poder imprimirla desde echo $?  TEngo que ponerlo en Expander
-
-		//ft_imprimetoken(token); //Expandidof
-		// ft_ejecutar(line, env); //PAra pruebas en esta función pongo los comando que quiero probar  // están los built-ins mirar si se pueden lanzar como  procesos
-
-		// Aquí es donde de se tiene que procesar la linea introducida
-		
-		ft_free_char(token);
-		//free_commands(commands);
-		
-		free(line); // Liberar la memoria de la línea
-		
-	}
-
 }

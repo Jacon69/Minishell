@@ -37,7 +37,7 @@ typedef struct s_command
 {
 	int		index;
 	char	*command;
-	char	path[1024];
+	char	*path;
 	char	**args;
 	int		redir1; //0= NULL, < = 1, << = 2
 	int		redir2; //0= NULL, > = 1, >> = 2
@@ -53,7 +53,7 @@ typedef struct s_command
 
 
 //parsing
-t_command **parser(char **tokens);
+t_command **parser(char **tokens, t_list **env);
 
 //build_in
 int		ft_built_echo(t_command *command);
@@ -91,7 +91,7 @@ int		count_nbr_tokens(char **tokens);
 /*lexer*/
 char    **lexer(char *line); // Crea
 void	free_token(char **token);
-void	expander(char **token, t_list  **env);
+int		expander(char **token, t_list  **env);
 
 
 #endif
