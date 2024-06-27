@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 10:12:42 by alexigar          #+#    #+#             */
-/*   Updated: 2024/06/26 12:58:50 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/06/27 17:49:51 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,8 +91,7 @@ int try_call(char **paths, t_command *com)
             if (com -> returned_output == 0)
             {
                 com -> string_output = read_all(pipefd[0]);
-                if (com -> file_output == STDOUT_FILENO)
-                    printf("%s\n", com -> string_output);
+                write(com -> file_output, com -> string_output, ft_strlen(com -> string_output));
                 return (com -> returned_output);
             }
         }

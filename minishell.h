@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 16:17:26 by aiturria          #+#    #+#             */
-/*   Updated: 2024/06/26 12:39:49 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/06/27 18:14:39 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ typedef struct s_command
 //parsing
 t_command	**parser(char **tokens, t_list **env);
 int			count_nbr_tokens(char **tokens);
+char    	*read_all(int fd);
 
 //build_in
 int		ft_built_echo(t_command *command);
