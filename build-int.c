@@ -22,13 +22,12 @@ int ft_built_echo(t_command *command)
 
 	ok = 1;
 	i = 0;
-	jump_line =1; //ponemos \n detraas de cada args
+	jump_line =1; //ponemos \n detras de cada args
 	if (!ft_memcmp(command->args[0], "-n", 2) && ft_strlen(command->args[0])==2)
 	{
 		jump_line = 0;
 		i++;
 	}
-
 	while(command->args[i])
 	{
 		ok *= write(command->file_output,command->args[i], ft_strlen(command->args[i]));
@@ -134,7 +133,6 @@ int ft_built_cd(t_command *command, t_list **env)  // 0 es ok 1 es ko  -1 err me
 		free(route);
 		return(1);//Error cd: too many arguments
 	}
-
 	else if (!ft_memcmp(command->args[0], "./", 2))  ///Es es que comience con ./ o sin barra  Se pone ruta relativa
 	{
 		while( i < (num_dir) )  //conStruyo la ruta absoluta

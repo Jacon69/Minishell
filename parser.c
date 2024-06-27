@@ -45,8 +45,6 @@ t_command **parser(char **tokens, t_list **env) //A esta funcion le tiene que ll
 	char		*aux;
 	int			pipefd[2];
 
-	if (!tokens || !tokens[0])
-		return (NULL); //salida error
 	i = 0;
 	j = 0;
 	k = 0;
@@ -119,11 +117,11 @@ t_command **parser(char **tokens, t_list **env) //A esta funcion le tiene que ll
 		current_command -> args[k] = NULL;
 		if (!current_command -> path)
 		{
-			current_command -> path = ft_get_var_env(env, "PWD");
+			current_command -> path = ft_get_var_env(env,"PWD"); //malloc
 			if (!current_command -> path)
 			{
 				free_commands(command_list);
-				return (NULL);
+				return (NULL); //salida error
 			}
 		}
 		if (tokens[i])

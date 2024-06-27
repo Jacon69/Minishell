@@ -117,17 +117,15 @@ int executor(t_command **command_list, t_list **env)
     command_list[i] -> input = NULL;
     function_call = ft_get_var_env(env, "PATH");
     if (!function_call)
-    {
-        free_commands(command_list);
-        exit(EXIT_FAILURE);
-    }
+        {
+            return (-1);
+        }
     paths = ft_split(function_call, ':'); //malloc
     if (!paths)
     {
         free(function_call);
         function_call = NULL;
-        free_commands(command_list);
-        exit(EXIT_FAILURE); //salida error
+        return (-1); //salida error
     }
     //Split y funcion para intentar llamar a las funciones
     while (command_list[i])
@@ -146,6 +144,8 @@ int executor(t_command **command_list, t_list **env)
         }
         else
         {
+            free(function_call);
+            function_call = NULL;
             to_return = ft_build_int(command_list[i], env);
             if (to_return != 0)
             {
@@ -157,7 +157,6 @@ int executor(t_command **command_list, t_list **env)
         if (command_list[i] -> returned_output == -1)
         {
             //Tiro error suave si ha fallado
-            free_commands(command_list);
             free(function_call);
             function_call = NULL;
             return (1); //O el codigo de error que sea
@@ -165,9 +164,8 @@ int executor(t_command **command_list, t_list **env)
         if (command_list[i] -> piped == 1)
             command_list[i + 1] -> input = command_list[i] -> string_output;
         i++;
-        free(function_call);
-        function_call = NULL;
+     /*   free(function_call);
+        function_call = NULL;*/
     }
-    free_commands(command_list);
     return (to_return); //Si todo ha ido bien devuelvo 0
 }
