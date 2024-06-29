@@ -21,9 +21,9 @@ int ft_built_echo(t_command *command)
 	int ok;
 
 	ok = 1;
-	i = 0;
+	i = 1;
 	jump_line =1; //ponemos \n detras de cada args
-	if (!ft_memcmp(command->args[0], "-n", 2) && ft_strlen(command->args[0])==2)
+	if (!ft_memcmp(command->args[1], "-n", 2) && ft_strlen(command->args[1])==2)
 	{
 		jump_line = 0;
 		i++;
@@ -72,7 +72,7 @@ int ft_built_cd(t_command *command, t_list **env)  // 0 es ok 1 es ko  -1 err me
 
 	int	num_dir;
 	
-	line_path= command->path; //cojo el path actual del guradado en cmd
+	line_path= command->path; //cojo el path actual del guardado en cmd
 	route = malloc (2); 
 	if (!route)
 	{
@@ -104,7 +104,7 @@ int ft_built_cd(t_command *command, t_list **env)  // 0 es ok 1 es ko  -1 err me
 		while( i < (num_dir - 1) && ft_strlen(line_path) > 1)  // si line_path es mayor que 1 es no es raiz si es raiz no hace nada
 		{
 			aux=route;
-			route= ft_strjoin(route, path[i]); //malloc  voy añadiendo menos el último
+			route= ft_strjoin(route, path[i]); //malloc  voy añadiendo dir menos el último
 			free(aux);
 			if (!route)
 			{
