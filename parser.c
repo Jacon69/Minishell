@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 10:01:14 by alexigar          #+#    #+#             */
-/*   Updated: 2024/06/27 18:17:27 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/07/01 10:12:16 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ t_command **parser(char **tokens, t_list **env) //A esta funcion le tiene que ll
 			return (NULL); //salida error
 		}
 		current_command -> index = j;
-		while (tokens[i][0] != '|' && tokens[i][0] != '>' && tokens[i][0] != '<')
+		while (tokens[i] && tokens[i][0] != '|' && tokens[i][0] != '>' && tokens[i][0] != '<')
 		{
 			if (!(current_command -> command) && tokens[i][0] != '/')
 			{
@@ -98,7 +98,7 @@ t_command **parser(char **tokens, t_list **env) //A esta funcion le tiene que ll
 				k++;
 				if (tokens[i][0] == '/')
 				{
-					if (current_command -> file_input && current_command -> file_output)
+					if (current_command -> file_input != 1 && current_command -> file_output != 1)
 					{
 						free_commands(command_list);
 						return (NULL); //salida error
@@ -110,7 +110,11 @@ t_command **parser(char **tokens, t_list **env) //A esta funcion le tiene que ll
 			//}
 			i++;
 			if (!tokens[i])
-				break ;
+			{
+				command_list[j] = current_command;
+				return (command_list);
+				//break ;
+			}
 		}
 		current_command -> args[k] = NULL;
 		if (!current_command -> path)

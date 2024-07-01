@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 05:32:30 by jaimecondea       #+#    #+#             */
-/*   Updated: 2024/06/26 10:49:24 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/07/01 10:17:02 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,9 @@ int ft_built_echo(t_command *command)
 	int ok;
 
 	ok = 1;
-	i = 0;
+	i = 1;
 	jump_line =1; //ponemos \n detras de cada args
-	if (!ft_memcmp(command->args[0], "-n", 2) && ft_strlen(command->args[0])==2)
+	if (!ft_memcmp(command->args[1], "-n", 2) && ft_strlen(command->args[1])==2)
 	{
 		jump_line = 0;
 		i++;

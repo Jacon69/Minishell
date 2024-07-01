@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 10:12:42 by alexigar          #+#    #+#             */
-/*   Updated: 2024/06/27 17:49:51 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/07/01 12:45:34 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,13 +94,19 @@ int try_call(char **paths, t_command *com)
                 write(com -> file_output, com -> string_output, ft_strlen(com -> string_output));
                 return (com -> returned_output);
             }
+            else if (com -> returned_output == 127)
+            {
+                printf("Error: command not found\n");
+                //i++;
+                break ;
+            }
         }
-        if (com -> returned_output == 127)
-			break ;
+        //if (com -> returned_output == 127)
+		//	break ;
 		i++;
     }
     if (com -> returned_output == 1)
-        printf("Error: command not found\n");
+        printf("Command failed\n");
     return (com -> returned_output);
 }
 
@@ -110,8 +116,10 @@ int executor(t_command **command_list, t_list **env)
     char    *function_call;
     char    **paths;
     int     to_return;
+    int     j;
 
     i = 0;
+    j = 0;
     to_return = 0;
     command_list[i] -> input = NULL;
     function_call = ft_get_var_env(env, "PATH");
@@ -139,6 +147,7 @@ int executor(t_command **command_list, t_list **env)
         && ft_strncmp(command_list[i] -> command, "env", ft_strlen(command_list[i] -> command)) != 0
         && ft_strncmp(command_list[i] -> command, "exit", ft_strlen(command_list[i] -> command)) != 0)
         {
+            //printf("Va a intentar ejecutar %s\n", command_list[i] -> command);
             try_call(paths, command_list[i]);
         }
         else
@@ -161,8 +170,14 @@ int executor(t_command **command_list, t_list **env)
             return (1); //O el codigo de error que sea
         }
         if (command_list[i] -> piped == 1)
+        {
             command_list[i + 1] -> input = command_list[i] -> string_output;
+            while (command_list[i + 1] -> args[j])
+                j++;
+            command_list[i + 1] -> args[j] = ft_itoa(command_list[i] -> file_output);
+        }
         i++;
+        //printf("Input\n\n %s\n", command_list[i] -> input);
      /*   free(function_call);
         function_call = NULL;*/
     }
