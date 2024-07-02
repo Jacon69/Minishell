@@ -154,10 +154,7 @@ int executor(t_command **command_list, t_list **env)
         {
             free(function_call);
             function_call = NULL;
-            printf("Va a ejecutar ft_build\n");
-            printf("%s\n", command_list[i] -> path);
             to_return = ft_build_int(command_list[i], env);
-            printf("Ha ejecutado ft_build\n");
             if (to_return != 0)
             {
                 free(function_call);
