@@ -14,6 +14,7 @@ int main(int narg, char * carg[], char **environment)
 	
 	ft_save_var_env("?", "0",env);// Inicializo $?
 	
+	
 	prom(env); //##PRUEBA## Imprime el prompt y lee una línea de entrada
 
    

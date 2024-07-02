@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 10:01:14 by alexigar          #+#    #+#             */
-/*   Updated: 2024/06/26 12:38:55 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/07/01 10:12:16 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,6 @@ t_command **parser(char **tokens, t_list **env) //A esta funcion le tiene que ll
 	int			n_tokens;
 	t_command 	*current_command;
 	t_command	**command_list;
-	char		*next_line;
-	char		*aux;
 	int			pipefd[2];
 
 	i = 0;
@@ -88,7 +86,7 @@ t_command **parser(char **tokens, t_list **env) //A esta funcion le tiene que ll
 			return (NULL); //salida error
 		}
 		current_command -> index = j;
-		while (tokens[i][0] != '|' && tokens[i][0] != '>' && tokens[i][0] != '<')
+		while (tokens[i] && tokens[i][0] != '|' && tokens[i][0] != '>' && tokens[i][0] != '<')
 		{
 			if (!(current_command -> command) && tokens[i][0] != '/')
 			{
@@ -100,7 +98,7 @@ t_command **parser(char **tokens, t_list **env) //A esta funcion le tiene que ll
 				k++;
 				if (tokens[i][0] == '/')
 				{
-					if (current_command -> file_input && current_command -> file_output)
+					if (current_command -> file_input != 1 && current_command -> file_output != 1)
 					{
 						free_commands(command_list);
 						return (NULL); //salida error
@@ -112,7 +110,11 @@ t_command **parser(char **tokens, t_list **env) //A esta funcion le tiene que ll
 			//}
 			i++;
 			if (!tokens[i])
-				break ;
+			{
+				command_list[j] = current_command;
+				return (command_list);
+				//break ;
+			}
 		}
 		current_command -> args[k] = NULL;
 		if (!current_command -> path)
@@ -132,12 +134,31 @@ t_command **parser(char **tokens, t_list **env) //A esta funcion le tiene que ll
 					current_command -> redir2 += 2;
 				else
 					current_command -> redir2 += 1;
-				//TODO abrir los archivos y machacar si hay varios > o <
 				i++;
-				current_command -> file_output = open(tokens[i], O_WRONLY | O_CREAT, 0644);
-					i++;
-				if (tokens[i][0] == '>')
+				while (tokens[i][0] == '>')
+				{
 					close(current_command -> file_output);
+					if (current_command -> redir2 == 1)
+					{
+						unlink(tokens[i]);
+						current_command -> file_output = open(tokens[i], O_WRONLY | O_CREAT, 0644);
+					}
+					else
+						current_command -> file_output = open(tokens[i], O_WRONLY | O_CREAT | O_APPEND, 0644);
+					i++;
+				}
+				if (current_command -> redir2 == 1)
+				{
+					unlink(tokens[i]);
+					current_command -> file_output = open(tokens[i], O_WRONLY | O_CREAT, 0644);
+				}
+				else
+					current_command -> file_output = open(tokens[i], O_WRONLY | O_CREAT | O_APPEND, 0644);
+				if (++i >= n_tokens)
+				{
+					command_list[j] = current_command;
+					return (command_list);
+				}
 			}
 			if (tokens[i][0] == '<')
 			{
@@ -145,25 +166,22 @@ t_command **parser(char **tokens, t_list **env) //A esta funcion le tiene que ll
 					current_command -> redir1 -= 2; //Este tiene que pedir inputs hasta que encuentre el siguiente argumento (input desde la consola, heredoc)
 				else
 					current_command -> redir1 -= 1; //Este coge un archivo (input desde el archivo)
-					//TODO abrir el archivo como solo lectura y meter con get_next_line en input
 				i++;
-				current_command -> file_input = open(tokens[i], O_RDONLY);
-				next_line = get_next_line(current_command -> file_input); //malloc
-				if (!next_line)
+				if (current_command -> redir1 == 1)
 				{
-					free_commands(command_list);
-					return (NULL); //salida error
+					current_command -> file_input = open(tokens[i], O_RDONLY);
+					current_command -> input = read_all(current_command -> file_input); //malloc
+					close(current_command -> file_input);
+					if (!(current_command -> input))
+					{
+						free_commands(command_list);
+						return (NULL); //salida error
+					}
 				}
-				current_command -> input = next_line;
-				while (next_line)
+				else
 				{
-					aux = next_line;
-					next_line = get_next_line(current_command -> file_input);
-					current_command -> input = ft_strjoin(current_command -> input, next_line);
-					free(aux);
-					aux = NULL;
+					//TODO
 				}
-				close(current_command -> file_input);
 			}
 			if (tokens[i][0] == '|') //El output del comando va a ir al input del siguiente comando
 			{

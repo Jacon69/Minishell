@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 10:12:42 by alexigar          #+#    #+#             */
-/*   Updated: 2024/06/26 12:58:50 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/07/02 11:49:09 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ int try_call(char **paths, t_command *com)
     int     returned;
 
     i = 0;
+    printf("Va a intentar ejecutar %s\n", com -> command);
     while (paths[i])
     {
         aux = ft_strjoin(paths[i], "/");
@@ -86,21 +87,23 @@ int try_call(char **paths, t_command *com)
             close(pipefd[1]);
             waitpid(pid, &returned, 0);
             com -> returned_output = WEXITSTATUS(returned);
+            printf("%s ha devuelto %d\n", function_call, com -> returned_output);
             free(function_call);
             function_call = NULL;
-            if (com -> returned_output == 0)
+            if (com -> returned_output != 1)
             {
                 com -> string_output = read_all(pipefd[0]);
-                if (com -> file_output == STDOUT_FILENO)
-                    printf("%s\n", com -> string_output);
+                write(com -> file_output, com -> string_output, ft_strlen(com -> string_output));
                 return (com -> returned_output);
             }
         }
-        if (com -> returned_output == 127)
-			break ;
-		i++;
+        i++;
+        if (!paths[i])
+            com -> returned_output = 127;
     }
     if (com -> returned_output == 1)
+        printf("Command failed\n");
+    else if (com -> returned_output == 127)
         printf("Error: command not found\n");
     return (com -> returned_output);
 }
@@ -111,8 +114,10 @@ int executor(t_command **command_list, t_list **env)
     char    *function_call;
     char    **paths;
     int     to_return;
+    int     j;
 
     i = 0;
+    j = 0;
     to_return = 0;
     command_list[i] -> input = NULL;
     function_call = ft_get_var_env(env, "PATH");
@@ -130,6 +135,8 @@ int executor(t_command **command_list, t_list **env)
     //Split y funcion para intentar llamar a las funciones
     while (command_list[i])
     {
+        if (!command_list[i] -> command)
+            return(0); //Tendria que hacer alguna otra cosa entiendo
         //TODO Manejar bien pipes y redirecciones
         //Si el comando es un built-in se ejecuta el built-in, si no intento llamar a execve
         if (ft_strncmp(command_list[i] -> command, "echo", ft_strlen(command_list[i] -> command)) != 0
@@ -140,13 +147,16 @@ int executor(t_command **command_list, t_list **env)
         && ft_strncmp(command_list[i] -> command, "env", ft_strlen(command_list[i] -> command)) != 0
         && ft_strncmp(command_list[i] -> command, "exit", ft_strlen(command_list[i] -> command)) != 0)
         {
+            //printf("Va a intentar ejecutar %s\n", command_list[i] -> command);
             try_call(paths, command_list[i]);
         }
         else
         {
             free(function_call);
             function_call = NULL;
+            printf("Va a ejecutar ft_build\n");
             to_return = ft_build_int(command_list[i], env);
+            printf("Ha ejecutado ft_build\n");
             if (to_return != 0)
             {
                 free(function_call);
@@ -162,8 +172,14 @@ int executor(t_command **command_list, t_list **env)
             return (1); //O el codigo de error que sea
         }
         if (command_list[i] -> piped == 1)
+        {
             command_list[i + 1] -> input = command_list[i] -> string_output;
+            while (command_list[i + 1] -> args[j])
+                j++;
+            command_list[i + 1] -> args[j] = ft_itoa(command_list[i] -> file_output);
+        }
         i++;
+        //printf("Input\n\n %s\n", command_list[i] -> input);
      /*   free(function_call);
         function_call = NULL;*/
     }
