@@ -24,7 +24,7 @@ void prom(t_list  **env)
 	int			control;
 	char 		*path_act;
 	char		*aux;
-	
+
 	control = 1;
 	
 
@@ -69,6 +69,7 @@ void prom(t_list  **env)
 			perror("Error Mem en LEXER");
 			exit(1);
 		}
+		
 		if (!expander(token, env)) ///Hago la expansión $ Comillas etc si es 0 es KO
 		{
 			free(line);
@@ -78,7 +79,10 @@ void prom(t_list  **env)
 			perror("Error Mem en EXPANDER");
 			exit(1);
 		}
+
 		commands = parser(token, env); //malloc
+		
+	
 		if (!commands)
 		{
 			free(line);
