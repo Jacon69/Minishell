@@ -69,10 +69,11 @@ int ft_built_cd(t_command *command, t_list **env)  // 0 es ok 1 es ko  -1 err me
 	char *route;
 	char *aux;
 	char *aux2;
-
 	int	num_dir;
+	int ok;
 	
-	line_path= command->path; //cojo el path actual del guardado en cmd
+	ok= 0;
+	line_path = command->path; //cojo el path actual del guardado en cmd
 	route = malloc (2); 
 	if (!route)
 	{
@@ -86,157 +87,173 @@ int ft_built_cd(t_command *command, t_list **env)  // 0 es ok 1 es ko  -1 err me
 	while  (line_path[i])
 	{
 		if (line_path[i]=='/')
-			num_dir++;
+		{
+			num_dir++;		
+		}
+		i++; 
 	}
 	i=0;
 	path = ft_split(line_path, '/'); //Malloc
 	if (!path)
 	{
-		
+	
 		free(route);
-		perror("Error MEM built_in");
+		perror("Error MEM built_in1");
 		return (-1);
 	}
-	if ((((!ft_memcmp(command->args[0], "..", 2) && ft_strlen(command->args[0])==2)) || //cuando tengo .. 
-	(!ft_memcmp(command->args[0], "../", 3)&&(ft_strlen(command->args[0])==3))) && !(command->args[1]))
+	if ((((!ft_memcmp(command->args[1], "..", 2) && ft_strlen(command->args[1])==2)) || //cuando tengo .. 
+	(!ft_memcmp(command->args[1], "../", 3)&&(ft_strlen(command->args[1])==3))) && !(command->args[2]))
 	{
-		
-		while( i < (num_dir - 1) && ft_strlen(line_path) > 1)  // si line_path es mayor que 1 es no es raiz si es raiz no hace nada
+		while( (i < num_dir - 1) && ft_strlen(line_path) > 1)  // si line_path es mayor que 1 es no es raiz si es raiz no hace nada
 		{
 			aux=route;
 			route= ft_strjoin(route, path[i]); //malloc  voy añadiendo dir menos el último
 			free(aux);
 			if (!route)
 			{
-				perror("Error MEM built_in");
+				perror("Error MEM built_in2");
 				ft_free_char(path);
 				return (-1);
 			}
+			if ( i < (num_dir - 2))
+			{
+				aux=route;
+				route= ft_strjoin(route, "/"); //malloc  voy añadiendo dir menos el último
+				free(aux);
+				if (!route)
+				{
+					perror("Error MEM built_in3");
+					ft_free_char(path);
+					return (-1);
+				}
+			}
 			i++;
 		}
-	}
-		  
-	else if (((((command->args[0][0]=='.'&& ft_strlen(command->args[0])==1))||(!ft_memcmp(command->args[0], "./", 2) && ft_strlen(command->args[0])==2) ))&& !(command->args[1]))
-		;//No hace nada
-	else if ((command->args[0][0]== '.') && (command->args[1]))
+	} 
+	else if (((((command->args[1][0]=='.'&& ft_strlen(command->args[1])==1))||(!ft_memcmp(command->args[1], "./", 2) && ft_strlen(command->args[1])==2) ))&& !(command->args[2]))
 	{
-		perror("Error cd: too many arguments");
-		ft_free_char(path);
-		free(route);
-		return(1);//Error cd: too many arguments
-	}
-
-	else if ((!ft_memcmp(command->args[0], "./", 2) || !ft_memcmp(command->args[0], "../", 3))&& (command->args[1]))
-	{
-		perror("Error cd: too many arguments");
-		ft_free_char(path);
-		free(route);
-		return(1);//Error cd: too many arguments
-	}
-	else if (!ft_memcmp(command->args[0], "./", 2))  ///Es es que comience con ./ o sin barra  Se pone ruta relativa
-	{
-		while( i < (num_dir) )  //conStruyo la ruta absoluta
+		while( (i < num_dir) && ft_strlen(line_path) > 1)  // si line_path es mayor que 1 es no es raiz si es raiz no hace nada
 		{
 			aux=route;
-			route= ft_strjoin(route, path[i]); //malloc
+			route= ft_strjoin(route, path[i]); //malloc  voy añadiendo dir
 			free(aux);
 			if (!route)
 			{
-				perror("Error MEM built_in");
+				perror("Error MEM built_in4");
 				ft_free_char(path);
-				return(-1);
+				return (-1);
 			}
-			if (path[i+1])
+			if ( i < (num_dir - 1))
 			{
-				aux = route;
-				route= ft_strjoin(route, "/"); //malloc
+				aux=route;
+				route= ft_strjoin(route, "/"); //malloc  voy añadiendo dir menos el último
 				free(aux);
 				if (!route)
 				{
-					perror("Error MEM built_in");
+					perror("Error MEM built_in5");
 					ft_free_char(path);
-					return(-1);
+					return (-1);
 				}
 			}
 			i++;
 		}
-		aux2 = ft_strchr(command->args[0], '/'); //posiciono aux2 en lo que tengo que añadir a la ruta absoluta actual
+	}
+	else if ((command->args[1][0]== '.') && (command->args[2]))
+	{
+		perror("Error cd: too many arguments");
+		ft_free_char(path);
+		free(route);
+		return(1);//Error cd: too many arguments
+	}
+	else if ((!ft_memcmp(command->args[1], "./", 2) || !ft_memcmp(command->args[1], "../", 3))&& (command->args[2]))
+	{
+		perror("Error cd: too many arguments");
+		ft_free_char(path);
+		free(route);
+		return(1);//Error cd: too many arguments
+	}
+	else if (command->args[1][0]== '/') //ABSOLUTA
+	{
+		aux2 = command->args[1]; 
 		aux2++;
 		
 		aux=route;
 		route= ft_strjoin(route, aux2); //malloc
+		
+		printf("path: %s \n",route);
 		free(aux);
 		if (!route)
 		{
-			perror("Error MEM built_in");
+			perror("Error MEM built_in6");
 			ft_free_char(path);
 			return(-1);
 		}
-	}	
-	else if (!ft_memcmp(command->args[0], "../", 3))  ///aquí tiene que haber algo detrás de la barra
+	}
+	else if (ft_strlen(command->args[1])>0) //aqui meto cuando me ponen un cd dirxx 
 	{
-		while( i < (num_dir - 1) )  //conStruyo la ruta absoluta menos el ultimo dir ya que es ..
+		while( (i < num_dir) && ft_strlen(line_path) > 1)  // si line_path es mayor que 1 es no es raiz si es raiz no hace nada
 		{
 			aux=route;
-			route= ft_strjoin(route, path[i]); //malloc
+			route= ft_strjoin(route, path[i]); //malloc  voy añadiendo dir
 			free(aux);
 			if (!route)
-				if (!route)
-				{
-					perror("Error MEM built_in");
-					ft_free_char(path);
-					return(-1);
-				}
-			if (path[i+1])
 			{
-				aux = route;
-				route= ft_strjoin(route, "/"); //malloc
+				perror("Error MEM built_in7");
+				ft_free_char(path);
+				return (-1);
+			}
+			if ( i < (num_dir - 1))
+			{
+				aux=route;
+				route= ft_strjoin(route, "/"); //malloc  voy añadiendo dir menos el último
 				free(aux);
 				if (!route)
 				{
-					perror("Error MEM built_in");
+					perror("Error MEM built_in8");
 					ft_free_char(path);
-					return(-1);
+					return (-1);
 				}
 			}
-			i++;
-		}
-		aux2 = ft_strchr(command->args[0], '/'); //posiciono aux2 en lo que tengo que añadir a la ruta absoluta actual
-		aux2++;
-		
-		aux=route;
-		route= ft_strjoin(route, aux2); //malloc
-		free(aux);
-		if (!route)
-		if (!route)
-		{
-			perror("Error MEM built_in");
-			ft_free_char(path);
-			return(-1);
-		}
-	}
 
-	else if (command->args[0][0]== '/') //ABSOLUTA
-	{
-		aux2 = command->args[0]; 
-		aux2++;
-		
+			if (command->args[1][0]!='/' && i == (num_dir -1))
+			{
+				aux=route;
+				route= ft_strjoin(route, "/"); //malloc  voy añadiendo dir menos el último
+				if (!route)
+				{
+					perror("Error MEM built_in9");
+					ft_free_char(path);
+					return (-1);
+				}
+			}
+			
+		i++;
+		}
+		aux2= aux;
 		aux=route;
-		route= ft_strjoin(route, aux2); //malloc
+		route= ft_strjoin(route, command->args[1]); //malloc  voy añadiendo dir menos el último
 		free(aux);
 		if (!route)
 		{
-			perror("Error MEM built_in");
+			perror("Error MEM built_in10");
 			ft_free_char(path);
-			return(-1);
+			return (-1);
+		}
+		if (!ft_is_dir_ok(route))  //Aqui compruebo si existe el dir
+		{
+			write(command->file_output,"Not a directory\n", 16);
+			free(route);
+			route=aux2;
+			ok=1;
 		}
 	}
+	
 	ft_save_var_env("PWD", route, env); //   guardo lo valores en la variable de entorno. command->path se deberá actualizar
 	ft_save_var_env("OLDPWD", line_path, env);
 	free(route);
 	ft_free_char(path);
 
-	return(0);
+	return(ok);
 }
 
 
@@ -253,14 +270,14 @@ int ft_built_export(t_command *command, t_list **env)
 {
 	int	ok;
 	
-	if (command->args[0] == NULL)
+	if (command->args[1] == NULL)
 	{	
 		ok = ft_print_list_env(command, env);
 		return(ok);
 	}
-	if (ft_memchr(command->args[0], '=', ft_strlen(command->args[0]))!= NULL)
+	if (ft_memchr(command->args[1], '=', ft_strlen(command->args[1]))!= NULL)
 	{
-		ft_add_v_env(command->args[0], env);
+		ft_add_v_env(command->args[1], env); ///Solo funciona si hay =
 		return (0);
 	}
 	//IMPORTANTE queda ver si hay que meter export cuando no hay =
@@ -272,6 +289,12 @@ int ft_built_unset(t_command *command, t_list **env)
 {
 	(void)command; // Esto evita el error de compilación por variable no utilizada.
 	(void)env; // Esto evita el error de compilación por variable no utilizada.
+	if (ft_strlen(command->args[1])  > 1)
+	{
+		ft_del_v_env(command->args[1], env); //Borra si hay arg[1] 
+		return (0); 
+	}
+
 	return (0);
 }
 
@@ -297,7 +320,10 @@ int ft_build_int(t_command *command_act, t_list **env )
 	else if (ft_memcmp(comando, "pwd", 3)== 0)
 		ok = ft_built_pwd(command_act);
 	else if (ft_memcmp(comando, "export", 6)== 0)
+	{
+
 		ok = ft_built_export(command_act, env);
+	}
 	else if (ft_memcmp(comando, "unset", 5)== 0)
 		ok = ft_built_unset(command_act, env);
 	else if (ft_memcmp(comando, "env", 3)== 0)

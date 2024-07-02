@@ -83,22 +83,16 @@ t_list **ft_dup_ord_list(t_list **env)
 	t_list *p_env_aux;
 	t_list *p_env_ori;
 	t_list **ref_previa;
-	int exit_bucle;
+	int 	exit_bucle;
 
 
-		
-	
 	p_env_ori = *env;
 	if (!p_env_ori)
 		return NULL;
 	dup_env = (t_list **)malloc(sizeof(t_list *)); // Hago Malloc
 	if (!dup_env)								   // Protejo malloc
-	
-
 		return NULL;
-
-	
-
+	*dup_env = NULL;
 	p_env = ft_lstnew(ft_strdup(p_env_ori->content)); // Hago Malloc
 	if (!p_env)									  // Protejo malloc
 	{
@@ -162,6 +156,7 @@ int ft_print_list_env(t_command *command, t_list **env) //si hay error devuelve 
 	if (!ft_memcmp(command->command, "export",6))
 	{
 		dup_env = ft_dup_ord_list(env); //malloc
+		
 		if (!dup_env){
 			perror("Error MEM export");
 			return (-1);
@@ -169,6 +164,7 @@ int ft_print_list_env(t_command *command, t_list **env) //si hay error devuelve 
 		command->command="env";
 		ft_print_list_env(command,dup_env );
 		ft_free_list(dup_env);
+		dup_env = NULL;
 		return(1);		
 	}
 	p_env = *env;
@@ -183,4 +179,27 @@ int ft_print_list_env(t_command *command, t_list **env) //si hay error devuelve 
 		p_env= p_env->next;
 	}
 	return((ok <= 0) ? 1 : 0);
+}
+
+int ft_is_dir_ok(const char *path) 
+{
+    struct stat statbuf;  //Estructura que me recopila inf del arch o dir que paso por path
+    
+
+	// Llamada a stat para obtener información sobre el path
+    if (stat(path, &statbuf) != 0) 
+	{
+        perror("stat");
+        return (0); //si hay error devuelvo 0 ya que no he accedido al dir
+    }
+    
+    // Verificar si el path es un directorio
+    if (S_ISDIR(statbuf.st_mode)) 
+	{
+        return (1); // Es un directorio válido
+    } 
+	else 
+	{
+        return (0); // No es un directorio
+    }
 }

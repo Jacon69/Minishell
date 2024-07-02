@@ -24,6 +24,7 @@
 # include <errno.h>   // For errno
 # include <fcntl.h>   // For open
 # include <sys/wait.h>
+# include <sys/stat.h> //  For use "stat()" en cd
 # include "Libft/libft.h"
 # include "get_next_line/get_next_line.h"
 
@@ -66,6 +67,7 @@ int		ft_built_env(t_command *command, t_list **env);
 int		ft_print_list_env(t_command *command, t_list **env);		//xxxxxxxxxxxx TODO
 int		ft_build_int(t_command *command, t_list **env); //Llama a la ejec de build_in
 
+
 //Desarrollo
 int		executor(t_command **command_list, t_list **env); //Recibir variables de entornos
 void	free_commands(t_command **command_list); //libera la esructura commando
@@ -87,6 +89,7 @@ void	ft_free_list(t_list **list); //Libera la memoria de la lista de strings
 void	print_string(void *str); //Imprime un string Para usarlo con ft_lstiter
 int		ft_pos_chr(const char *str, int c); //Devuelve la posición de un caracter en un string
 char	*ft_strndup(const char *str, size_t n); ///ESTA FUNCION NO ESTA EN LA LIBRERIA LIBFT
+int 	ft_is_dir_ok(const char *path); //Comprueba si un dir es ok
 
 /*lexer*/
 char    **lexer(char *line); // Crea

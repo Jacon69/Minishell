@@ -169,7 +169,7 @@ t_command **parser(char **tokens, t_list **env) //A esta funcion le tiene que ll
 			{
 				current_command -> piped = 1;
 				i++;
-			}
+			}			
 		}
 		//El resto de parametros los hace el ejecutor
 		command_list[j] = current_command;
