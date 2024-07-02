@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 10:01:14 by alexigar          #+#    #+#             */
-/*   Updated: 2024/07/01 10:12:16 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/07/02 12:25:26 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,12 @@ t_command **parser(char **tokens, t_list **env) //A esta funcion le tiene que ll
 		}
 		current_command -> args = malloc(sizeof(char *) * (n_tokens - i + 1)); //malloc
 		current_command -> command = NULL;
-		current_command -> path = NULL;
+		current_command -> path = ft_get_var_env(env,"PWD"); //malloc
+		if (!current_command -> path)
+		{
+			free_commands(command_list);
+			return (NULL); //salida error
+		}
 		current_command -> redir1 = 0;
 		current_command -> redir2 = 0;
 		if (j > 0 && command_list[j - 1] -> piped)
@@ -117,7 +122,7 @@ t_command **parser(char **tokens, t_list **env) //A esta funcion le tiene que ll
 			}
 		}
 		current_command -> args[k] = NULL;
-		if (!current_command -> path)
+		/*if (!current_command -> path)
 		{
 			current_command -> path = ft_get_var_env(env,"PWD"); //malloc
 			if (!current_command -> path)
@@ -125,7 +130,7 @@ t_command **parser(char **tokens, t_list **env) //A esta funcion le tiene que ll
 				free_commands(command_list);
 				return (NULL); //salida error
 			}
-		}
+		}*/
 		if (tokens[i])
 		{
 			if (tokens[i][0] == '>')

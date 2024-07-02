@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 10:12:42 by alexigar          #+#    #+#             */
-/*   Updated: 2024/07/02 11:49:09 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/07/02 12:21:29 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,6 +155,7 @@ int executor(t_command **command_list, t_list **env)
             free(function_call);
             function_call = NULL;
             printf("Va a ejecutar ft_build\n");
+            printf("%s\n", command_list[i] -> path);
             to_return = ft_build_int(command_list[i], env);
             printf("Ha ejecutado ft_build\n");
             if (to_return != 0)
