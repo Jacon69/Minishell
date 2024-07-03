@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 05:32:30 by jaimecondea       #+#    #+#             */
-/*   Updated: 2024/07/01 10:17:02 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/07/03 11:33:54 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,8 +69,10 @@ int ft_built_cd(t_command *command, t_list **env)  // 0 es ok 1 es ko  -1 err me
 	char *route;
 	char *aux;
 	char *aux2;
+	char *aux3;
 	int	num_dir;
 	int ok;
+	
 	
 	ok= 0;
 	line_path = command->path; //cojo el path actual del guardado en cmd
@@ -84,6 +86,7 @@ int ft_built_cd(t_command *command, t_list **env)  // 0 es ok 1 es ko  -1 err me
 	route[1]='\0';
 	num_dir=0;
 	i = 0;
+	
 	while  (line_path[i])
 	{
 		if (line_path[i]=='/')
@@ -93,6 +96,7 @@ int ft_built_cd(t_command *command, t_list **env)  // 0 es ok 1 es ko  -1 err me
 		i++; 
 	}
 	i=0;
+
 	path = ft_split(line_path, '/'); //Malloc
 	if (!path)
 	{
@@ -104,6 +108,7 @@ int ft_built_cd(t_command *command, t_list **env)  // 0 es ok 1 es ko  -1 err me
 	if ((((!ft_memcmp(command->args[1], "..", 2) && ft_strlen(command->args[1])==2)) || //cuando tengo .. 
 	(!ft_memcmp(command->args[1], "../", 3)&&(ft_strlen(command->args[1])==3))) && !(command->args[2]))
 	{
+		
 		while( (i < num_dir - 1) && ft_strlen(line_path) > 1)  // si line_path es mayor que 1 es no es raiz si es raiz no hace nada
 		{
 			aux=route;
@@ -160,36 +165,20 @@ int ft_built_cd(t_command *command, t_list **env)  // 0 es ok 1 es ko  -1 err me
 	}
 	else if ((command->args[1][0]== '.') && (command->args[2]))
 	{
-		perror("Error cd: too many arguments");
+		perror("Error cd: too many arguments1");
 		ft_free_char(path);
 		free(route);
 		return(1);//Error cd: too many arguments
 	}
 	else if ((!ft_memcmp(command->args[1], "./", 2) || !ft_memcmp(command->args[1], "../", 3))&& (command->args[2]))
 	{
-		perror("Error cd: too many arguments");
+
+		perror("Error cd: too many arguments2");
 		ft_free_char(path);
 		free(route);
 		return(1);//Error cd: too many arguments
 	}
-	else if (command->args[1][0]== '/') //ABSOLUTA
-	{
-		aux2 = command->args[1]; 
-		aux2++;
-		
-		aux=route;
-		route= ft_strjoin(route, aux2); //malloc
-		
-		printf("path: %s \n",route);
-		free(aux);
-		if (!route)
-		{
-			perror("Error MEM built_in6");
-			ft_free_char(path);
-			return(-1);
-		}
-	}
-	else if (ft_strlen(command->args[1])>0) //aqui meto cuando me ponen un cd dirxx 
+	else if (ft_strlen(command->args[1])>0) //aqui meto cuando me ponen un cd dirxx  o cd /dirxx
 	{
 		while( (i < num_dir) && ft_strlen(line_path) > 1)  // si line_path es mayor que 1 es no es raiz si es raiz no hace nada
 		{
@@ -229,9 +218,26 @@ int ft_built_cd(t_command *command, t_list **env)  // 0 es ok 1 es ko  -1 err me
 			
 		i++;
 		}
-		aux2= aux;
+		aux2= aux; //Aquí guardo la ruta sin barra porsi falla
 		aux=route;
-		route= ft_strjoin(route, command->args[1]); //malloc  voy añadiendo dir menos el último
+		aux3 = command->args[1]; 
+		if (command->args[1][0]== '/') //ABSOLUTA
+		{
+			free(aux);
+			aux3++;
+			route=malloc(2);
+			if (!route)
+			{
+				perror("Error built_in");
+				ft_free_char(path);
+				return (-1);
+			}
+			route[0]='/';
+			route[1]='\0';
+
+			aux=route;
+		}
+		route= ft_strjoin(route, aux3); //malloc  voy añadiendo dir menos el último
 		free(aux);
 		if (!route)
 		{
@@ -247,7 +253,6 @@ int ft_built_cd(t_command *command, t_list **env)  // 0 es ok 1 es ko  -1 err me
 			ok=1;
 		}
 	}
-	
 	ft_save_var_env("PWD", route, env); //   guardo lo valores en la variable de entorno. command->path se deberá actualizar
 	ft_save_var_env("OLDPWD", line_path, env);
 	free(route);
@@ -312,11 +317,10 @@ int ft_build_int(t_command *command_act, t_list **env )
 
 	comando = command_act->command;
 	ok = 0;
-
 	if (ft_memcmp(comando, "echo", 4)== 0)
 		ok = ft_built_echo(command_act);
 	else if (ft_memcmp(comando, "cd", 2)== 0)
-		ok = ft_built_cd(command_act, env);
+		ok = (command_act->args[1]) == NULL ? 1 : ft_built_cd(command_act, env);
 	else if (ft_memcmp(comando, "pwd", 3)== 0)
 		ok = ft_built_pwd(command_act);
 	else if (ft_memcmp(comando, "export", 6)== 0)
