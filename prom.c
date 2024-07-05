@@ -108,5 +108,6 @@ void prom(t_list  **env)
 		ft_free_char(token);
 		free(line);
 		free(path_act);
+		free_commands(commands);
 	}
 }

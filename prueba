@@ -1,6 +1,4 @@
-Libft
-Makefile
-README.md
+asdasd
 build-int.c
 build-int.o
 environment.c
@@ -12,8 +10,10 @@ expander.o
 get_next_line
 lexer.c
 lexer.o
+Libft
 main.c
 main.o
+Makefile
 minishell.h
 parser.c
 parser.o
@@ -21,6 +21,8 @@ prom
 prom.c
 prom.o
 prueba
+prueba_directorio
+README.md
 utils1.c
 utils1.o
 utils2.c

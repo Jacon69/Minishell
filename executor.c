@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 10:12:42 by alexigar          #+#    #+#             */
-/*   Updated: 2024/07/03 12:29:20 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/07/05 12:10:58 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,10 @@ int try_call(char **paths, t_command *com)
     int         returned;
     struct stat buf;
 
+    /*for (int j = 0; com -> args[j] != NULL; j++)
+        printf("%s\n", com -> args[j]);*/
     i = 0;
-    //printf("Va a intentar ejecutar %s\n", com -> command);
+    printf("Va a intentar ejecutar %s\n", com -> command);
     while (paths[i])
     {
         aux = ft_strjoin(paths[i], "/");
@@ -72,6 +74,8 @@ int try_call(char **paths, t_command *com)
             if (pid == 0)
             {
                 close(pipefd[0]);
+                if (com -> file_input != 1)
+                    printf("%s\n", com -> args[2]);
                 dup2(pipefd[1], STDOUT_FILENO);
                 dup2(pipefd[1], STDERR_FILENO);
                 if (execve(function_call, com -> args, NULL) == -1)
@@ -118,6 +122,7 @@ int executor(t_command **command_list, t_list **env)
     int     to_return;
     int     j;
 
+    //printf("Ha llegado al ejecutor\n");
     i = 0;
     j = 0;
     to_return = 0;

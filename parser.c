@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 10:01:14 by alexigar          #+#    #+#             */
-/*   Updated: 2024/07/03 12:37:34 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/07/05 12:07:11 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ t_command **parser(char **tokens, t_list **env) //A esta funcion le tiene que ll
 		}
 		current_command -> args = malloc(sizeof(char *) * (n_tokens - i + 1)); //malloc
 		current_command -> command = NULL;
+		current_command -> string_output = NULL;
 		current_command -> path = ft_get_var_env(env,"PWD"); //malloc
 		if (!current_command -> path)
 		{
@@ -116,7 +117,9 @@ t_command **parser(char **tokens, t_list **env) //A esta funcion le tiene que ll
 			i++;
 			if (!tokens[i])
 			{
+				current_command -> args[k] = NULL;
 				command_list[j] = current_command;
+				command_list[++j] = NULL;
 				return (command_list);
 				//break ;
 			}
@@ -161,31 +164,42 @@ t_command **parser(char **tokens, t_list **env) //A esta funcion le tiene que ll
 					current_command -> file_output = open(tokens[i], O_WRONLY | O_CREAT | O_APPEND, 0644);
 				if (++i >= n_tokens)
 				{
+					current_command -> args[k] = NULL;
 					command_list[j] = current_command;
+					command_list[++j] = NULL;
 					return (command_list);
 				}
 			}
 			if (tokens[i][0] == '<')
 			{
 				if (tokens[i][1] == '<')
-					current_command -> redir1 -= 2; //Este tiene que pedir inputs hasta que encuentre el siguiente argumento (input desde la consola, heredoc)
+					current_command -> redir1 += 2; //Este tiene que pedir inputs hasta que encuentre el siguiente argumento (input desde la consola, heredoc)
 				else
-					current_command -> redir1 -= 1; //Este coge un archivo (input desde el archivo)
+					current_command -> redir1 += 1; //Este coge un archivo (input desde el archivo)
 				i++;
 				if (current_command -> redir1 == 1)
 				{
 					current_command -> file_input = open(tokens[i], O_RDONLY);
 					current_command -> input = read_all(current_command -> file_input); //malloc
-					close(current_command -> file_input);
+					//close(current_command -> file_input);
 					if (!(current_command -> input))
 					{
 						free_commands(command_list);
 						return (NULL); //salida error
 					}
+					current_command -> args[k] = tokens[i];
+					k++;
 				}
 				else
 				{
 					//TODO
+				}
+				if (++i >= n_tokens)
+				{
+					current_command -> args[k] = NULL;
+					command_list[j] = current_command;
+					command_list[++j] = NULL;
+					return (command_list);
 				}
 			}
 			if (tokens[i][0] == '|') //El output del comando va a ir al input del siguiente comando
@@ -195,9 +209,11 @@ t_command **parser(char **tokens, t_list **env) //A esta funcion le tiene que ll
 			}			
 		}
 		//El resto de parametros los hace el ejecutor
+		current_command -> args[k] = NULL;
 		command_list[j] = current_command;
 		j++;
 		k = 0;
 	}
+	command_list[j] = NULL;
 	return (command_list);
 }
