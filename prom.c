@@ -14,20 +14,55 @@
 	}
 }*/
 
+static void	signal_handler(int signum)
+{
+	if (signum == SIGINT)
+	{
+		if (!is_executing)
+		{
+			printf("\nXXX$ ");
+		}
+		else
+		{
+			is_executing = 0;
+			return ;
+		}
+	}
+	if (signum == SIGQUIT)
+	{
+		if (is_executing)
+		{
+			printf("Quit");
+			is_executing = 0;
+			return ;
+		}
+		else
+		{
+			printf("\nXXX$ ");
+			return ;
+		}
+	}
+}
+
 void prom(t_list  **env)
 {
-	char 		*line;
-	char		**token;
-	t_command	**commands;
-	int			last_return;
-	char		str_last_return[20];
-	int			control;
-	char 		*path_act;
-	char		*aux;
+	char 				*line;
+	char				**token;
+	t_command			**commands;
+	int					last_return;
+	char				str_last_return[20];
+	int					control;
+	char 				*path_act;
+	char				*aux;
+	struct sigaction	action;
 
 	control = 1;
 	
-
+	action.sa_handler = signal_handler;
+	action.sa_flags = 0;
+	sigemptyset(&action.sa_mask);
+	sigaction(SIGINT, &action, NULL);
+	sigaction(SIGQUIT, &action, NULL);
 	while (control==1)
 	{
 		path_act = ft_get_var_env(env,"PWD"); //malloc
@@ -41,6 +76,7 @@ void prom(t_list  **env)
 		line = readline(path_act); //hace Malloc
 		if (!line)
 		{
+			printf("exit\n");
 			printf("Line es nulo\n");
 			break; // EOF, probablemente Ctrl+D Ctrl+c
 		}
@@ -57,9 +93,7 @@ void prom(t_list  **env)
 				control = 0;
 				return;
 			}		
-
 		add_history(line);
-
 		token = lexer(line);  //Malloc
 		if (!token)
 		{
@@ -69,7 +103,6 @@ void prom(t_list  **env)
 			perror("Error Mem en LEXER");
 			exit(1);
 		}
-		
 		if (!expander(token, env)) ///Hago la expansión $ Comillas etc si es 0 es KO
 		{
 			free(line);
@@ -79,10 +112,7 @@ void prom(t_list  **env)
 			perror("Error Mem en EXPANDER");
 			exit(1);
 		}
-
 		commands = parser(token, env); //malloc
-		
-	
 		if (!commands)
 		{
 			free(line);

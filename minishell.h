@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 16:17:26 by aiturria          #+#    #+#             */
-/*   Updated: 2024/06/27 18:14:39 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/07/09 10:29:15 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@
 # include <readline/history.h>
 # include <dirent.h>	
 
+extern int	is_executing;
 
 typedef struct s_command
 {

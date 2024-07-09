@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 10:12:42 by alexigar          #+#    #+#             */
-/*   Updated: 2024/07/05 12:10:58 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/07/09 10:56:17 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,13 +69,14 @@ int try_call(char **paths, t_command *com)
             {
                 perror("Fork failed");
                 free(function_call);
+                is_executing = 0;
                 exit(-1);
             }
             if (pid == 0)
             {
                 close(pipefd[0]);
-                if (com -> file_input != 1)
-                    printf("%s\n", com -> args[2]);
+                /*if (com -> file_input != 1)
+                    printf("%s\n", com -> args[2]);*/
                 dup2(pipefd[1], STDOUT_FILENO);
                 dup2(pipefd[1], STDERR_FILENO);
                 if (execve(function_call, com -> args, NULL) == -1)
@@ -83,6 +84,7 @@ int try_call(char **paths, t_command *com)
                     perror("Command not found");
                     free(function_call);
                     close(pipefd[1]);
+                    is_executing = 0;
                     exit(EXIT_FAILURE);
                 }
                 else
@@ -116,12 +118,12 @@ int try_call(char **paths, t_command *com)
 
 int executor(t_command **command_list, t_list **env)
 {
-    int     i;
-    char    *function_call;
-    char    **paths;
-    int     to_return;
-    int     j;
-
+    int                 i;
+    char                *function_call;
+    char                **paths;
+    int                 to_return;
+    int                 j;
+    
     //printf("Ha llegado al ejecutor\n");
     i = 0;
     j = 0;
@@ -131,17 +133,18 @@ int executor(t_command **command_list, t_list **env)
     if (!function_call)
         return (-1);
     paths = ft_split(function_call, ':'); //malloc
+    free(function_call);
     if (!paths)
     {
-        free(function_call);
         return (-1); //salida error
     }
+    is_executing = 1;
     //Split y funcion para intentar llamar a las funciones
     while (command_list[i])
     {
         if (!command_list[i] -> command)
         {
-            free(function_call);
+            is_executing = 0;
             return(0); //Tendria que hacer alguna otra cosa entiendo
         }
         //TODO Manejar bien pipes y redirecciones
@@ -159,22 +162,20 @@ int executor(t_command **command_list, t_list **env)
         }
         else
         {
-            free(function_call);
-            function_call = NULL;
             /*printf("Va a ejecutar ft_build\n");
             printf("%s\n", command_list[i] -> path);*/
             to_return = ft_build_int(command_list[i], env);
             //printf("Ha ejecutado ft_build\n");
             if (to_return != 0)
             {
-                free(function_call);
+                is_executing = 0;
                 return (to_return); //Si se ha cambiado a algo que no es 0 devuelvo porque ha fallado algo
             }
         }
         if (command_list[i] -> returned_output == -1)
         {
+            is_executing = 0;
             //Tiro error suave si ha fallado
-            free(function_call);
             return (1); //O el codigo de error que sea
         }
         if (command_list[i] -> piped == 1)
@@ -190,5 +191,6 @@ int executor(t_command **command_list, t_list **env)
      /*   free(function_call);
         function_call = NULL;*/
     }
+    is_executing = 0;
     return (to_return); //Si todo ha ido bien devuelvo 0
 }
