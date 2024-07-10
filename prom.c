@@ -19,9 +19,7 @@ static void	signal_handler(int signum)
 	if (signum == SIGINT)
 	{
 		if (!is_executing)
-		{
 			printf("\nXXX$ ");
-		}
 		else
 		{
 			is_executing = 0;

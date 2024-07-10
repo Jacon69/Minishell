@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 10:12:42 by alexigar          #+#    #+#             */
-/*   Updated: 2024/07/09 10:56:17 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/07/10 11:02:24 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,8 +75,8 @@ int try_call(char **paths, t_command *com)
             if (pid == 0)
             {
                 close(pipefd[0]);
-                /*if (com -> file_input != 1)
-                    printf("%s\n", com -> args[2]);*/
+                if (com -> file_input != 1)
+                    dup2(com -> file_input, STDIN_FILENO);
                 dup2(pipefd[1], STDOUT_FILENO);
                 dup2(pipefd[1], STDERR_FILENO);
                 if (execve(function_call, com -> args, NULL) == -1)
@@ -128,7 +128,7 @@ int executor(t_command **command_list, t_list **env)
     i = 0;
     j = 0;
     to_return = 0;
-    command_list[i] -> input = NULL;
+    //command_list[i] -> input = NULL;
     function_call = ft_get_var_env(env, "PATH");
     if (!function_call)
         return (-1);

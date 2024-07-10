@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 10:01:14 by alexigar          #+#    #+#             */
-/*   Updated: 2024/07/05 12:07:11 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/07/10 12:39:09 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,8 @@ t_command **parser(char **tokens, t_list **env) //A esta funcion le tiene que ll
 	t_command 	*current_command;
 	t_command	**command_list;
 	int			pipefd[2];
+	int			heredoc[2];
+	char		*line;
 
 	i = 0;
 	j = 0;
@@ -139,9 +141,9 @@ t_command **parser(char **tokens, t_list **env) //A esta funcion le tiene que ll
 			if (tokens[i][0] == '>')
 			{
 				if (tokens[i][1] == '>')
-					current_command -> redir2 += 2;
+					current_command -> redir2 = 2;
 				else
-					current_command -> redir2 += 1;
+					current_command -> redir2 = 1;
 				i++;
 				while (tokens[i][0] == '>')
 				{
@@ -173,26 +175,43 @@ t_command **parser(char **tokens, t_list **env) //A esta funcion le tiene que ll
 			if (tokens[i][0] == '<')
 			{
 				if (tokens[i][1] == '<')
-					current_command -> redir1 += 2; //Este tiene que pedir inputs hasta que encuentre el siguiente argumento (input desde la consola, heredoc)
+					current_command -> redir1 = 2; //Este tiene que pedir inputs hasta que encuentre el siguiente argumento (input desde la consola, heredoc)
 				else
-					current_command -> redir1 += 1; //Este coge un archivo (input desde el archivo)
+					current_command -> redir1 = 1; //Este coge un archivo (input desde el archivo)
 				i++;
 				if (current_command -> redir1 == 1)
 				{
 					current_command -> file_input = open(tokens[i], O_RDONLY);
-					current_command -> input = read_all(current_command -> file_input); //malloc
+					//current_command -> input = read_all(current_command -> file_input); //malloc
 					//close(current_command -> file_input);
-					if (!(current_command -> input))
+					//if (!(current_command -> input))
+					if (current_command -> file_input == -1)
 					{
 						free_commands(command_list);
 						return (NULL); //salida error
 					}
-					current_command -> args[k] = tokens[i];
-					k++;
+					//current_command -> args[k] = current_command -> input;
+					//k++;
 				}
 				else
 				{
-					//TODO
+					if (pipe(heredoc) == 0)
+					{
+						line = readline(" heredoc> ");
+						while (ft_strncmp(tokens[i], line, ft_strlen(tokens[i])))
+						{
+							write(heredoc[1], &line, ft_strlen(line));
+							line = readline(" heredoc> ");
+						}
+						i++;
+						current_command -> file_input = heredoc[0];
+						//current_command -> args[k] = read_all(current_command -> file_input);
+					}
+					else
+					{
+						free_commands(command_list);
+						return (NULL);
+					}
 				}
 				if (++i >= n_tokens)
 				{
