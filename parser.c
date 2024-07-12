@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 10:01:14 by alexigar          #+#    #+#             */
-/*   Updated: 2024/07/10 12:39:09 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/07/12 12:19:21 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ t_command **parser(char **tokens, t_list **env) //A esta funcion le tiene que ll
 		current_command -> index = j;
 		while (tokens[i] && tokens[i][0] != '|' && tokens[i][0] != '>' && tokens[i][0] != '<')
 		{
-			if (!(current_command -> command) && tokens[i][0] != '/')
+			if (!(current_command -> command) /*&& tokens[i][0] != '/'*/)
 			{
 				current_command -> command = tokens[i];
 			}
@@ -104,7 +104,7 @@ t_command **parser(char **tokens, t_list **env) //A esta funcion le tiene que ll
 			//{
 				current_command -> args[k] = tokens[i];
 				k++;
-				if (tokens[i][0] == '/')
+				if (tokens[i][0] == '/' && current_command -> command[0] != '/')
 				{
 					if (current_command -> file_input != 1 && current_command -> file_output != 1)
 					{

@@ -20,15 +20,21 @@ static void	signal_handler(int signum)
 	{
 		if (!is_executing)
 			printf("\nXXX$ ");
-		else
+		else if (is_executing == 1)
 		{
 			is_executing = 0;
+			return ;
+		}
+		else
+		{
+			is_executing = -1;
 			return ;
 		}
 	}
 	if (signum == SIGQUIT)
 	{
-		if (is_executing)
+		//printf("\nHa entrado aqui\n");
+		if (is_executing == 1)
 		{
 			printf("Quit");
 			is_executing = 0;
@@ -36,7 +42,7 @@ static void	signal_handler(int signum)
 		}
 		else
 		{
-			printf("\nXXX$ ");
+			//printf("\nXXX$ ");
 			return ;
 		}
 	}
@@ -71,71 +77,83 @@ void prom(t_list  **env)
 		free(aux);
 		if (!path_act)
 			return;
+		is_executing = 2;
 		line = readline(path_act); //hace Malloc
-		if (!line)
+		if (is_executing == -1)
 		{
-			printf("exit\n");
-			printf("Line es nulo\n");
-			break; // EOF, probablemente Ctrl+D Ctrl+c
+			free(line);
+			free(path_act);
+			is_executing = 0;
+			continue ;
 		}
-		if (line[0] == '\0') 
+		else
+		{
+			is_executing = 0;
+			if (!line)
 			{
-				free(line);
-				free(path_act);
-				continue;
+				printf("exit\n");
+				printf("Line es nulo\n");
+				break; // EOF, probablemente Ctrl+D Ctrl+c
 			}
-		if (!ft_memcmp(line,"exit",4)) 
+			if (line[0] == '\0') 
+				{
+					free(line);
+					free(path_act);
+					continue;
+				}
+			if (!ft_memcmp(line,"exit",4)) 
+				{
+					free(line);
+					free(path_act);
+					control = 0;
+					return;
+				}		
+			add_history(line);
+			token = lexer(line);  //Malloc
+			if (!token)
 			{
 				free(line);
 				free(path_act);
-				control = 0;
-				return;
-			}		
-		add_history(line);
-		token = lexer(line);  //Malloc
-		if (!token)
-		{
-			free(line);
-			free(path_act);
-			ft_free_list(env); //Libero la memoria de la lista de variables de entorno.
-			perror("Error Mem en LEXER");
-			exit(1);
-		}
-		if (!expander(token, env)) ///Hago la expansión $ Comillas etc si es 0 es KO
-		{
-			free(line);
-			free(path_act);
+				ft_free_list(env); //Libero la memoria de la lista de variables de entorno.
+				perror("Error Mem en LEXER");
+				exit(1);
+			}
+			if (!expander(token, env)) ///Hago la expansión $ Comillas etc si es 0 es KO
+			{
+				free(line);
+				free(path_act);
+				ft_free_char(token);
+				ft_free_list(env); //Libero la memoria de la lista de variables de entorno.
+				perror("Error Mem en EXPANDER");
+				exit(1);
+			}
+			commands = parser(token, env); //malloc
+			if (!commands)
+			{
+				free(line);
+				free(path_act);
+				ft_free_char(token);
+				ft_free_list(env); //Libero la memoria de la lista de variables de entorno.
+				perror("Error Mem en PARSER");
+				exit(1);
+			}
+			last_return = executor(commands,env); //Recibir variables de entornos
+			if (last_return == -1)
+			{
+				free(line);
+				free(path_act);
+				ft_free_char(token);
+				ft_free_list(env); //Libero la memoria de la lista de variables de entorno.
+				free_commands(commands);
+				perror("Error Mem en EXECUTOR");
+				exit(1);
+			}
+			snprintf(str_last_return, sizeof(str_last_return), "%i", last_return);//convierto num a cadena
+			ft_save_var_env("?", str_last_return,env);
 			ft_free_char(token);
-			ft_free_list(env); //Libero la memoria de la lista de variables de entorno.
-			perror("Error Mem en EXPANDER");
-			exit(1);
-		}
-		commands = parser(token, env); //malloc
-		if (!commands)
-		{
 			free(line);
 			free(path_act);
-			ft_free_char(token);
-			ft_free_list(env); //Libero la memoria de la lista de variables de entorno.
-			perror("Error Mem en PARSER");
-			exit(1);
-		}
-		last_return = executor(commands,env); //Recibir variables de entornos
-		if (last_return == -1)
-		{
-			free(line);
-			free(path_act);
-			ft_free_char(token);
-			ft_free_list(env); //Libero la memoria de la lista de variables de entorno.
 			free_commands(commands);
-			perror("Error Mem en EXECUTOR");
-			exit(1);
 		}
-		snprintf(str_last_return, sizeof(str_last_return), "%i", last_return);//convierto num a cadena
-		ft_save_var_env("?", str_last_return,env);
-		ft_free_char(token);
-		free(line);
-		free(path_act);
-		free_commands(commands);
 	}
 }

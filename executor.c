@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 10:12:42 by alexigar          #+#    #+#             */
-/*   Updated: 2024/07/10 11:02:24 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/07/12 12:12:41 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,11 +53,16 @@ int try_call(char **paths, t_command *com)
     printf("Va a intentar ejecutar %s\n", com -> command);
     while (paths[i])
     {
-        aux = ft_strjoin(paths[i], "/");
-        if (!aux)
-            return (-1);
-		function_call = ft_strjoin(aux, com -> command);
-        free(aux);
+        if (com -> command[0] == '/')
+            function_call = com -> command;
+        else
+        {
+            aux = ft_strjoin(paths[i], "/");
+            if (!aux)
+                return (-1);
+		    function_call = ft_strjoin(aux, com -> command);
+            free(aux);
+        }
         //printf("%s\n", function_call);
 		if (!function_call || pipe(pipefd) == -1)
             return (-1); //Salida error
@@ -124,7 +129,7 @@ int executor(t_command **command_list, t_list **env)
     int                 to_return;
     int                 j;
     
-    //printf("Ha llegado al ejecutor\n");
+    printf("Ha llegado al ejecutor\n");
     i = 0;
     j = 0;
     to_return = 0;
