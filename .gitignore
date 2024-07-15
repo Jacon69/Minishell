@@ -1,4 +1,5 @@
 *.txt
+*.
 # Prerequisites
 *.d
 
@@ -7,6 +8,7 @@
 *.ko
 *.obj
 *.elf
+prom
 
 # Linker output
 *.ilk

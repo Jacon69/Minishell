@@ -1,4 +1,4 @@
-#include "environment.h"
+#include "minishell.h"
 
 static int	next_delimiter(char const *str, char c, int i)
 {
@@ -82,7 +82,7 @@ static int ft_assig_token(char *line, char  **token, int j, int i)
 	{
 		if (!line[next_delimiter(line, line[i], i+1)])
 		{
-			printf("1no cierra comillas \n");
+			printf("no cierra comillas \n");
 			return (-1);
 		}
 		free(token[j]);//viene inicializado como se añade subcadena nueva lo libero
@@ -161,7 +161,6 @@ char    **lexer(char    *line)
 
 	ntoken = count_tokens(line);
 
-	printf("num token %i \n",ntoken);
 	token = (char **) malloc(sizeof(char *) * (ntoken + 1));
  	if (!line || !token)
 		return NULL;
@@ -178,8 +177,8 @@ char    **lexer(char    *line)
 			ft_free_char(token);
 			return NULL;
 		}
-		token[j][0]='\0'; //Aquí inicializo antes de asignar el valor del token oara poder usar 
-		i = ft_assig_token(line, token, j, i);
+		token[j][0]='\0'; //Aquí inicializo antes de asignar el valor del token para poder usar 
+		i = ft_assig_token(line, token, j, i); 
 		if (i == -1)
 		{
 			ft_free_char(token);
