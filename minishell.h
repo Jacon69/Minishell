@@ -66,7 +66,7 @@ int 	ft_built_pwd(t_command *command);
 int		ft_built_export(t_command *command, t_list **env);
 int		ft_built_unset(t_command *command, t_list **env);
 int		ft_built_env(t_command *command, t_list **env);
-int		ft_print_list_env(t_command *command, t_list **env);		//xxxxxxxxxxxx TODO
+int		ft_print_list_env(t_command *command, t_list **env);
 int		ft_build_int(t_command *command, t_list **env); //Llama a la ejec de build_in
 
 
