@@ -48,11 +48,19 @@ t_list **ft_ini_env(char **environment)
 	t_list **env;
 	t_list *p_env;
 
+
+
 	env = (t_list **)malloc(sizeof(t_list *)); // Hago Malloc
 	if (!env)								   // Protejo malloc
 	{
 		perror("Error en malloc");
 		return NULL;
+	}
+	if (*environment == NULL)
+	{
+		
+		//env = ft_ini_empty_env() //(getcwd(char *buf, size_t size)); TODO
+		return env;
 	}
 	i = 0;
 	p_env = ft_lstnew(ft_strdup(environment[i])); // Hago Malloc
