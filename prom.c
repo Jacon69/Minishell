@@ -18,8 +18,13 @@ static void	signal_handler(int signum)
 {
 	if (signum == SIGINT)
 	{
-		if (!is_executing)
-			printf("\nXXX$ ");
+		if (is_executing == 0)
+		{
+			rl_replace_line("", 1);
+			printf("\n");
+			rl_on_new_line();
+			rl_redisplay();
+		}
 		else if (is_executing == 1)
 		{
 			is_executing = 0;
@@ -27,6 +32,7 @@ static void	signal_handler(int signum)
 		}
 		else
 		{
+			printf("%d\n", is_executing);
 			is_executing = -1;
 			return ;
 		}
@@ -42,8 +48,7 @@ static void	signal_handler(int signum)
 		}
 		else
 		{
-			//printf("\nXXX$ ");
-			return ;
+			return ; //Hay que mirar si hay input
 		}
 	}
 }
@@ -77,7 +82,7 @@ void prom(t_list  **env)
 		free(aux);
 		if (!path_act)
 			return;
-		is_executing = 2;
+		//is_executing = 2;
 		line = readline(path_act); //hace Malloc
 		if (is_executing == -1)
 		{
