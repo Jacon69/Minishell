@@ -1,5 +1,20 @@
 #include "minishell.h"
 
+static void ft_ini_empty_env(t_list **env) //(getcwd(char *buf, size_t size)); TODO    void ft_save_var_env(char *var, char *val_var, t_list **env) 
+{
+	char buffer[1024];
+	
+	if (getcwd(buffer, sizeof(buffer)) != NULL) 
+	{
+		ft_save_var_env("PWD=", buffer, env);
+		ft_save_var_env("SHLVL=", "1", env);//Ver si hace falta
+    } 
+	else 
+	{
+        perror("getcwd() error");
+    }
+	
+}
 
 // función que convierte list de var-env en doble cadena de  var-env
 char **ft_get_env(t_list **env) 
@@ -59,7 +74,7 @@ t_list **ft_ini_env(char **environment)
 	if (*environment == NULL)
 	{
 		
-		//env = ft_ini_empty_env() //(getcwd(char *buf, size_t size)); TODO
+		ft_ini_empty_env(env); //(getcwd(char *buf, size_t size)); TODO
 		return env;
 	}
 	i = 0;

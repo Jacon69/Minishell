@@ -6,7 +6,8 @@ int main(int narg, char * carg[], char **environment)
 	t_list  **env;
 
 	narg ++; //para que no salten los warnings que saltan si no se usan las variables.
-	carg [0] = "hola"; 
+	carg [0] = "hola";
+	//*environment = NULL; Uso esto para probar que pasas si
 	env = ft_ini_env(environment);  //Malloc
 	
 	if (env == NULL)
