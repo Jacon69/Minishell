@@ -1,5 +1,4 @@
 #include "minishell.h"
-#include "minishell.h"
 
 /*void ft_imprimetoken(char **token)
 {
@@ -16,7 +15,7 @@
 
 static void	signal_handler(int signum)
 {
-	if (signum == SIGINT)
+	if (signum == SIGINT) //ctrl-C
 	{
 		if (is_executing == 0)
 		{
@@ -37,7 +36,7 @@ static void	signal_handler(int signum)
 			return ;
 		}
 	}
-	if (signum == SIGQUIT)
+	if (signum == SIGQUIT) //ctrl-barra
 	{
 		//printf("\nHa entrado aqui\n");
 		if (is_executing == 1)
@@ -48,7 +47,7 @@ static void	signal_handler(int signum)
 		}
 		else
 		{
-			return ; //Hay que mirar si hay input
+			return ;
 		}
 	}
 }

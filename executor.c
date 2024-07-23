@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 10:12:42 by alexigar          #+#    #+#             */
-/*   Updated: 2024/07/12 12:12:41 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/07/23 12:32:29 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,11 +104,14 @@ int try_call(char **paths, t_command *com)
                 free(function_call);
                 function_call = NULL;
                 com -> string_output = read_all(pipefd[0]);
-                printf("%d\n", com -> file_output);
+                //printf("%d\n", com -> file_output);
                 /*if (com -> input)
                     printf("%s\n", com -> input);*/
+                printf("Pasa por aqui\n");
                 if (com -> string_output)
+                {
                     write(com -> file_output, com -> string_output, ft_strlen(com -> string_output));
+                }
                 return (com -> returned_output);
             }
         }
@@ -128,11 +131,13 @@ int executor(t_command **command_list, t_list **env)
     char                **paths;
     int                 to_return;
     int                 j;
+    int                 tmp_fd;
     
     printf("Ha llegado al ejecutor\n");
     i = 0;
     j = 0;
     to_return = 0;
+    tmp_fd = 0;
     //command_list[i] -> input = NULL;
     function_call = ft_get_var_env(env, "PATH");
     if (!function_call)
@@ -185,10 +190,20 @@ int executor(t_command **command_list, t_list **env)
         }
         if (command_list[i] -> piped == 1)
         {
+            printf("Entra aqui\n");
             command_list[i + 1] -> input = command_list[i] -> string_output;
+            printf("%s\n", command_list[i] -> string_output);
+            printf("%ld\n", ft_strlen(command_list[i] -> string_output));
+            tmp_fd = open("tmp.txt", O_WRONLY | O_CREAT);
+            if (write(tmp_fd, command_list[i] -> string_output, ft_strlen(command_list[i] -> string_output)) <= 0)
+            {
+                printf("Did not write\n");
+                exit(EXIT_FAILURE);
+            }
+            close(tmp_fd);
             while (command_list[i + 1] -> args[j])
                 j++;
-            command_list[i + 1] -> args[j] = command_list[i] -> string_output;
+            command_list[i + 1] -> args[j] = "/tmp/tmp.txt";
             //command_list[i + 1] -> args[j] = ft_itoa(command_list[i] -> file_output);
         }
         i++;
@@ -197,5 +212,10 @@ int executor(t_command **command_list, t_list **env)
         function_call = NULL;*/
     }
     is_executing = 0;
+    if (tmp_fd != 0)
+    {
+        close(tmp_fd);
+        //unlink("tmp.txt");
+    }
     return (to_return); //Si todo ha ido bien devuelvo 0
 }
