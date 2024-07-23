@@ -255,6 +255,7 @@ int ft_built_cd(t_command *command, t_list **env)  // 0 es ok 1 es ko  -1 err me
 	}
 	ft_save_var_env("PWD", route, env); //   guardo lo valores en la variable de entorno. command->path se deberá actualizar
 	ft_save_var_env("OLDPWD", line_path, env);
+	ft_save_var_env("..PWD", route,env);  //Guardo ruta en var de entorno oculta
 	free(route);
 	ft_free_char(path);
 

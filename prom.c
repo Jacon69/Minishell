@@ -73,7 +73,7 @@ void prom(t_list  **env)
 	sigaction(SIGQUIT, &action, NULL);
 	while (control==1)
 	{
-		path_act = ft_get_var_env(env,"PWD"); //malloc
+		path_act = ft_get_var_env(env,"..PWD"); //malloc
 		if  (!path_act)
 			return;
 		aux= path_act;
