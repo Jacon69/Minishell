@@ -63,7 +63,7 @@ t_command **parser(char **tokens, t_list **env) //A esta funcion le tiene que ll
 		current_command -> args = malloc(sizeof(char *) * (n_tokens - i + 1)); //malloc
 		current_command -> command = NULL;
 		current_command -> string_output = NULL;
-		current_command -> path = ft_get_var_env(env,"PWD"); //malloc
+		current_command -> path = ft_get_var_env(env,"..PWD"); //malloc
 		if (!current_command -> path)
 		{
 			free_commands(command_list);

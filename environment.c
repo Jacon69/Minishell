@@ -6,8 +6,9 @@ static void ft_ini_empty_env(t_list **env) //(getcwd(char *buf, size_t size)); T
 	
 	if (getcwd(buffer, sizeof(buffer)) != NULL) 
 	{
-		ft_save_var_env("PWD=", buffer, env);
-		ft_save_var_env("SHLVL=", "1", env);//Ver si hace falta
+		ft_save_var_env("PWD", buffer, env);
+		ft_save_var_env("SHLVL", "1", env);//Ver si hace falta
+		ft_save_var_env("..PWD", ft_get_var_env(env, "PWD"),env);
     } 
 	else 
 	{
@@ -96,6 +97,8 @@ t_list **ft_ini_env(char **environment)
 			return NULL;
 		}
 	}
+
+	ft_save_var_env("..PWD", ft_get_var_env(env, "PWD"),env);
 	return env;
 }
 

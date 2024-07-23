@@ -170,12 +170,15 @@ int ft_print_list_env(t_command *command, t_list **env) //si hay error devuelve 
 	p_env = *env;
 	while (p_env )
 	{
-		ok *= write(command->file_output,p_env->content, ft_strlen(p_env->content));
-		ok *= write(command->file_output,"\n", 1);
-		if (ok > 0)
-			ok = 1;
-		else 
-			ok = -1;
+		if (ft_strncmp("..",p_env->content,2) != 0)
+		{
+			ok *= write(command->file_output,p_env->content, ft_strlen(p_env->content));
+			ok *= write(command->file_output,"\n", 1);
+			if (ok > 0)
+				ok = 1;
+			else 
+				ok = -1;
+		}
 		p_env= p_env->next;
 	}
 	return((ok <= 0) ? 1 : 0);
