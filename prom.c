@@ -1,5 +1,4 @@
 #include "minishell.h"
-#include "minishell.h"
 
 /*void ft_imprimetoken(char **token)
 {
@@ -16,10 +15,15 @@
 
 static void	signal_handler(int signum)
 {
-	if (signum == SIGINT)
+	if (signum == SIGINT) //ctrl-C
 	{
-		if (!is_executing)
-			printf("\nXXX$ ");
+		if (is_executing == 0)
+		{
+			rl_replace_line("", 1);
+			printf("\n");
+			rl_on_new_line();
+			rl_redisplay();
+		}
 		else if (is_executing == 1)
 		{
 			is_executing = 0;
@@ -27,11 +31,12 @@ static void	signal_handler(int signum)
 		}
 		else
 		{
+			printf("%d\n", is_executing);
 			is_executing = -1;
 			return ;
 		}
 	}
-	if (signum == SIGQUIT)
+	if (signum == SIGQUIT) //ctrl-barra
 	{
 		//printf("\nHa entrado aqui\n");
 		if (is_executing == 1)
@@ -42,7 +47,6 @@ static void	signal_handler(int signum)
 		}
 		else
 		{
-			//printf("\nXXX$ ");
 			return ;
 		}
 	}
@@ -77,7 +81,7 @@ void prom(t_list  **env)
 		free(aux);
 		if (!path_act)
 			return;
-		is_executing = 2;
+		//is_executing = 2;
 		line = readline(path_act); //hace Malloc
 		if (is_executing == -1)
 		{
