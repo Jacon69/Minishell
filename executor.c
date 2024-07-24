@@ -18,8 +18,10 @@ char    *read_all(int fd)
     char    *aux;
     char    *aux2;
 
-    to_return = get_next_line(fd);
+    to_return = get_next_line(fd); 
     aux = to_return;
+    if (!aux)
+        return NULL;
     while (aux)
     {
         aux = get_next_line(fd);
@@ -57,18 +59,19 @@ int try_call(char **paths, t_command *com)
             function_call = com -> command;
         else
         {
-            aux = ft_strjoin(paths[i], "/");
+            aux = ft_strjoin(paths[i], "/"); //Malloc
             if (!aux)
                 return (-1);
-		    function_call = ft_strjoin(aux, com -> command);
+		    function_call = ft_strjoin(aux, com -> command); //Malloc
             free(aux);
         }
-        //printf("%s\n", function_call);
+       // printf(" aqui pinto los intentos %s\n", function_call);
 		if (!function_call || pipe(pipefd) == -1)
             return (-1); //Salida error
         if (stat(function_call, &buf) == 0 && S_ISREG(buf.st_mode) && (buf.st_mode & S_IXUSR))
         {
             //Si llamo a execve hay que hacerlo en un fork aparte y pausar el programa principal
+           // printf(" aqui pinto las entradas %s\n", function_call); 
             pid = fork();
             if (pid < 0)
             {
@@ -77,13 +80,18 @@ int try_call(char **paths, t_command *com)
                 is_executing = 0;
                 exit(-1);
             }
-            if (pid == 0)
+            if (pid == 0) 
             {
                 close(pipefd[0]);
                 if (com -> file_input != 1)
-                    dup2(com -> file_input, STDIN_FILENO);
+                {
+                    dup2(com -> file_input, STDIN_FILENO);//Esto no tiene mucho sentido
+                }
                 dup2(pipefd[1], STDOUT_FILENO);
-                dup2(pipefd[1], STDERR_FILENO);
+                close(pipefd[1]);
+                
+             //   printf("arg 0 %s \narg 1 %s \narg 2 %s \n",com -> args[0],com -> args[1],com -> args[2] );
+               // write(pipefd[1], " ",1);
                 if (execve(function_call, com -> args, NULL) == -1)
                 {
                     perror("Command not found");

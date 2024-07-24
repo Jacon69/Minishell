@@ -34,7 +34,7 @@
 # include <dirent.h>
 # include <termios.h>
 
-extern int	is_executing;
+extern int	is_executing; //variable  global
 
 typedef struct s_command
 {

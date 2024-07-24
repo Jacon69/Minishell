@@ -102,19 +102,19 @@ t_command **parser(char **tokens, t_list **env) //A esta funcion le tiene que ll
 			}
 			//else
 			//{
-				current_command -> args[k] = tokens[i];
-				k++;
-				if (tokens[i][0] == '/' && current_command -> command[0] != '/')
+			current_command -> args[k] = tokens[i];
+			k++;
+			if (tokens[i][0] == '/' && current_command -> command[0] != '/')
+			{
+				if (current_command -> file_input != 1 && current_command -> file_output != 1)
 				{
-					if (current_command -> file_input != 1 && current_command -> file_output != 1)
-					{
-						free_commands(command_list);
-						return (NULL); //salida error
-					}
-					if (current_command -> file_output)
-						current_command -> file_input = current_command -> file_output;
-					current_command -> file_output = open(tokens[i], O_WRONLY | O_CREAT, 0644);
+					free_commands(command_list);
+					return (NULL); //salida error
 				}
+				if (current_command -> file_output)
+					current_command -> file_input = current_command -> file_output;
+				current_command -> file_output = open(tokens[i], O_WRONLY | O_CREAT, 0644);
+			}
 			//}
 			i++;
 			if (!tokens[i])
