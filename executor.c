@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 10:12:42 by alexigar          #+#    #+#             */
-/*   Updated: 2024/07/23 12:32:29 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/07/24 11:02:26 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,8 +101,11 @@ int try_call(char **paths, t_command *com)
                 waitpid(pid, &returned, 0);
                 com -> returned_output = WEXITSTATUS(returned);
                 printf("%s ha devuelto %d\n", com -> command, com -> returned_output);
-                free(function_call);
-                function_call = NULL;
+                if (com -> command[0] != '/')
+                {
+                    free(function_call);
+                    function_call = NULL;
+                }
                 com -> string_output = read_all(pipefd[0]);
                 //printf("%d\n", com -> file_output);
                 /*if (com -> input)
@@ -155,6 +158,7 @@ int executor(t_command **command_list, t_list **env)
         if (!command_list[i] -> command)
         {
             is_executing = 0;
+            free(paths);
             return(0); //Tendria que hacer alguna otra cosa entiendo
         }
         //TODO Manejar bien pipes y redirecciones
@@ -179,12 +183,14 @@ int executor(t_command **command_list, t_list **env)
             if (to_return != 0)
             {
                 is_executing = 0;
+                free(paths);
                 return (to_return); //Si se ha cambiado a algo que no es 0 devuelvo porque ha fallado algo
             }
         }
         if (command_list[i] -> returned_output == -1)
         {
             is_executing = 0;
+            free(paths);
             //Tiro error suave si ha fallado
             return (1); //O el codigo de error que sea
         }
@@ -217,5 +223,6 @@ int executor(t_command **command_list, t_list **env)
         close(tmp_fd);
         //unlink("tmp.txt");
     }
+    free(paths);
     return (to_return); //Si todo ha ido bien devuelvo 0
 }
