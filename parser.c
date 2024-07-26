@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 10:01:14 by alexigar          #+#    #+#             */
-/*   Updated: 2024/07/23 10:48:13 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/07/25 21:48:31 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,12 +71,20 @@ t_command **parser(char **tokens, t_list **env) //A esta funcion le tiene que ll
 		}
 		current_command -> redir1 = 0;
 		current_command -> redir2 = 0;
+		dup2(STDIN_FILENO, current_command -> file_input);
+		dup2(STDOUT_FILENO, current_command -> file_output);
+		//current_command -> file_input = 1;
+		//current_command -> file_output = 1;
 		if (j > 0 && command_list[j - 1] -> piped)
 		{
 			if (pipe(pipefd) == 0)
 			{
-				command_list[j - 1] -> file_output = pipefd[1]; //1 escritura
-				current_command -> file_input = pipefd[0]; //0 lecture
+				//close(command_list[j - 1] -> file_output);
+				command_list[j - 1] -> file_output=pipefd[1] ; //1 escritura
+				//close(current_command -> file_input);
+				current_command -> file_input=pipefd[0] ; //0 lecture
+				//close(pipefd[0]);
+				//close(pipefd[1]);
 			}
 			else
 			{

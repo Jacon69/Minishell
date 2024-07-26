@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 10:12:42 by alexigar          #+#    #+#             */
-/*   Updated: 2024/07/23 12:32:29 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/07/26 09:59:21 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ int try_call(char **paths, t_command *com)
 	/*for (int j = 0; com -> args[j] != NULL; j++)
 		printf("%s\n", com -> args[j]);*/
 	i = 0;
-	printf("Va a intentar ejecutar %s\n", com -> command);
+	//printf("Va a intentar ejecutar %s\n", com -> command);
 	while (paths[i])
 	{
 		if (com -> command[0] == '/')
@@ -81,12 +81,12 @@ int try_call(char **paths, t_command *com)
 			{
 				//close(pipefd[0]);
 				
-				if (com -> file_input!=1)
+				if (com -> file_input!= 1)
 				{
 					dup2(com -> file_input, STDIN_FILENO);
 					close(com->file_input);
 				}
-				if (com -> file_output!=1)
+				if (com -> file_output!= 1)
 				{
 					dup2(com -> file_output, STDOUT_FILENO);
 					close(com->file_output);
@@ -112,18 +112,22 @@ int try_call(char **paths, t_command *com)
 				//close(pipefd[1]);
 				waitpid(pid, &returned, 0);
 				com -> returned_output = WEXITSTATUS(returned);
-				printf("%s ha devuelto %d\n", com->command, com->returned_output);
+				//printf("%s ha devuelto %d\n", com->command, com->returned_output);
 				free(function_call);
 				function_call = NULL;
 				//com -> string_output = read_all(pipefd[0]);
 				//printf("%d\n", com -> file_output);
 				/*if (com -> input)
 					printf("%s\n", com -> input);*/
-				printf("Pasa por aqui\n");
+				//printf("Pasa por aqui\n");
 				/*if (com -> string_output)
 				{
 					write(com -> file_output, com -> string_output, ft_strlen(com -> string_output));
 				}*/
+				if (com -> file_input != 1)
+					close(com -> file_input);
+				if (com -> file_output != 1)
+					close(com -> file_output);
 				return (com -> returned_output);
 			}
 		}
@@ -145,7 +149,7 @@ int executor(t_command **command_list, t_list **env)
 	int                 j;
 	int                 tmp_fd;
 	
-	printf("Ha llegado al ejecutor\n");
+	//printf("Ha llegado al ejecutor\n");
 	i = 0;
 	j = 0;
 	to_return = 0;
