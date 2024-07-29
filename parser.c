@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 10:01:14 by alexigar          #+#    #+#             */
-/*   Updated: 2024/07/29 18:27:49 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/07/29 20:33:07 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,15 +20,24 @@ void	free_commands(t_command **command_list)
 	while (command_list[i])
 	{
 		if (command_list[i] -> args)
+		{
 			free(command_list[i] -> args);
+			command_list[i] -> args = NULL;
+		}
 		if (command_list[i] -> file_input != 1)
 			close(command_list[i] -> file_input);
 		if (command_list[i] -> file_output != 1)
 			close(command_list[i] -> file_output);
 		if (command_list[i] -> path)
+		{
 			free(command_list[i] -> path);
+			command_list[i] -> path = NULL;
+		}
 		if (command_list[i] -> string_output)
+		{
 			free(command_list[i] -> string_output);
+			command_list[i] -> string_output = NULL;
+		}
 		free(command_list[i]);
 		i++;
 	}
@@ -150,7 +159,7 @@ t_command **parser(char **tokens, t_list **env) //A esta funcion le tiene que ll
 		}*/
 		if (tokens[i])
 		{
-			if (tokens[i][0] == '>')
+			while (tokens[i][0] == '>')
 			{
 				if (tokens[i][1] == '>')
 					current_command -> redir2 = 2;
@@ -184,7 +193,7 @@ t_command **parser(char **tokens, t_list **env) //A esta funcion le tiene que ll
 					return (command_list);
 				}
 			}
-			if (tokens[i][0] == '<')
+			while (tokens[i][0] == '<')
 			{
 				if (tokens[i][1] == '<')
 					current_command -> redir1 = 2; //Este tiene que pedir inputs hasta que encuentre el siguiente argumento (input desde la consola, heredoc)
@@ -193,26 +202,47 @@ t_command **parser(char **tokens, t_list **env) //A esta funcion le tiene que ll
 				i++;
 				if (current_command -> redir1 == 1)
 				{
+					if (current_command -> file_input != 1)
+					{
+						current_command -> args[k] = NULL;
+						command_list[j] = current_command;
+						j++;
+						current_command = malloc(sizeof(t_command)); //malloc
+						if (!current_command)
+						{
+							free_commands(command_list);
+							return (NULL); //salida error
+						}
+						current_command -> args = malloc(sizeof(char *) * (n_tokens - i + 1));
+						ft_memcpy(current_command -> args, command_list[j - 1] -> args, sizeof(current_command -> args));
+						current_command -> args[k - 1] = tokens[i];
+						printf("%s\n", current_command -> args[k - 1]);
+						//current_command -> args = command_list[j - 1] -> args; //malloc
+						current_command -> command = command_list[j - 1] -> command;
+						current_command -> string_output = NULL;
+						current_command -> path = ft_get_var_env(env,"..PWD"); //malloc
+						current_command -> redir1 = 1;
+						current_command -> redir2 = 0;
+						//current_command -> file_input = 1;
+						current_command -> file_output = 1;
+					}
 					current_command -> file_input = open(tokens[i], O_RDONLY);
-					//current_command -> input = read_all(current_command -> file_input); //malloc
-					//close(current_command -> file_input);
-					//if (!(current_command -> input))
 					if (current_command -> file_input == -1)
 					{
 						free_commands(command_list);
 						return (NULL); //salida error
 					}
-					//current_command -> args[k] = current_command -> input;
-					//k++;
 				}
 				else
 				{
 					if (pipe(heredoc) == 0)
 					{
 						line = readline(" heredoc> ");
+						if (!line)
+							break;
 						while (ft_strncmp(tokens[i], line, ft_strlen(tokens[i])))
 						{
-							write(heredoc[1], &line, ft_strlen(line));
+							write(heredoc[1], line, ft_strlen(line));
 							write(heredoc[1], "\n", 1);
 							free(line);
 							line = readline(" heredoc> ");
@@ -222,7 +252,7 @@ t_command **parser(char **tokens, t_list **env) //A esta funcion le tiene que ll
 						i++;
 						close(heredoc[1]);
 						free(line);
-						printf("%s\n", read_all(heredoc[0]));
+						//printf("%s\n", read_all(heredoc[0]));
 						current_command -> file_input = heredoc[0];
 						//current_command -> args[k] = read_all(current_command -> file_input);
 					}

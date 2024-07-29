@@ -105,7 +105,7 @@ void prom(t_list  **env)
 					free(path_act);
 					continue;
 				}
-			if (!ft_memcmp(line,"exit",4)) 
+			if (ft_memcmp(line,"exit",4)== 0 && ft_strlen(line)==4 )
 				{
 					free(line);
 					free(path_act);

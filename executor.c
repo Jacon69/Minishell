@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 10:12:42 by alexigar          #+#    #+#             */
-/*   Updated: 2024/07/29 18:27:26 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/07/29 19:16:22 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,16 @@ char    *read_all(int fd)
     char    *to_return;
 
     aux = get_next_line(fd);
+	printf("Primera linea: %s\n", aux);
+	if (!aux)
+		return (NULL);
     aux2 = aux;
     while (aux2)
     {
         aux2 = get_next_line(fd);
         if (aux2)
         {
+			printf("Siguiente linea: %s\n", aux2);
             to_return = ft_strjoin(aux, aux2);
             free(aux);
             aux = to_return;
@@ -183,18 +187,13 @@ int executor(t_command **command_list, t_list **env)
 		}
 		//TODO Manejar bien pipes y redirecciones
 		//Si el comando es un built-in se ejecuta el built-in, si no intento llamar a execve
-		if (ft_strncmp(command_list[i] -> command, "echo", ft_strlen(command_list[i] -> command)) != 0
-		&& ft_strncmp(command_list[i] -> command, "cd", ft_strlen(command_list[i] -> command)) != 0
-		&& ft_strncmp(command_list[i] -> command, "pwd", ft_strlen(command_list[i] -> command)) != 0
-		&& ft_strncmp(command_list[i] -> command, "export", ft_strlen(command_list[i] -> command)) != 0
-		&& ft_strncmp(command_list[i] -> command, "unset", ft_strlen(command_list[i] -> command)) != 0
-		&& ft_strncmp(command_list[i] -> command, "env", ft_strlen(command_list[i] -> command)) != 0
-		&& ft_strncmp(command_list[i] -> command, "exit", ft_strlen(command_list[i] -> command)) != 0)
-		{
-			//printf("Va a intentar ejecutar %s\n", command_list[i] -> command);
-			to_return = try_call(paths, command_list[i]);
-		}
-		else
+		if ((ft_strncmp(command_list[i] -> command, "echo", 4) == 0 && ft_strlen(command_list[i] -> command) == 4)
+		|| (ft_strncmp(command_list[i] -> command, "cd", 2) == 0 && ft_strlen(command_list[i] -> command) == 2)
+		|| (ft_strncmp(command_list[i] -> command, "pwd", 3) == 0 && ft_strlen(command_list[i] -> command) == 3)
+		|| (ft_strncmp(command_list[i] -> command, "export", 6) == 0 && ft_strlen(command_list[i] -> command) == 6)
+		|| (ft_strncmp(command_list[i] -> command, "unset", 5) == 0 && ft_strlen(command_list[i] -> command) == 5)
+		|| (ft_strncmp(command_list[i] -> command, "env", 3) == 0 && ft_strlen(command_list[i] -> command) == 3)
+		|| (ft_strncmp(command_list[i] -> command, "exit", 4) == 0 && ft_strlen(command_list[i] -> command) == 4))
 		{
 			/*printf("Va a ejecutar ft_build\n");
 			printf("%s\n", command_list[i] -> path);*/
@@ -205,6 +204,11 @@ int executor(t_command **command_list, t_list **env)
 				is_executing = 0;
 				return (to_return); //Si se ha cambiado a algo que no es 0 devuelvo porque ha fallado algo
 			}
+		}
+		else
+		{
+			printf("Va a intentar ejecutar %s\n", command_list[i] -> command);
+			to_return = try_call(paths, command_list[i]);
 		}
 		if (command_list[i] -> returned_output == -1)
 		{
