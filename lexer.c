@@ -160,9 +160,10 @@ char    **lexer(char    *line)
 
 
 	ntoken = count_tokens(line);
-
+	if (!line )
+		return NULL;
 	token = (char **) malloc(sizeof(char *) * (ntoken + 1));
- 	if (!line || !token)
+ 	if (!token)
 		return NULL;
 	j = 0;
 	i = 0;

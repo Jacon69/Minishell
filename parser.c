@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 10:01:14 by alexigar          #+#    #+#             */
-/*   Updated: 2024/07/24 10:59:54 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/07/29 18:27:49 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,12 +73,22 @@ t_command **parser(char **tokens, t_list **env) //A esta funcion le tiene que ll
 		}
 		current_command -> redir1 = 0;
 		current_command -> redir2 = 0;
+		current_command -> file_input = 1;
+		current_command -> file_output = 1;
+		dup2(STDIN_FILENO, current_command -> file_input);
+		dup2(STDOUT_FILENO, current_command -> file_output);
+		//current_command -> file_input = 1;
+		//current_command -> file_output = 1;
 		if (j > 0 && command_list[j - 1] -> piped)
 		{
 			if (pipe(pipefd) == 0)
 			{
-				command_list[j - 1] -> file_output = pipefd[1]; //1 escritura
-				current_command -> file_input = pipefd[0]; //0 lecture
+				//close(command_list[j - 1] -> file_output);
+				command_list[j - 1] -> file_output=pipefd[1] ; //1 escritura
+				//close(current_command -> file_input);
+				current_command -> file_input=pipefd[0] ; //0 lecture
+				//close(pipefd[0]);
+				//close(pipefd[1]);
 			}
 			else
 			{
@@ -104,19 +114,19 @@ t_command **parser(char **tokens, t_list **env) //A esta funcion le tiene que ll
 			}
 			//else
 			//{
-				current_command -> args[k] = tokens[i];
-				k++;
-				if (tokens[i][0] == '/' && current_command -> command[0] != '/')
+			current_command -> args[k] = tokens[i];
+			k++;
+			if (tokens[i][0] == '/' && current_command -> command[0] != '/')
+			{
+				if (current_command -> file_input != 1 && current_command -> file_output != 1)
 				{
-					if (current_command -> file_input != 1 && current_command -> file_output != 1)
-					{
-						free_commands(command_list);
-						return (NULL); //salida error
-					}
-					if (current_command -> file_output)
-						current_command -> file_input = current_command -> file_output;
-					current_command -> file_output = open(tokens[i], O_WRONLY | O_CREAT, 0644);
+					free_commands(command_list);
+					return (NULL); //salida error
 				}
+				if (current_command -> file_output)
+					current_command -> file_input = current_command -> file_output;
+				current_command -> file_output = open(tokens[i], O_WRONLY | O_CREAT, 0644);
+			}
 			//}
 			i++;
 			if (!tokens[i])
@@ -203,9 +213,16 @@ t_command **parser(char **tokens, t_list **env) //A esta funcion le tiene que ll
 						while (ft_strncmp(tokens[i], line, ft_strlen(tokens[i])))
 						{
 							write(heredoc[1], &line, ft_strlen(line));
+							write(heredoc[1], "\n", 1);
+							free(line);
 							line = readline(" heredoc> ");
+							if (!line)
+								break;
 						}
 						i++;
+						close(heredoc[1]);
+						free(line);
+						printf("%s\n", read_all(heredoc[0]));
 						current_command -> file_input = heredoc[0];
 						//current_command -> args[k] = read_all(current_command -> file_input);
 					}
@@ -227,7 +244,7 @@ t_command **parser(char **tokens, t_list **env) //A esta funcion le tiene que ll
 			{
 				current_command -> piped = 1;
 				i++;
-			}			
+			}
 		}
 		//El resto de parametros los hace el ejecutor
 		current_command -> args[k] = NULL;

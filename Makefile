@@ -20,7 +20,7 @@ SRC = main.c \
 OBJ = $(SRC:.c=.o)
 
 # Compilador y flags
-CC = gcc
+CC = clang
 CFLAGS = -Wall -Wextra -Werror -g
 LDFLAGS = -L$(LIBFT_DIR) -lft -lreadline
 
