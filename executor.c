@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 10:12:42 by alexigar          #+#    #+#             */
-/*   Updated: 2024/07/23 12:32:29 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/07/25 17:22:40 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,27 +14,24 @@
 
 char    *read_all(int fd)
 {
-    char    *to_return;
     char    *aux;
     char    *aux2;
+    char    *to_return;
 
-    to_return = get_next_line(fd);
-    aux = to_return;
-    while (aux)
+    aux = get_next_line(fd);
+    aux2 = aux;
+    while (aux2)
     {
-        aux = get_next_line(fd);
-        if (aux)
+        aux2 = get_next_line(fd);
+        if (aux2)
         {
-            aux2 = ft_strjoin(to_return, aux);
-            free(to_return);
-            to_return = aux2;
+            to_return = ft_strjoin(aux, aux2);
+            free(aux);
+            aux = to_return;
         }
     }
-    //printf("%s\n", aux2);
-    //free(aux2);
-    free(aux);
-    return (aux2);
-    //return (to_return);
+    free(aux2);
+    return (to_return);
 }
 
 int try_call(char **paths, t_command *com)
@@ -101,8 +98,11 @@ int try_call(char **paths, t_command *com)
                 waitpid(pid, &returned, 0);
                 com -> returned_output = WEXITSTATUS(returned);
                 printf("%s ha devuelto %d\n", com -> command, com -> returned_output);
-                free(function_call);
-                function_call = NULL;
+                if (com -> command[0] != '/')
+                {
+                    free(function_call);
+                    function_call = NULL;
+                }
                 com -> string_output = read_all(pipefd[0]);
                 //printf("%d\n", com -> file_output);
                 /*if (com -> input)
@@ -155,6 +155,7 @@ int executor(t_command **command_list, t_list **env)
         if (!command_list[i] -> command)
         {
             is_executing = 0;
+            ft_free_char(paths);
             return(0); //Tendria que hacer alguna otra cosa entiendo
         }
         //TODO Manejar bien pipes y redirecciones
@@ -179,12 +180,14 @@ int executor(t_command **command_list, t_list **env)
             if (to_return != 0)
             {
                 is_executing = 0;
+                ft_free_char(paths);
                 return (to_return); //Si se ha cambiado a algo que no es 0 devuelvo porque ha fallado algo
             }
         }
         if (command_list[i] -> returned_output == -1)
         {
             is_executing = 0;
+            ft_free_char(paths);
             //Tiro error suave si ha fallado
             return (1); //O el codigo de error que sea
         }
@@ -198,6 +201,7 @@ int executor(t_command **command_list, t_list **env)
             if (write(tmp_fd, command_list[i] -> string_output, ft_strlen(command_list[i] -> string_output)) <= 0)
             {
                 printf("Did not write\n");
+                ft_free_char(paths);
                 exit(EXIT_FAILURE);
             }
             close(tmp_fd);
@@ -211,6 +215,7 @@ int executor(t_command **command_list, t_list **env)
      /*   free(function_call);
         function_call = NULL;*/
     }
+    ft_free_char(paths);
     is_executing = 0;
     if (tmp_fd != 0)
     {

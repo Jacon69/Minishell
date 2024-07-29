@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 10:01:14 by alexigar          #+#    #+#             */
-/*   Updated: 2024/07/23 10:48:13 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/07/24 10:59:54 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ void	free_commands(t_command **command_list)
 			close(command_list[i] -> file_output);
 		if (command_list[i] -> path)
 			free(command_list[i] -> path);
+		if (command_list[i] -> string_output)
+			free(command_list[i] -> string_output);
 		free(command_list[i]);
 		i++;
 	}
