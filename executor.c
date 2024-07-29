@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 10:12:42 by alexigar          #+#    #+#             */
-/*   Updated: 2024/07/26 09:59:21 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/07/29 17:56:06 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ int try_call(char **paths, t_command *com)
 	int         returned;
 	struct stat buf;
 
+	//printf("%s\n", get_next_line(com -> file_input));
 	/*for (int j = 0; com -> args[j] != NULL; j++)
 		printf("%s\n", com -> args[j]);*/
 	i = 0;
@@ -73,7 +74,8 @@ int try_call(char **paths, t_command *com)
 			if (pid < 0)
 			{
 				perror("Fork failed");
-				free(function_call);
+				if (function_call != com->command)
+					free(function_call);
 				is_executing = 0;
 				exit(-1);
 			}
@@ -99,7 +101,8 @@ int try_call(char **paths, t_command *com)
 				if (execve(function_call, com -> args, NULL) == -1)
 				{
 					perror("Command not found");
-					free(function_call);
+					if (function_call != com->command)
+						free(function_call);
 					//close(pipefd[1]);
 					is_executing = 0;
 					exit(EXIT_FAILURE);
@@ -112,9 +115,10 @@ int try_call(char **paths, t_command *com)
 				//close(pipefd[1]);
 				waitpid(pid, &returned, 0);
 				com -> returned_output = WEXITSTATUS(returned);
-				//printf("%s ha devuelto %d\n", com->command, com->returned_output);
-				free(function_call);
-				function_call = NULL;
+				printf("%s ha devuelto %d\n", com->command, com->returned_output);
+				if (function_call != com->command)
+					free(function_call);
+				//function_call = NULL;
 				//com -> string_output = read_all(pipefd[0]);
 				//printf("%d\n", com -> file_output);
 				/*if (com -> input)
@@ -132,11 +136,17 @@ int try_call(char **paths, t_command *com)
 			}
 		}
 		else
+		{
+			if (function_call != com->command)
+				free(function_call);
+			function_call = NULL;
 			i++;
+		}
 	}
 	com -> returned_output = 127;
 	printf("Error: command not found\n");
-	free(function_call);
+	if (function_call != com->command)
+		free(function_call);
 	return (com -> returned_output);
 }
 
@@ -230,6 +240,7 @@ int executor(t_command **command_list, t_list **env)
 		function_call = NULL;*/
 	}
 	is_executing = 0;
+	ft_free_char(paths);
 	if (tmp_fd != 0)
 	{
 		close(tmp_fd);

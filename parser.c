@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 10:01:14 by alexigar          #+#    #+#             */
-/*   Updated: 2024/07/25 21:48:31 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/07/29 18:19:45 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,8 @@ t_command **parser(char **tokens, t_list **env) //A esta funcion le tiene que ll
 		}
 		current_command -> redir1 = 0;
 		current_command -> redir2 = 0;
+		current_command -> file_input = 1;
+		current_command -> file_output = 1;
 		dup2(STDIN_FILENO, current_command -> file_input);
 		dup2(STDOUT_FILENO, current_command -> file_output);
 		//current_command -> file_input = 1;
@@ -209,9 +211,16 @@ t_command **parser(char **tokens, t_list **env) //A esta funcion le tiene que ll
 						while (ft_strncmp(tokens[i], line, ft_strlen(tokens[i])))
 						{
 							write(heredoc[1], &line, ft_strlen(line));
+							write(heredoc[1], "\n", 1);
+							free(line);
 							line = readline(" heredoc> ");
+							if (!line)
+								break;
 						}
 						i++;
+						close(heredoc[1]);
+						free(line);
+						printf("%s\n", read_all(heredoc[0]));
 						current_command -> file_input = heredoc[0];
 						//current_command -> args[k] = read_all(current_command -> file_input);
 					}
