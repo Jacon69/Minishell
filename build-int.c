@@ -6,13 +6,12 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 05:32:30 by jaimecondea       #+#    #+#             */
-/*   Updated: 2024/07/30 11:37:22 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/07/30 12:58:57 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-//echo echo -n cd pwd export unset env exit 
 int	ft_built_echo(t_command *command)
 {
 	int	jump_line;
@@ -21,7 +20,7 @@ int	ft_built_echo(t_command *command)
 
 	ok = 1;
 	i = 1;
-	jump_line = 1; //ponemos \n detras de cada args
+	jump_line = 1;
 	if (!ft_memcmp(command -> args[1], "-n", 2) && ft_strlen(command -> args[1]) == 2)
 	{
 		jump_line = 0;
@@ -59,7 +58,7 @@ int	ft_built_echo(t_command *command)
 	return((ok <= 0) ? 1 : 0);
 }
 
-int	ft_built_cd(t_command *command, t_list **env) // 0 es ok 1 es ko -1 err men
+int	ft_built_cd(t_command *command, t_list **env)
 {
 	int		i;
 	char	**path;
@@ -72,7 +71,7 @@ int	ft_built_cd(t_command *command, t_list **env) // 0 es ok 1 es ko -1 err men
 	int		ok;
 
 	ok = 0;
-	line_path = command->path; //cojo el path actual del guardado en cmd
+	line_path = command->path;
 	route = malloc(2);
 	if (!route)
 	{
@@ -92,21 +91,20 @@ int	ft_built_cd(t_command *command, t_list **env) // 0 es ok 1 es ko -1 err men
 		i++;
 	}
 	i = 0;
-	path = ft_split(line_path, '/'); //Malloc
+	path = ft_split(line_path, '/');
 	if (!path)
 	{
 		free(route);
 		perror("Error MEM built_in1");
 		return (-1);
 	}
-	if ((((!ft_memcmp(command -> args[1], "..", 2) && ft_strlen(command -> args[1]) == 2)) || //cuando tengo .. 
-	(!ft_memcmp(command -> args[1], "../", 3) && (ft_strlen(command -> args[1]) == 3))) && !(command -> args[2]))
+	if ((((!ft_memcmp(command -> args[1], "..", 2) && ft_strlen(command -> args[1]) == 2))
+			|| (!ft_memcmp(command -> args[1], "../", 3) && (ft_strlen(command -> args[1]) == 3))) && !(command -> args[2]))
 	{
-		
-		while ((i < num_dir - 1) && ft_strlen(line_path) > 1) // si line_path es mayor que 1 es no es raiz si es raiz no hace nada
+		while ((i < num_dir - 1) && ft_strlen(line_path) > 1)
 		{
 			aux = route;
-			route = ft_strjoin(route, path[i]); //malloc  voy añadiendo dir menos el último
+			route = ft_strjoin(route, path[i]);
 			free(aux);
 			if (!route)
 			{
@@ -117,7 +115,7 @@ int	ft_built_cd(t_command *command, t_list **env) // 0 es ok 1 es ko -1 err men
 			if (i < (num_dir - 2))
 			{
 				aux = route;
-				route = ft_strjoin(route, "/"); //malloc  voy añadiendo dir menos el último
+				route = ft_strjoin(route, "/");
 				free(aux);
 				if (!route)
 				{
@@ -130,12 +128,12 @@ int	ft_built_cd(t_command *command, t_list **env) // 0 es ok 1 es ko -1 err men
 		}
 	}
 	else if (((((command -> args[1][0] == '.' && ft_strlen(command -> args[1]) == 1))
-		|| (!ft_memcmp(command->args[1], "./", 2) && ft_strlen(command -> args[1]) == 2))) && !(command -> args[2]))
+			|| (!ft_memcmp(command->args[1], "./", 2) && ft_strlen(command -> args[1]) == 2))) && !(command -> args[2]))
 	{
-		while((i < num_dir) && ft_strlen(line_path) > 1) // si line_path es mayor que 1 es no es raiz si es raiz no hace nada
+		while ((i < num_dir) && ft_strlen(line_path) > 1)
 		{
 			aux = route;
-			route = ft_strjoin(route, path[i]); //malloc  voy añadiendo dir
+			route = ft_strjoin(route, path[i]);
 			free(aux);
 			if (!route)
 			{
@@ -146,7 +144,7 @@ int	ft_built_cd(t_command *command, t_list **env) // 0 es ok 1 es ko -1 err men
 			if (i < (num_dir - 1))
 			{
 				aux = route;
-				route = ft_strjoin(route, "/"); //malloc  voy añadiendo dir menos el último
+				route = ft_strjoin(route, "/");
 				free(aux);
 				if (!route)
 				{
@@ -163,21 +161,21 @@ int	ft_built_cd(t_command *command, t_list **env) // 0 es ok 1 es ko -1 err men
 		perror("Error cd: too many arguments1");
 		ft_free_char(path);
 		free(route);
-		return (1); //Error cd: too many arguments
+		return (1);
 	}
 	else if ((!ft_memcmp(command -> args[1], "./", 2) || !ft_memcmp(command -> args[1], "../", 3)) && (command -> args[2]))
 	{
 		perror("Error cd: too many arguments2");
 		ft_free_char(path);
 		free(route);
-		return (1);//Error cd: too many arguments
+		return (1);
 	}
-	else if (ft_strlen(command -> args[1]) > 0) //aqui meto cuando me ponen un cd dirxx  o cd /dirxx
+	else if (ft_strlen(command -> args[1]) > 0)
 	{
-		while ((i < num_dir) && ft_strlen(line_path) > 1)  // si line_path es mayor que 1 es no es raiz si es raiz no hace nada
+		while ((i < num_dir) && ft_strlen(line_path) > 1)
 		{
 			aux = route;
-			route = ft_strjoin(route, path[i]); //malloc  voy añadiendo dir
+			route = ft_strjoin(route, path[i]);
 			free(aux);
 			if (!route)
 			{
@@ -188,7 +186,7 @@ int	ft_built_cd(t_command *command, t_list **env) // 0 es ok 1 es ko -1 err men
 			if (i < (num_dir - 1))
 			{
 				aux = route;
-				route = ft_strjoin(route, "/"); //malloc  voy añadiendo dir menos el último
+				route = ft_strjoin(route, "/");
 				free(aux);
 				if (!route)
 				{
@@ -200,7 +198,7 @@ int	ft_built_cd(t_command *command, t_list **env) // 0 es ok 1 es ko -1 err men
 			if (command -> args[1][0] != '/' && i == (num_dir - 1))
 			{
 				aux = route;
-				route = ft_strjoin(route, "/"); //malloc  voy añadiendo dir menos el último
+				route = ft_strjoin(route, "/");
 				if (!route)
 				{
 					perror("Error MEM built_in9");
@@ -210,10 +208,10 @@ int	ft_built_cd(t_command *command, t_list **env) // 0 es ok 1 es ko -1 err men
 			}
 			i++;
 		}
-		aux2 = aux; //Aquí guardo la ruta sin barra porsi falla
+		aux2 = aux;
 		aux = route;
 		aux3 = command->args[1];
-		if (command -> args[1][0] == '/') //ABSOLUTA
+		if (command -> args[1][0] == '/')
 		{
 			free(aux);
 			aux3++;
@@ -228,7 +226,7 @@ int	ft_built_cd(t_command *command, t_list **env) // 0 es ok 1 es ko -1 err men
 			route[1] = '\0';
 			aux = route;
 		}
-		route = ft_strjoin(route, aux3); //malloc  voy añadiendo dir menos el último
+		route = ft_strjoin(route, aux3);
 		free(aux);
 		if (!route)
 		{
@@ -236,7 +234,7 @@ int	ft_built_cd(t_command *command, t_list **env) // 0 es ok 1 es ko -1 err men
 			ft_free_char(path);
 			return (-1);
 		}
-		if (!ft_is_dir_ok(route)) //Aqui compruebo si existe el dir
+		if (!ft_is_dir_ok(route))
 		{
 			write(command -> file_output, "Not a directory\n", 16);
 			free(route);
@@ -244,9 +242,9 @@ int	ft_built_cd(t_command *command, t_list **env) // 0 es ok 1 es ko -1 err men
 			ok = 1;
 		}
 	}
-	ft_save_var_env("PWD", route, env); //guardo lo valores en la variable de entorno. command->path se deberá actualizar
+	ft_save_var_env("PWD", route, env);
 	ft_save_var_env("OLDPWD", line_path, env);
-	ft_save_var_env("..PWD", route, env); //Guardo ruta en var de entorno oculta
+	ft_save_var_env("..PWD", route, env);
 	free(route);
 	ft_free_char(path);
 	return (ok);
@@ -272,20 +270,19 @@ int	ft_built_export(t_command *command, t_list **env)
 	}
 	if (ft_memchr(command->args[1], '=', ft_strlen(command -> args[1])) != NULL)
 	{
-		ft_add_v_env(command->args[1], env); ///Solo funciona si hay =
+		ft_add_v_env(command->args[1], env);
 		return (0);
 	}
-	//IMPORTANTE queda ver si hay que meter export cuando no hay =
 	return (0);
 }
 
 int	ft_built_unset(t_command *command, t_list **env)
 {
-	(void)command; // Esto evita el error de compilación por variable no utilizada.
-	(void)env; // Esto evita el error de compilación por variable no utilizada.
+	(void)command;
+	(void)env;
 	if (ft_strlen(command -> args[1]) > 1)
 	{
-		ft_del_v_env(command -> args[1], env); //Borra si hay arg[1] 
+		ft_del_v_env(command -> args[1], env);
 		return (0);
 	}
 	return (0);
@@ -320,7 +317,7 @@ int	ft_build_int(t_command *command_act, t_list **env)
 		write(command_act -> file_output, "exit built_int\n", 15);
 		free(command_act);
 		ft_free_list(env);
-		return (ok); //¿Otro codigo para salir del programa despues de liberar cosas?
+		return (ok);
 	}
 	return (ok);
 }

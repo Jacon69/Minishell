@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 16:17:26 by aiturria          #+#    #+#             */
-/*   Updated: 2024/07/29 17:55:27 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/07/30 12:50:36 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@
 # include <dirent.h>
 # include <termios.h>
 
-extern int	is_executing; //variable  global
+extern int	g_is_executing; //variable  global
 
 typedef struct s_command
 {
