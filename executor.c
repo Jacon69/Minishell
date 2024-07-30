@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 10:12:42 by alexigar          #+#    #+#             */
-/*   Updated: 2024/07/29 19:16:22 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/07/30 12:17:59 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@ char    *read_all(int fd)
     char    *to_return;
 
     aux = get_next_line(fd);
-	printf("Primera linea: %s\n", aux);
 	if (!aux)
 		return (NULL);
     aux2 = aux;
@@ -28,8 +27,7 @@ char    *read_all(int fd)
         aux2 = get_next_line(fd);
         if (aux2)
         {
-			printf("Siguiente linea: %s\n", aux2);
-            to_return = ft_strjoin(aux, aux2);
+			to_return = ft_strjoin(aux, aux2);
             free(aux);
             aux = to_return;
         }
@@ -48,9 +46,6 @@ int try_call(char **paths, t_command *com)
 	int         returned;
 	struct stat buf;
 
-	//printf("%s\n", get_next_line(com -> file_input));
-	/*for (int j = 0; com -> args[j] != NULL; j++)
-		printf("%s\n", com -> args[j]);*/
 	i = 0;
 	//printf("Va a intentar ejecutar %s\n", com -> command);
 	while (paths[i])
@@ -65,13 +60,11 @@ int try_call(char **paths, t_command *com)
 			function_call = ft_strjoin(aux, com -> command); //Malloc
 			free(aux);
 		}
-	   // printf(" aqui pinto los intentos %s\n", function_call);
 		if (!function_call )//|| pipe(pipefd) == -1)
 			return (-1); //Salida error
 		if (stat(function_call, &buf) == 0 && S_ISREG(buf.st_mode) && (buf.st_mode & S_IXUSR))
 		{
 			//Si llamo a execve hay que hacerlo en un fork aparte y pausar el programa principal
-		   // printf(" aqui pinto las entradas %s\n", function_call); 
 			pid = fork();
 			if (pid < 0)
 			{
@@ -83,8 +76,6 @@ int try_call(char **paths, t_command *com)
 			}
 			if (pid == 0) 
 			{
-				//close(pipefd[0]);
-				
 				if (com -> file_input!= 1)
 				{
 					dup2(com -> file_input, STDIN_FILENO);
@@ -95,17 +86,11 @@ int try_call(char **paths, t_command *com)
 					dup2(com -> file_output, STDOUT_FILENO);
 					close(com->file_output);
 				}
-				//dup2(pipefd[1], STDOUT_FILENO);
-				//close(pipefd[1]);
-				//close(com->file_input);
-				//close(com->file_output);
-				
 				if (execve(function_call, com -> args, NULL) == -1)
 				{
 					perror("Command not found");
 					if (function_call != com->command)
 						free(function_call);
-					//close(pipefd[1]);
 					is_executing = 0;
 					exit(EXIT_FAILURE);
 				}
@@ -114,22 +99,11 @@ int try_call(char **paths, t_command *com)
 			}
 			else
 			{
-				//close(pipefd[1]);
 				waitpid(pid, &returned, 0);
 				com -> returned_output = WEXITSTATUS(returned);
-				printf("%s ha devuelto %d\n", com->command, com->returned_output);
+				//printf("%s ha devuelto %d\n", com->command, com->returned_output);
 				if (function_call != com->command)
 					free(function_call);
-				//function_call = NULL;
-				//com -> string_output = read_all(pipefd[0]);
-				//printf("%d\n", com -> file_output);
-				/*if (com -> input)
-					printf("%s\n", com -> input);*/
-				//printf("Pasa por aqui\n");
-				/*if (com -> string_output)
-				{
-					write(com -> file_output, com -> string_output, ft_strlen(com -> string_output));
-				}*/
 				if (com -> file_input != 1)
 					close(com -> file_input);
 				if (com -> file_output != 1)
@@ -146,7 +120,7 @@ int try_call(char **paths, t_command *com)
 		}
 	}
 	com -> returned_output = 127;
-	printf("Error: command not found\n");
+	perror("Error: command not found\n");
 	if (function_call != com->command)
 		free(function_call);
 	return (com -> returned_output);
@@ -159,14 +133,11 @@ int executor(t_command **command_list, t_list **env)
 	char                **paths;
 	int                 to_return;
 	int                 j;
-	int                 tmp_fd;
 	
 	//printf("Ha llegado al ejecutor\n");
 	i = 0;
 	j = 0;
 	to_return = 0;
-	tmp_fd = 0;
-	//command_list[i] -> input = NULL;
 	function_call = ft_get_var_env(env, "PATH");
 	if (!function_call)
 		return (-1);
@@ -185,9 +156,14 @@ int executor(t_command **command_list, t_list **env)
 			is_executing = 0;
 			return(0); //Tendria que hacer alguna otra cosa entiendo
 		}
+		if (command_list[i] -> file_input == -1)
+		{
+			perror("Error");
+			to_return = 1;
+		}
 		//TODO Manejar bien pipes y redirecciones
 		//Si el comando es un built-in se ejecuta el built-in, si no intento llamar a execve
-		if ((ft_strncmp(command_list[i] -> command, "echo", 4) == 0 && ft_strlen(command_list[i] -> command) == 4)
+		else if ((ft_strncmp(command_list[i] -> command, "echo", 4) == 0 && ft_strlen(command_list[i] -> command) == 4)
 		|| (ft_strncmp(command_list[i] -> command, "cd", 2) == 0 && ft_strlen(command_list[i] -> command) == 2)
 		|| (ft_strncmp(command_list[i] -> command, "pwd", 3) == 0 && ft_strlen(command_list[i] -> command) == 3)
 		|| (ft_strncmp(command_list[i] -> command, "export", 6) == 0 && ft_strlen(command_list[i] -> command) == 6)
@@ -195,10 +171,7 @@ int executor(t_command **command_list, t_list **env)
 		|| (ft_strncmp(command_list[i] -> command, "env", 3) == 0 && ft_strlen(command_list[i] -> command) == 3)
 		|| (ft_strncmp(command_list[i] -> command, "exit", 4) == 0 && ft_strlen(command_list[i] -> command) == 4))
 		{
-			/*printf("Va a ejecutar ft_build\n");
-			printf("%s\n", command_list[i] -> path);*/
 			to_return = ft_build_int(command_list[i], env);
-			//printf("Ha ejecutado ft_build\n");
 			if (to_return != 0)
 			{
 				is_executing = 0;
@@ -207,7 +180,7 @@ int executor(t_command **command_list, t_list **env)
 		}
 		else
 		{
-			printf("Va a intentar ejecutar %s\n", command_list[i] -> command);
+			//printf("Va a intentar ejecutar %s\n", command_list[i] -> command);
 			to_return = try_call(paths, command_list[i]);
 		}
 		if (command_list[i] -> returned_output == -1)
@@ -216,37 +189,9 @@ int executor(t_command **command_list, t_list **env)
 			//Tiro error suave si ha fallado
 			return (1); //O el codigo de error que sea
 		}
-	/*
-		if (command_list[i] -> piped == 1)
-		{
-			printf("Entra aqui\n");
-			command_list[i + 1] -> input = command_list[i] -> string_output;
-			//printf("%s\n", command_list[i] -> string_output);
-			//printf("%ld\n", ft_strlen(command_list[i] -> string_output));
-			tmp_fd = open("tmp.txt", O_WRONLY | O_CREAT);
-			if (write(tmp_fd, command_list[i] -> string_output, ft_strlen(command_list[i] -> string_output)) <= 0)
-			{
-				printf("Did not write\n");
-				exit(EXIT_FAILURE);
-			}
-			close(tmp_fd);
-			while (command_list[i + 1] -> args[j])
-				j++;
-			command_list[i + 1] -> args[j] = "/tmp/tmp.txt";
-			//command_list[i + 1] -> args[j] = ft_itoa(command_list[i] -> file_output);
-		}
-	*/
 		i++;
-		//printf("Input\n\n %s\n", command_list[i] -> input);
-	 /*   free(function_call);
-		function_call = NULL;*/
 	}
 	is_executing = 0;
 	ft_free_char(paths);
-	if (tmp_fd != 0)
-	{
-		close(tmp_fd);
-		//unlink("tmp.txt");
-	}
 	return (to_return); //Si todo ha ido bien devuelvo 0
 }
