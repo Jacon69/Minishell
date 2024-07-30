@@ -1,5 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   expander.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/07/30 19:52:48 by jconde-a          #+#    #+#             */
+/*   Updated: 2024/07/30 19:53:02 by jconde-a         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
+/* ft_expander_home:
+   - Converts relative paths into absolute paths.
+   - Uses the home directory as a reference for expansion.
+*/
 static char *ft_expander_home(char *token, t_list  **env) 
 {
 	char	*var_env;
@@ -11,35 +27,32 @@ static char *ft_expander_home(char *token, t_list  **env)
 	int 	var_long;
 	
 	i = 0 ;
-	token = ft_strdup(token);//Malloc duplico porque en origen libero token original
+	token = ft_strdup(token);
 	if (!token)
 		return NULL;
 	while (token[i])
 	{
 		
-		if ((token[i] == '~' && token[i+1] == '/' )||  (token[i] == '~' && ft_strlen(token) == 1 ))
+		if ((token[i] == '~' && token[i+1] == '/' ) || (token[i] == '~' && ft_strlen(token) == 1 ))
 		{
 			j = i;
 			var_long = 1;
 			i++;
-						
-			var_env = ft_get_var_env(env, "HOME"); //Malloc
-			
-			
-			if (!var_env) //esto es si falla malloc
+			var_env = ft_get_var_env(env, "HOME");
+			if (!var_env)
 			{
 				free(token);
 				return NULL;
 			}	
-			aux = token; //para liberar
-			aux1 = ft_substr(token, 0, j ); //lo que va por delante // Malloc
+			aux = token;
+			aux1 = ft_substr(token, 0, j );
 			if (!aux1)
 			{
 				free(token);
 				free(var_env);
 				return NULL;
 			}
-			aux2 = ft_substr(token, j + var_long , ft_strlen(token)-(j + var_long) ); // lo que va por detrás // Malloc
+			aux2 = ft_substr(token, j + var_long , ft_strlen(token)-(j + var_long) );
 			if (!aux2)
 			{
 				free(aux1);
@@ -56,7 +69,6 @@ static char *ft_expander_home(char *token, t_list  **env)
 				free(var_env);
 				return NULL;
 			}
-
 			aux = token;
 			token = ft_strjoin(token,aux2);
 			free (aux);
@@ -71,6 +83,8 @@ static char *ft_expander_home(char *token, t_list  **env)
 	return (token);
 }
 
+/* ft_expander_$: Modifies a token by replacing environment variables
+ (preceded by '$') with their values. */
 static char *ft_expander_$(char *token, t_list  **env) 
 {
 	char	*var_env;
@@ -82,7 +96,7 @@ static char *ft_expander_$(char *token, t_list  **env)
 	int 	var_long;
 	
 	i = 0 ;
-	token = ft_strdup(token);//malloc duplico porque en origen libero token original //
+	token = ft_strdup(token);
 	if (!token)
 		return NULL;
 	while (token[i])
@@ -92,36 +106,36 @@ static char *ft_expander_$(char *token, t_list  **env)
 		{
 			j = i;
 			var_long = 0;
-			while (token[i] && token[i]!= ' ') //cuento tamaño de lo que hay que expandir
+			while (token[i] && token[i]!= ' ')
 			{
 				var_long++;
 				i++;
 			}
-			aux = ft_substr(token, j + 1, var_long - 1 ) ; // Malloc Lo que viene después de dolar puedo no existir entonces no se hace nada se sustituye por nada
-			if (!aux) //esto es si falla malloc
+			aux = ft_substr(token, j + 1, var_long - 1 ) ;
+			if (!aux)
 			{
 				free(token);
 				return NULL;
 			}
 				
-			var_env = ft_get_var_env(env, aux); //Malloc
+			var_env = ft_get_var_env(env, aux);
 			free(aux);
-			if (!var_env) //esto es si falla malloc
+			if (!var_env)
 			{
 				free(token);
 				return NULL;
 			}
 			
-			aux = token; //para liberar
+			aux = token;
 
-			aux1 = ft_substr(token, 0, j ); //lo que va por delante // Malloc
+			aux1 = ft_substr(token, 0, j );
 			if (!aux1)
 			{
 				free(token);
 				free(var_env);
 				return NULL;
 			}
-			aux2 = ft_substr(token, j + var_long , ft_strlen(token)-(j + var_long) ); // lo que va por detrás // Malloc
+			aux2 = ft_substr(token, j + var_long , ft_strlen(token)-(j + var_long) );
 			if (!aux2)
 			{
 				free(aux1);
@@ -129,24 +143,24 @@ static char *ft_expander_$(char *token, t_list  **env)
 				free(var_env);
 				return NULL;
 			}		
-			token = ft_strjoin (aux1, var_env);//malloc
+			token = ft_strjoin (aux1, var_env);
 			free (aux);
 			free(var_env);
 			if (!token)
 			{
 				free (aux1);
-				free (aux2);				
+				free (aux2);
 				return NULL;
 			}
 			aux = token;
-			token = ft_strjoin(token,aux2); //malloc
+			token = ft_strjoin(token,aux2);
 			free (aux);
 			free (aux1);
 			free (aux2);
 			if (!token)
 				return NULL;
 			aux = token;
-			token = ft_expander_$(token, env); //malloc
+			token = ft_expander_$(token, env);
 			free (aux);
 			if (!token)
 				return NULL;
@@ -156,8 +170,13 @@ static char *ft_expander_$(char *token, t_list  **env)
 	return (token);
 }
 
-
-static char *ft_expander_q(char *token, t_list  **env) //Aquí le quito las comillas antes de expandirlo
+/* 
+   ft_expander_q:
+     - Removes double quotes from a token.
+     - Expands environment variables found within double quotes (preceded by '$').
+     - Single quotes and their contents are left unchanged.
+*/
+static char *ft_expander_q(char *token, t_list  **env)
 {
 	char	*aux;
 	char	*aux2;
@@ -177,7 +196,13 @@ static char *ft_expander_q(char *token, t_list  **env) //Aquí le quito las comi
 	return (aux2);
 }
 
-//Si devuelve 1 ok o fallo
+/* 
+   Expander:
+     - Analyzes tokens for variables, relative paths, and quotes.
+     - Performs variable expansion, replacing variable names with their values.
+     - Resolves relative paths by converting them to absolute paths.
+     - Returns the modified token with expanded values.
+*/
 int	expander(char **token, t_list  **env)
 {
 	int 	i;

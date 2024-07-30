@@ -3,16 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   build-int.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/19 05:32:30 by jaimecondea       #+#    #+#             */
-/*   Updated: 2024/07/30 11:37:22 by alexigar         ###   ########.fr       */
+/*   Created: 2024/07/30 13:30:16 by jconde-a          #+#    #+#             */
+/*   Updated: 2024/07/30 20:59:18 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+
 #include "minishell.h"
 
-//echo echo -n cd pwd export unset env exit 
+/* Implements the 'echo' command for the minishell.
+   Prints text to standard output or a file.
+   Supports the '-n' option and special character escaping.
+*/
 int	ft_built_echo(t_command *command)
 {
 	int	jump_line;
@@ -21,7 +25,7 @@ int	ft_built_echo(t_command *command)
 
 	ok = 1;
 	i = 1;
-	jump_line = 1; //ponemos \n detras de cada args
+	jump_line = 1;
 	if (!ft_memcmp(command -> args[1], "-n", 2) && ft_strlen(command -> args[1]) == 2)
 	{
 		jump_line = 0;
@@ -59,7 +63,11 @@ int	ft_built_echo(t_command *command)
 	return((ok <= 0) ? 1 : 0);
 }
 
-int	ft_built_cd(t_command *command, t_list **env) // 0 es ok 1 es ko -1 err men
+/* Changes the current working directory.
+   Supports relative and absolute paths.
+   Recognizes the ".." symbol as the previus directory.
+   Returns 0 on success, or a non-zero value on error.*/
+int	ft_built_cd(t_command *command, t_list **env)
 {
 	int		i;
 	char	**path;
@@ -72,7 +80,7 @@ int	ft_built_cd(t_command *command, t_list **env) // 0 es ok 1 es ko -1 err men
 	int		ok;
 
 	ok = 0;
-	line_path = command->path; //cojo el path actual del guardado en cmd
+	line_path = command->path;
 	route = malloc(2);
 	if (!route)
 	{
@@ -92,21 +100,20 @@ int	ft_built_cd(t_command *command, t_list **env) // 0 es ok 1 es ko -1 err men
 		i++;
 	}
 	i = 0;
-	path = ft_split(line_path, '/'); //Malloc
+	path = ft_split(line_path, '/');
 	if (!path)
 	{
 		free(route);
 		perror("Error MEM built_in1");
 		return (-1);
 	}
-	if ((((!ft_memcmp(command -> args[1], "..", 2) && ft_strlen(command -> args[1]) == 2)) || //cuando tengo .. 
+	if ((((!ft_memcmp(command -> args[1], "..", 2) && ft_strlen(command -> args[1]) == 2)) ||
 	(!ft_memcmp(command -> args[1], "../", 3) && (ft_strlen(command -> args[1]) == 3))) && !(command -> args[2]))
 	{
-		
-		while ((i < num_dir - 1) && ft_strlen(line_path) > 1) // si line_path es mayor que 1 es no es raiz si es raiz no hace nada
+		while ((i < num_dir - 1) && ft_strlen(line_path) > 1)
 		{
 			aux = route;
-			route = ft_strjoin(route, path[i]); //malloc  voy añadiendo dir menos el último
+			route = ft_strjoin(route, path[i]);
 			free(aux);
 			if (!route)
 			{
@@ -117,7 +124,7 @@ int	ft_built_cd(t_command *command, t_list **env) // 0 es ok 1 es ko -1 err men
 			if (i < (num_dir - 2))
 			{
 				aux = route;
-				route = ft_strjoin(route, "/"); //malloc  voy añadiendo dir menos el último
+				route = ft_strjoin(route, "/");
 				free(aux);
 				if (!route)
 				{
@@ -132,10 +139,10 @@ int	ft_built_cd(t_command *command, t_list **env) // 0 es ok 1 es ko -1 err men
 	else if (((((command -> args[1][0] == '.' && ft_strlen(command -> args[1]) == 1))
 		|| (!ft_memcmp(command->args[1], "./", 2) && ft_strlen(command -> args[1]) == 2))) && !(command -> args[2]))
 	{
-		while((i < num_dir) && ft_strlen(line_path) > 1) // si line_path es mayor que 1 es no es raiz si es raiz no hace nada
+		while((i < num_dir) && ft_strlen(line_path) > 1)
 		{
 			aux = route;
-			route = ft_strjoin(route, path[i]); //malloc  voy añadiendo dir
+			route = ft_strjoin(route, path[i]);
 			free(aux);
 			if (!route)
 			{
@@ -146,7 +153,7 @@ int	ft_built_cd(t_command *command, t_list **env) // 0 es ok 1 es ko -1 err men
 			if (i < (num_dir - 1))
 			{
 				aux = route;
-				route = ft_strjoin(route, "/"); //malloc  voy añadiendo dir menos el último
+				route = ft_strjoin(route, "/");
 				free(aux);
 				if (!route)
 				{
@@ -163,21 +170,21 @@ int	ft_built_cd(t_command *command, t_list **env) // 0 es ok 1 es ko -1 err men
 		perror("Error cd: too many arguments1");
 		ft_free_char(path);
 		free(route);
-		return (1); //Error cd: too many arguments
+		return (1);
 	}
 	else if ((!ft_memcmp(command -> args[1], "./", 2) || !ft_memcmp(command -> args[1], "../", 3)) && (command -> args[2]))
 	{
 		perror("Error cd: too many arguments2");
 		ft_free_char(path);
 		free(route);
-		return (1);//Error cd: too many arguments
+		return (1);
 	}
-	else if (ft_strlen(command -> args[1]) > 0) //aqui meto cuando me ponen un cd dirxx  o cd /dirxx
+	else if (ft_strlen(command -> args[1]) > 0)
 	{
-		while ((i < num_dir) && ft_strlen(line_path) > 1)  // si line_path es mayor que 1 es no es raiz si es raiz no hace nada
+		while ((i < num_dir) && ft_strlen(line_path) > 1)
 		{
 			aux = route;
-			route = ft_strjoin(route, path[i]); //malloc  voy añadiendo dir
+			route = ft_strjoin(route, path[i]);
 			free(aux);
 			if (!route)
 			{
@@ -188,7 +195,7 @@ int	ft_built_cd(t_command *command, t_list **env) // 0 es ok 1 es ko -1 err men
 			if (i < (num_dir - 1))
 			{
 				aux = route;
-				route = ft_strjoin(route, "/"); //malloc  voy añadiendo dir menos el último
+				route = ft_strjoin(route, "/");
 				free(aux);
 				if (!route)
 				{
@@ -200,7 +207,7 @@ int	ft_built_cd(t_command *command, t_list **env) // 0 es ok 1 es ko -1 err men
 			if (command -> args[1][0] != '/' && i == (num_dir - 1))
 			{
 				aux = route;
-				route = ft_strjoin(route, "/"); //malloc  voy añadiendo dir menos el último
+				route = ft_strjoin(route, "/");
 				if (!route)
 				{
 					perror("Error MEM built_in9");
@@ -210,7 +217,7 @@ int	ft_built_cd(t_command *command, t_list **env) // 0 es ok 1 es ko -1 err men
 			}
 			i++;
 		}
-		aux2 = aux; //Aquí guardo la ruta sin barra porsi falla
+		aux2 = aux;
 		aux = route;
 		aux3 = command->args[1];
 		if (command -> args[1][0] == '/') //ABSOLUTA
@@ -252,6 +259,7 @@ int	ft_built_cd(t_command *command, t_list **env) // 0 es ok 1 es ko -1 err men
 	return (ok);
 }
 
+/* ft_built_pwd(t_command *command): Returns the absolute path of the current directory. */
 int	ft_built_pwd(t_command *command)
 {
 	int	ok;
@@ -261,6 +269,12 @@ int	ft_built_pwd(t_command *command)
 	return((ok <= 0) ? 1 : 0);
 }
 
+/* ft_built_export:
+   - Assigns values to existing or new environment variables.
+   - If no assignment is specified, prints the entire list of environment variables in "VAR=value" format.
+   - Syntax: export [VAR=value]
+   - Returns 0 on success, or a non-zero value on error.
+*/
 int	ft_built_export(t_command *command, t_list **env)
 {
 	int	ok;
@@ -279,6 +293,8 @@ int	ft_built_export(t_command *command, t_list **env)
 	return (0);
 }
 
+/* ft_built_unset: Deletes the specified environment variables from the global environment. 
+   If the variable doesn't exist, it is ignored. */
 int	ft_built_unset(t_command *command, t_list **env)
 {
 	(void)command; // Esto evita el error de compilación por variable no utilizada.
@@ -296,6 +312,8 @@ int	ft_built_env(t_command *command, t_list **env)
 	return (ft_print_list_env(command, env));
 }
 
+/* ft_build_int: Handles built-in commands of the 
+minishell: echo, cd, pwd, export, unset, env, exit */
 int	ft_build_int(t_command *command_act, t_list **env)
 {
 	char	*comando;
@@ -316,11 +334,7 @@ int	ft_build_int(t_command *command_act, t_list **env)
 	else if (ft_memcmp(comando, "env", 3) == 0)
 		ok = ft_built_env(command_act, env);
 	else if (ft_memcmp(comando, "exit", 4) == 0)
-	{
-		write(command_act -> file_output, "exit built_int\n", 15);
-		free(command_act);
-		ft_free_list(env);
-		return (ok); //¿Otro codigo para salir del programa despues de liberar cosas?
-	}
+		return (-2);
+	
 	return (ok);
 }

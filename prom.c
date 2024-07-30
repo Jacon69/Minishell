@@ -1,18 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   prom.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/07/30 12:43:54 by jconde-a          #+#    #+#             */
+/*   Updated: 2024/07/30 20:09:38 by jconde-a         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
-/*void ft_imprimetoken(char **token)
-{
-	
-	int		i;
-
-	i = 0;
-	while (token[i])
-	{
-		printf("%i token %s \n",i,token[i]);
-		i++;
-	}
-}*/
-
+/*This function intercepts and processes the SIGINT (Ctrl+C) and SIGQUIT (Ctrl+barra) signals,
+ enabling custom actions to be taken when these signals are received by the shell.*/
 static void	signal_handler(int signum)
 {
 	if (signum == SIGINT) //ctrl-C
@@ -38,7 +39,6 @@ static void	signal_handler(int signum)
 	}
 	if (signum == SIGQUIT) //ctrl-barra
 	{
-		//printf("\nHa entrado aqui\n");
 		if (is_executing == 1)
 		{
 			printf("Quit");
@@ -51,14 +51,16 @@ static void	signal_handler(int signum)
 		}
 	}
 }
-
+/*  Main command interpreter loop.
+    Initializes signal handling, reads user input,
+    parses and executes commands.*/
 void prom(t_list  **env)
 {
 	char 				*line;
 	char				**token;
 	t_command			**commands;
 	int					last_return;
-	char				str_last_return[20];
+	char				*str_last_return;
 	int					control;
 	char 				*path_act;
 	char				*aux;
@@ -71,18 +73,17 @@ void prom(t_list  **env)
 	sigemptyset(&action.sa_mask);
 	sigaction(SIGINT, &action, NULL);
 	sigaction(SIGQUIT, &action, NULL);
-	while (control==1)
+	while (control == 1)
 	{
-		path_act = ft_get_var_env(env,"..PWD"); //malloc
+		path_act = ft_get_var_env(env, "..PWD");
 		if  (!path_act)
 			return;
-		aux= path_act;
-		path_act=ft_strjoin(path_act, " XXX$ ");
+		aux = path_act;
+		path_act = ft_strjoin(path_act, " XXX$ ");
 		free(aux);
 		if (!path_act)
 			return;
-		//is_executing = 2;
-		line = readline(path_act); //hace Malloc
+		line = readline(path_act);
 		if (is_executing == -1)
 		{
 			free(line);
@@ -97,7 +98,7 @@ void prom(t_list  **env)
 			{
 				printf("exit\n");
 				printf("Line es nulo\n");
-				break; // EOF, probablemente Ctrl+D Ctrl+c
+				break;
 			}
 			if (line[0] == '\0') 
 				{
@@ -105,7 +106,7 @@ void prom(t_list  **env)
 					free(path_act);
 					continue;
 				}
-			if (ft_memcmp(line,"exit",4)== 0 && ft_strlen(line)==4 )
+			if (ft_memcmp(line, "exit", 4) == 0 && ft_strlen(line) == 4 )
 				{
 					free(line);
 					free(path_act);
@@ -113,47 +114,58 @@ void prom(t_list  **env)
 					return;
 				}		
 			add_history(line);
-			token = lexer(line);  //Malloc
+			token = lexer(line);
 			if (!token)
 			{
 				free(line);
 				free(path_act);
-				ft_free_list(env); //Libero la memoria de la lista de variables de entorno.
+				ft_free_list(env);
 				perror("Error Mem en LEXER");
 				exit(1);
 			}
-			if (!expander(token, env)) ///Hago la expansión $ Comillas etc si es 0 es KO
+			if (!expander(token, env))
 			{
 				free(line);
 				free(path_act);
 				ft_free_char(token);
-				ft_free_list(env); //Libero la memoria de la lista de variables de entorno.
-				perror("Error Mem en EXPANDER");
+				ft_free_list(env);
+				perror("Error Mem in EXPANDER");
 				exit(1);
 			}
-			commands = parser(token, env); //malloc
+			commands = parser(token, env);
 			if (!commands)
 			{
 				free(line);
 				free(path_act);
 				ft_free_char(token);
-				ft_free_list(env); //Libero la memoria de la lista de variables de entorno.
-				perror("Error Mem en PARSER");
+				ft_free_list(env);
+				perror("Error Mem in PARSER");
 				exit(1);
 			}
-			last_return = executor(commands,env); //Recibir variables de entornos
+			last_return = executor(commands,env);
 			if (last_return == -1)
 			{
 				free(line);
 				free(path_act);
 				ft_free_char(token);
-				ft_free_list(env); //Libero la memoria de la lista de variables de entorno.
+				ft_free_list(env);
 				free_commands(commands);
-				perror("Error Mem en EXECUTOR");
+				perror("Error Mem in EXECUTOR");
 				exit(1);
 			}
-			snprintf(str_last_return, sizeof(str_last_return), "%i", last_return);//convierto num a cadena
+			if (last_return == -2)
+			{
+				free(line);
+				free(path_act);
+				ft_free_char(token);
+				ft_free_list(env);
+				free_commands(commands);
+				return;
+			}
+
+			str_last_return= ft_itoa(last_return);
 			ft_save_var_env("?", str_last_return,env);
+			free(str_last_return);
 			ft_free_char(token);
 			free(line);
 			free(path_act);

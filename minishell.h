@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 16:17:26 by aiturria          #+#    #+#             */
-/*   Updated: 2024/07/29 17:55:27 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/07/30 14:09:08 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,5 @@ int 	ft_is_dir_ok(const char *path); //Comprueba si un dir es ok
 char    **lexer(char *line); // Crea
 void	free_token(char **token);
 int		expander(char **token, t_list  **env);
-
 char    *read_all(int fd);
 #endif
