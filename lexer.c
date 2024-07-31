@@ -2,7 +2,7 @@
 
 static int	next_delimiter(char const *str, char c, int i)
 {
-	while ((str[i] && str[i] != c) )
+	while ((str[i] && str[i] != c))
 		i++;
 	return (i);
 }
@@ -11,175 +11,157 @@ static int	count_tokens(char *line)
 {
 	int		tokens;
 	int		i;
-	
+
 	i = 0;
 	tokens = 0;
-	while (line[i] )
+	while (line[i])
 	{
-		while (line[i]== ' ')
+		while (line[i] == ' ')
 			i++;
 		if ((line[i] == '"') || (line[i] == '\''))
 		{
 			tokens++;
-		
-			i = next_delimiter(line, line[i] , i+1) + 1;
-		}		
+			i = next_delimiter(line, line[i], i + 1) + 1;
+		}
 		else if (line[i])
 		{
-					
-			while(line[i]!= ' '&& line[i])
+			while (line[i] != ' ' && line[i])
 			{
-				
-				if  (line[i] == '<')
+				if (line[i] == '<')
 				{
-					if ( line[i+1]== '<' )
+					if (line[i + 1] == '<')
 						i++;
 					i++;
-					break;
+					break ;
 				}
-				if  (line[i] == '>')
+				if (line[i] == '>')
 				{
-					if ( line[i+1]== '>' )
+					if (line[i + 1] == '>')
 						i++;
 					i++;
-					break;
+					break ;
 				}
-
-				if ((line[i] == '"') || (line[i] == '\'') ) //aqui solo puede entrar su hay comillas en medio de un texto
-				{
-					
-					break;
-				}
-					
-				if (line[i]=='|' || line[i+1]=='|'|| line[i+1]=='<'|| line[i+1]=='>')
+				if ((line[i] == '"') || (line[i] == '\''))
+					break ;
+				if (line[i] == '|' || line[i + 1] == '|'
+					|| line[i + 1] == '<' || line[i + 1] == '>')
 				{
 					i++;
-					break;
+					break ;
 				}
 				i++;
 			}
-			
-			//if (((line[i] != '"') && (line[i] != '\'')) || (((line[i] == '"') || (line[i] == '\''))&&(line[i-1] == '\\')))
-				tokens++;
-
+			tokens++;
 		}
-
 	}
 	return (tokens);
 }
 
-
-static int ft_assig_token(char *line, char  **token, int j, int i)
-
-
+static int	ft_assig_token(char *line, char **token, int j, int i)
 {
 	char	*aux;
 	char	simbol[2];
 
-	simbol[1]='\0';
+	simbol[1] = '\0';
 	simbol[0] = line[i];
 	if ((line[i] == '"') || (line[i] == '\''))
 	{
-		if (!line[next_delimiter(line, line[i], i+1)])
+		if (!line[next_delimiter(line, line[i], i + 1)])
 		{
 			printf("no cierra comillas \n");
 			return (-1);
 		}
-		free(token[j]);//viene inicializado como se añade subcadena nueva lo libero
-		token[j]= ft_substr(line, i, next_delimiter(line, line[i], i+1)  - i +1); //malloc
-		
+		free(token[j]);
+		token[j] = ft_substr(line, i,
+				next_delimiter(line, line[i], i + 1) - i + 1);
 		if (!token[j])
-			return(-1);
-		i = next_delimiter(line, line[i] , i+1) + 1;
-		
+			return (-1);
+		i = next_delimiter(line, line[i], i + 1) + 1;
 	}
 	else
 	{
 		while (line[i] != ' ' && line[i])
 		{
-			if (line[i] == '"' || line[i] == '\'') //aqui solo puede entrar su hay comillas en medio de un texto
-				break;
+			if (line[i] == '"' || line[i] == '\'')
+				break ;
 			aux = token[j];
 			simbol[0] = line[i];
-			token[j]= ft_strjoin(token[j],simbol);  //voy añadiendo caracter a caracter  //Malloc
+			token[j] = ft_strjoin(token[j], simbol);
 			if (*aux)
 				free(aux);
-			
 			if ((!token[j]))
 				return (-1);
-			if  (line[i] == '<')
+			if (line[i] == '<')
 			{
-				if ( line[i+1]== '<' )
+				if (line[i + 1] == '<')
 				{
 					i++;
 					simbol[0] = line[i];
 					aux = token[j];
-					token[j]= ft_strjoin(token[j],simbol);  //voy añadiendo caracter a caracter  //Malloc
+					token[j] = ft_strjoin(token[j], simbol);
 					if (*aux)
-					free(aux);			
+						free(aux);
 					if ((!token[j]))
-					return (-1);
+						return (-1);
 				}
 				i++;
-				break;
+				break ;
 			}
-			if  (line[i] == '>')
+			if (line[i] == '>')
 			{
-				if ( line[i+1]== '>' )
+				if (line[i + 1] == '>')
 				{
 					i++;
 					simbol[0] = line[i];
 					aux = token[j];
-					token[j]= ft_strjoin(token[j],simbol);  //voy añadiendo caracter a caracter  //Malloc
+					token[j] = ft_strjoin(token[j], simbol);
 					if (*aux)
-					free(aux);			
+						free(aux);
 					if ((!token[j]))
-					return (-1);
-				};
+						return (-1);
+				}
 				i++;
-				break;
+				break ;
 			}
-			if (line[i+1]=='|' || line[i]=='|'|| line[i+1]=='<'|| line[i+1]=='>') //con esta codición me aseguro de que los simbolos ; | vayan solos
-			{	
+			if (line[i + 1] == '|' || line[i] == '|'
+				|| line[i + 1] == '<' || line[i + 1] == '>')
+			{
 				i++;
-				break;
+				break ;
 			}
 			i++;
-			
 		}
 	}
-	return i;
+	return (i);
 }
 
-char    **lexer(char    *line)
+char	**lexer(char *line)
 {
-    char	**token;
+	char	**token;
 	int		ntoken;
 	int		i;
 	int		j;
 
-
 	ntoken = count_tokens(line);
-	if (!line )
-		return NULL;
+	if (!line)
+		return (NULL);
 	token = (char **) malloc(sizeof(char *) * (ntoken + 1));
- 	if (!token)
-		return NULL;
+	if (!token)
+		return (NULL);
 	j = 0;
 	i = 0;
-
 	while (j < ntoken)
 	{
-		while (line[i]== ' ')
+		while (line[i] == ' ')
 			i++;
-		token[j]= (char *) malloc(sizeof(char));
+		token[j] = (char *)malloc(sizeof(char));
 		if (!token[j])
 		{
 			ft_free_char(token);
-			return NULL;
+			return (NULL);
 		}
-		token[j][0]='\0'; //Aquí inicializo antes de asignar el valor del token para poder usar 
-		i = ft_assig_token(line, token, j, i); 
+		token[j][0] = '\0';
+		i = ft_assig_token(line, token, j, i);
 		if (i == -1)
 		{
 			ft_free_char(token);
@@ -188,5 +170,5 @@ char    **lexer(char    *line)
 		j++;
 	}
 	token[j] = NULL;
-	return(token);
+	return (token);
 }

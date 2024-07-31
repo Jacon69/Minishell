@@ -16,39 +16,37 @@
  enabling custom actions to be taken when these signals are received by the shell.*/
 static void	signal_handler(int signum)
 {
-	if (signum == SIGINT) //ctrl-C
+	if (signum == SIGINT)
 	{
-		if (is_executing == 0)
+		if (g_is_executing == 0)
 		{
 			rl_replace_line("", 1);
 			printf("\n");
 			rl_on_new_line();
 			rl_redisplay();
 		}
-		else if (is_executing == 1)
+		else if (g_is_executing == 1)
 		{
-			is_executing = 0;
+			g_is_executing = 0;
 			return ;
 		}
 		else
 		{
-			printf("%d\n", is_executing);
-			is_executing = -1;
+			printf("%d\n", g_is_executing);
+			g_is_executing = -1;
 			return ;
 		}
 	}
-	if (signum == SIGQUIT) //ctrl-barra
+	if (signum == SIGQUIT)
 	{
-		if (is_executing == 1)
+		if (g_is_executing == 1)
 		{
 			printf("Quit");
-			is_executing = 0;
+			g_is_executing = 0;
 			return ;
 		}
 		else
-		{
 			return ;
-		}
 	}
 }
 /*  Main command interpreter loop.
@@ -56,18 +54,17 @@ static void	signal_handler(int signum)
     parses and executes commands.*/
 void prom(t_list  **env)
 {
-	char 				*line;
+	char				*line;
 	char				**token;
 	t_command			**commands;
 	int					last_return;
 	char				*str_last_return;
 	int					control;
-	char 				*path_act;
+	char				*path_act;
 	char				*aux;
 	struct sigaction	action;
 
 	control = 1;
-	
 	action.sa_handler = signal_handler;
 	action.sa_flags = 0;
 	sigemptyset(&action.sa_mask);
@@ -76,43 +73,43 @@ void prom(t_list  **env)
 	while (control == 1)
 	{
 		path_act = ft_get_var_env(env, "..PWD");
-		if  (!path_act)
-			return;
+		if (!path_act)
+			return ;
 		aux = path_act;
 		path_act = ft_strjoin(path_act, " XXX$ ");
 		free(aux);
 		if (!path_act)
-			return;
+			return ;
 		line = readline(path_act);
-		if (is_executing == -1)
+		if (g_is_executing == -1)
 		{
 			free(line);
 			free(path_act);
-			is_executing = 0;
+			g_is_executing = 0;
 			continue ;
 		}
 		else
 		{
-			is_executing = 0;
+			g_is_executing = 0;
 			if (!line)
 			{
 				printf("exit\n");
 				printf("Line es nulo\n");
-				break;
+				break ;
 			}
-			if (line[0] == '\0') 
-				{
-					free(line);
-					free(path_act);
-					continue;
-				}
-			if (ft_memcmp(line, "exit", 4) == 0 && ft_strlen(line) == 4 )
-				{
-					free(line);
-					free(path_act);
-					control = 0;
-					return;
-				}		
+			if (line[0] == '\0')
+			{
+				free(line);
+				free(path_act);
+				continue ;
+			}
+			if (ft_memcmp(line, "exit", 4) == 0 && ft_strlen(line) == 4)
+			{
+				free(line);
+				free(path_act);
+				control = 0;
+				return ;
+			}
 			add_history(line);
 			token = lexer(line);
 			if (!token)
@@ -129,7 +126,7 @@ void prom(t_list  **env)
 				free(path_act);
 				ft_free_char(token);
 				ft_free_list(env);
-				perror("Error Mem in EXPANDER");
+				perror("Error Mem en EXPANDER");
 				exit(1);
 			}
 			commands = parser(token, env);
@@ -139,10 +136,10 @@ void prom(t_list  **env)
 				free(path_act);
 				ft_free_char(token);
 				ft_free_list(env);
-				perror("Error Mem in PARSER");
+				perror("Error Mem en PARSER");
 				exit(1);
 			}
-			last_return = executor(commands,env);
+			last_return = executor(commands, env);
 			if (last_return == -1)
 			{
 				free(line);

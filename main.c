@@ -12,22 +12,21 @@
 
 #include "minishell.h"
 
-
-int main(int narg, char * carg[], char **environment)
+int	main(int narg, char *carg[], char **environment)
 {
-	t_list  		**env;
+	t_list			**env;
 	struct termios	attributes;
 
-	narg ++; 
+	narg++;
 	carg [0] = "hola";
-	env = ft_ini_env(environment); 
+	env = ft_ini_env(environment);
 	if (env == NULL)
-		return (1); 
-	ft_save_var_env("?", "0",env);// Inicializo $?
+		return (1);
+	ft_save_var_env("?", "0", env);
 	tcgetattr(STDIN_FILENO, &attributes);
-	attributes.c_lflag &= ~ ECHOCTL;
+	attributes.c_lflag &= ~ECHOCTL;
 	tcsetattr(STDIN_FILENO, TCSAFLUSH, &attributes);
 	prom(env);
 	ft_free_list(env);
-	return(0);
+	return (0);
 }

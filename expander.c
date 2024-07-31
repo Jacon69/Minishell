@@ -24,16 +24,16 @@ static char *ft_expander_home(char *token, t_list  **env)
 	char	*aux;
 	char	*aux1;
 	char	*aux2;
-	int 	var_long;
-	
-	i = 0 ;
+	int		var_long;
+
+	i = 0;
 	token = ft_strdup(token);
 	if (!token)
-		return NULL;
+		return (NULL);
 	while (token[i])
 	{
-		
-		if ((token[i] == '~' && token[i+1] == '/' ) || (token[i] == '~' && ft_strlen(token) == 1 ))
+		if ((token[i] == '~' && token[i + 1] == '/')
+			|| (token[i] == '~' && ft_strlen(token) == 1))
 		{
 			j = i;
 			var_long = 1;
@@ -42,50 +42,51 @@ static char *ft_expander_home(char *token, t_list  **env)
 			if (!var_env)
 			{
 				free(token);
-				return NULL;
-			}	
+				return (NULL);
+			}
 			aux = token;
-			aux1 = ft_substr(token, 0, j );
+			aux1 = ft_substr(token, 0, j);
 			if (!aux1)
 			{
 				free(token);
 				free(var_env);
-				return NULL;
+				return (NULL);
 			}
-			aux2 = ft_substr(token, j + var_long , ft_strlen(token)-(j + var_long) );
+			aux2 = ft_substr(token, j + var_long,
+					ft_strlen(token) - (j + var_long));
 			if (!aux2)
 			{
 				free(aux1);
 				free(token);
 				free(var_env);
-				return NULL;
+				return (NULL);
 			}
-			token = ft_strjoin (aux1, var_env);
+			token = ft_strjoin(aux1, var_env);
 			free (aux);
 			if (!token)
 			{
-				free (aux1);
-				free (aux2);
+				free(aux1);
+				free(aux2);
 				free(var_env);
-				return NULL;
+				return (NULL);
 			}
 			aux = token;
-			token = ft_strjoin(token,aux2);
-			free (aux);
-			free (aux1);
-			free (aux2);
+			token = ft_strjoin(token, aux2);
+			free(aux);
+			free(aux1);
+			free(aux2);
 			free(var_env);
 			if (!token)
-				return NULL;
+				return (NULL);
 		}
-		i++;	
+		i++;
 	}
 	return (token);
 }
 
 /* ft_expander_$: Modifies a token by replacing environment variables
  (preceded by '$') with their values. */
-static char *ft_expander_$(char *token, t_list  **env) 
+static char *ft_expander_dollar(char *token, t_list  **env) 
 {
 	char	*var_env;
 	int		i;
@@ -93,79 +94,76 @@ static char *ft_expander_$(char *token, t_list  **env)
 	char	*aux;
 	char	*aux1;
 	char	*aux2;
-	int 	var_long;
-	
-	i = 0 ;
+	int		var_long;
+
+	i = 0;
 	token = ft_strdup(token);
 	if (!token)
-		return NULL;
+		return (NULL);
 	while (token[i])
 	{
-		
 		if (token[i] == '$')
 		{
 			j = i;
 			var_long = 0;
-			while (token[i] && token[i]!= ' ')
+			while (token[i] && token[i] != ' ')
 			{
 				var_long++;
 				i++;
 			}
-			aux = ft_substr(token, j + 1, var_long - 1 ) ;
+			aux = ft_substr(token, j + 1, var_long - 1);
 			if (!aux)
 			{
 				free(token);
-				return NULL;
+				return (NULL);
 			}
-				
 			var_env = ft_get_var_env(env, aux);
 			free(aux);
 			if (!var_env)
 			{
 				free(token);
-				return NULL;
+				return (NULL);
 			}
-			
 			aux = token;
-
-			aux1 = ft_substr(token, 0, j );
+			aux1 = ft_substr(token, 0, j);
 			if (!aux1)
 			{
 				free(token);
 				free(var_env);
-				return NULL;
+				return (NULL);
 			}
-			aux2 = ft_substr(token, j + var_long , ft_strlen(token)-(j + var_long) );
+			aux2 = ft_substr(token, j + var_long,
+					ft_strlen(token) - (j + var_long));
 			if (!aux2)
 			{
 				free(aux1);
 				free(token);
 				free(var_env);
-				return NULL;
-			}		
-			token = ft_strjoin (aux1, var_env);
-			free (aux);
+				return (NULL);
+			}
+			token = ft_strjoin(aux1, var_env);
+			free(aux);
 			free(var_env);
 			if (!token)
 			{
-				free (aux1);
-				free (aux2);
-				return NULL;
+				free(aux1);
+				free(aux2);
+				return (NULL);
 			}
 			aux = token;
-			token = ft_strjoin(token,aux2);
-			free (aux);
-			free (aux1);
-			free (aux2);
+			token = ft_strjoin(token, aux2);
+			free(aux);
+			free(aux1);
+			free(aux2);
 			if (!token)
-				return NULL;
+				return (NULL);
 			aux = token;
-			token = ft_expander_$(token, env);
+			token = ft_expander_dollar(token, env);
 			free (aux);
 			if (!token)
-				return NULL;
+				return (NULL);
 		}
-		i++;	
+		i++;
 	}
 	return (token);
 }
@@ -182,17 +180,16 @@ static char *ft_expander_q(char *token, t_list  **env)
 	char	*aux2;
 	int		lng_token;
 
-
 	lng_token = ft_strlen(token);
-	aux = ft_substr(token,1,lng_token-2 ); //Malloc
-	if(!aux)
-		return NULL;
-	if (token[0] =='\'')  //Si es comillas simples no expando.
+	aux = ft_substr(token, 1, lng_token - 2);
+	if (!aux)
+		return (NULL);
+	if (token[0] == '\'')
 		return (aux);
-	aux2 = ft_expander_$(aux, env);  //malloc
+	aux2 = ft_expander_dollar(aux, env);
 	free(aux);
 	if (!aux2)
-		return NULL;
+		return (NULL);
 	return (aux2);
 }
 
@@ -205,32 +202,31 @@ static char *ft_expander_q(char *token, t_list  **env)
 */
 int	expander(char **token, t_list  **env)
 {
-	int 	i;
+	int		i;
 	char	*aux;
 
 	i = 0;
-	while(token[i])
+	while (token[i])
 	{
-	
-		if (token[i][0]=='"' || token[i][0] =='\'')
+		if (token[i][0] == '"' || token[i][0] == '\'')
 		{
 			aux = token[i];
-			token[i]=ft_expander_q(token[i], env);  //malloc
+			token[i] = ft_expander_q(token[i], env);
 			if (!token[i])
-				return(0);  
+				return (0);
 			free(aux);
 		}
 		else
 		{
 			aux = token[i];
-			token[i]=ft_expander_$(token[i], env);  //malloc			
+			token[i] = ft_expander_dollar(token[i], env);
 			if (!token[i])
-				return(0);
+				return (0);
 			free(aux);
 			aux = token[i];
-			token[i]=ft_expander_home(token[i], env);  //malloc
+			token[i] = ft_expander_home(token[i], env);
 			if (!token[i])
-				return(0);
+				return (0);
 			free(aux);
 		}
 		i++;
