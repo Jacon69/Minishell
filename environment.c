@@ -114,7 +114,8 @@ void	ft_del_v_env(char *var_env, t_list **env)
 	while (p_env)
 	{
 		nlong = ft_pos_chr(p_env->content, '=');
-		if ((ft_strncmp(p_env->content, str_aux, ft_strlen(str_aux)) == 0) && (nlong == ft_strlen(str_aux)))
+		if ((ft_strncmp(p_env->content, str_aux, ft_strlen(str_aux)) == 0)
+			&& (nlong == ft_strlen(str_aux)))
 		{
 			aux = p_env->next;
 			free(p_env->content);
@@ -144,7 +145,8 @@ char	*ft_get_var_env(t_list **env, char *var_env)
 	{
 		if (ft_strncmp(p_env->content, var_env, ft_strlen(var_env)) == 0)
 		{
-			var = ft_substr(p_env -> content, ft_strlen(var_env) + 1, ft_strlen(p_env->content) - (ft_strlen(var_env) + 1));
+			var = ft_substr(p_env -> content, ft_strlen(var_env) + 1,
+					ft_strlen(p_env->content) - (ft_strlen(var_env) + 1));
 			if (!var)
 				return (NULL);
 			return (var);
@@ -165,7 +167,8 @@ void	ft_add_v_env(char *var_env, t_list **env)
 	char	*var;
 
 	if (ft_memchr(var_env, '=', ft_strlen(var_env)) != NULL)
-		var = ft_strndup((const char *)var_env, (size_t)ft_pos_chr(var_env, '='));
+		var = ft_strndup((const char *)var_env,
+				(size_t)ft_pos_chr(var_env, '='));
 	else
 		var = ft_strndup((const char *)var_env, ft_strlen(var_env));
 	if (!var)

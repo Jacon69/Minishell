@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 10:01:14 by alexigar          #+#    #+#             */
-/*   Updated: 2024/07/30 12:46:27 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/07/31 10:52:08 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,7 +165,8 @@ t_command	**parser(char **tokens, t_list **env)
 					else
 					{
 						current_command -> file_output
-							= open(tokens[i], O_WRONLY | O_CREAT | O_APPEND, 0644);
+							= open(tokens[i],
+								O_WRONLY | O_CREAT | O_APPEND, 0644);
 					}
 					i++;
 				}
@@ -214,7 +215,8 @@ t_command	**parser(char **tokens, t_list **env)
 						line = readline(" heredoc> ");
 						if (!line)
 							break ;
-						while (ft_strncmp(tokens[i], line, ft_strlen(tokens[i])))
+						while (ft_strncmp(tokens[i],
+								line, ft_strlen(tokens[i])))
 						{
 							write(heredoc[1], line, ft_strlen(line));
 							write(heredoc[1], "\n", 1);

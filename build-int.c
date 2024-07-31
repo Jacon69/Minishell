@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 05:32:30 by jaimecondea       #+#    #+#             */
-/*   Updated: 2024/07/30 12:58:57 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/07/31 11:32:32 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,14 +21,16 @@ int	ft_built_echo(t_command *command)
 	ok = 1;
 	i = 1;
 	jump_line = 1;
-	if (!ft_memcmp(command -> args[1], "-n", 2) && ft_strlen(command -> args[1]) == 2)
+	if (!ft_memcmp(command -> args[1], "-n", 2)
+		&& ft_strlen(command -> args[1]) == 2)
 	{
 		jump_line = 0;
 		i++;
 	}
 	while (command -> args[i])
 	{
-		ok *= write(command -> file_output, command -> args[i], ft_strlen(command -> args[i]));
+		ok *= write(command -> file_output, command -> args[i],
+				ft_strlen(command -> args[i]));
 		if (ok > 0)
 			ok = 1;
 		else
@@ -98,8 +100,11 @@ int	ft_built_cd(t_command *command, t_list **env)
 		perror("Error MEM built_in1");
 		return (-1);
 	}
-	if ((((!ft_memcmp(command -> args[1], "..", 2) && ft_strlen(command -> args[1]) == 2))
-			|| (!ft_memcmp(command -> args[1], "../", 3) && (ft_strlen(command -> args[1]) == 3))) && !(command -> args[2]))
+	if ((((!ft_memcmp(command -> args[1], "..", 2)
+					&& ft_strlen(command -> args[1]) == 2))
+			|| (!ft_memcmp(command -> args[1], "../", 3)
+				&& (ft_strlen(command -> args[1]) == 3)))
+		&& !(command -> args[2]))
 	{
 		while ((i < num_dir - 1) && ft_strlen(line_path) > 1)
 		{
@@ -127,8 +132,11 @@ int	ft_built_cd(t_command *command, t_list **env)
 			i++;
 		}
 	}
-	else if (((((command -> args[1][0] == '.' && ft_strlen(command -> args[1]) == 1))
-			|| (!ft_memcmp(command->args[1], "./", 2) && ft_strlen(command -> args[1]) == 2))) && !(command -> args[2]))
+	else if (((((command -> args[1][0] == '.'
+					&& ft_strlen(command -> args[1]) == 1))
+			|| (!ft_memcmp(command->args[1], "./", 2)
+				&& ft_strlen(command -> args[1]) == 2)))
+			&& !(command -> args[2]))
 	{
 		while ((i < num_dir) && ft_strlen(line_path) > 1)
 		{
@@ -163,7 +171,9 @@ int	ft_built_cd(t_command *command, t_list **env)
 		free(route);
 		return (1);
 	}
-	else if ((!ft_memcmp(command -> args[1], "./", 2) || !ft_memcmp(command -> args[1], "../", 3)) && (command -> args[2]))
+	else if ((!ft_memcmp(command -> args[1], "./", 2)
+			|| !ft_memcmp(command -> args[1], "../", 3))
+		&& (command -> args[2]))
 	{
 		perror("Error cd: too many arguments2");
 		ft_free_char(path);
@@ -254,7 +264,8 @@ int	ft_built_pwd(t_command *command)
 {
 	int	ok;
 
-	ok = write(command -> file_output, command -> path, ft_strlen(command -> path));
+	ok = write(command -> file_output, command -> path,
+			ft_strlen(command -> path));
 	write(command -> file_output, "\n", 1);
 	return((ok <= 0) ? 1 : 0);
 }
@@ -319,5 +330,9 @@ int	ft_build_int(t_command *command_act, t_list **env)
 		ft_free_list(env);
 		return (ok);
 	}
+	if (command_act -> file_input != 1)
+		close(command_act -> file_input);
+	if (command_act -> file_output != 1)
+		close(command_act -> file_output);
 	return (ok);
 }

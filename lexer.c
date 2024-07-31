@@ -43,7 +43,8 @@ static int	count_tokens(char *line)
 				}
 				if ((line[i] == '"') || (line[i] == '\''))
 					break ;
-				if (line[i] == '|' || line[i + 1] == '|' || line[i + 1] == '<' || line[i + 1] == '>')
+				if (line[i] == '|' || line[i + 1] == '|'
+					|| line[i + 1] == '<' || line[i + 1] == '>')
 				{
 					i++;
 					break ;
@@ -71,7 +72,8 @@ static int	ft_assig_token(char *line, char **token, int j, int i)
 			return (-1);
 		}
 		free(token[j]);
-		token[j] = ft_substr(line, i, next_delimiter(line, line[i], i + 1) - i + 1);
+		token[j] = ft_substr(line, i,
+				next_delimiter(line, line[i], i + 1) - i + 1);
 		if (!token[j])
 			return (-1);
 		i = next_delimiter(line, line[i], i + 1) + 1;
@@ -121,7 +123,8 @@ static int	ft_assig_token(char *line, char **token, int j, int i)
 				i++;
 				break ;
 			}
-			if (line[i + 1] == '|' || line[i] == '|' || line[i + 1] == '<' || line[i + 1] == '>')
+			if (line[i + 1] == '|' || line[i] == '|'
+				|| line[i + 1] == '<' || line[i + 1] == '>')
 			{
 				i++;
 				break ;

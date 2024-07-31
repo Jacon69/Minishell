@@ -134,7 +134,8 @@ void	prom(t_list **env)
 				perror("Error Mem en EXECUTOR");
 				exit(1);
 			}
-			snprintf(str_last_return, sizeof(str_last_return), "%i", last_return);
+			snprintf(str_last_return, sizeof(str_last_return),
+				"%i", last_return);
 			ft_save_var_env("?", str_last_return, env);
 			ft_free_char(token);
 			free(line);
