@@ -6,7 +6,7 @@
 /*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 16:17:26 by aiturria          #+#    #+#             */
-/*   Updated: 2024/07/31 10:58:41 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/01 22:37:54 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,15 @@ typedef struct s_command
 	int		returned_output;
 }	t_command;
 
+typedef struct s_path
+{
+	char	*route;
+	char	*line_path;
+	int		num_dir;
+	char	**path;
+
+}	t_struct_path;
+
 //global funtions
 //parsing
 t_command	**parser(char **tokens, t_list **env);
@@ -61,6 +70,8 @@ char		*read_all(int fd);
 //build_in
 int			ft_built_echo(t_command *command);
 int			ft_built_cd(t_command *command, t_list **env);
+int			ft_aux1_buil_cd(t_command *command, t_struct_path *dir);
+int 		ft_aux2_buil_cd(t_command *command, t_struct_path *dir);
 int			ft_built_pwd(t_command *command);
 int			ft_built_export(t_command *command, t_list **env);
 int			ft_built_unset(t_command *command, t_list **env);
@@ -82,12 +93,13 @@ char		*ft_get_var_env(t_list **env, char *var_env);
 void		ft_save_var_env(char *var, char *val_var, t_list **env);
 
 /*Utils*/
-void		ft_free_char(char **ptr);
+int			ft_free_char(char **ptr);
 void		ft_free_list(t_list **list);
 void		print_string(void *str);
 int			ft_pos_chr(const char *str, int c);
 char		*ft_strndup(const char *str, size_t n);
 int			ft_is_dir_ok(const char *path);
+char		*ft_free_char_n(char *par1, char *par2, char *par3, char *par4);
 
 /*lexer*/
 char		**lexer(char *line); // Crea

@@ -139,14 +139,16 @@ char	*ft_get_var_env(t_list **env, char *var_env)
 {
 	t_list	*p_env;
 	char	*var;
+	char	*val_var;
 
 	p_env = *env;
 	while (p_env)
 	{
-		if (ft_strncmp(p_env->content, var_env, ft_strlen(var_env)) == 0)
+		val_var = p_env->content;
+		if (ft_strncmp(val_var, var_env, ft_strlen(var_env)) == 0 && ((val_var[ft_strlen(var_env)]=='=')))
 		{
-			var = ft_substr(p_env -> content, ft_strlen(var_env) + 1,
-					ft_strlen(p_env->content) - (ft_strlen(var_env) + 1));
+			var = ft_substr(val_var, ft_strlen(var_env) + 1,
+					ft_strlen(val_var) - (ft_strlen(var_env) + 1));
 			if (!var)
 				return (NULL);
 			return (var);

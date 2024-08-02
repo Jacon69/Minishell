@@ -16,6 +16,7 @@ SRC = main.c \
 		utils2.c \
 		build-int.c \
 		get_next_line/get_next_line.c \
+		build_in_cd.c\
 
 OBJ = $(SRC:.c=.o)
 

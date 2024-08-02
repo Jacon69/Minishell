@@ -16,19 +16,20 @@ void	ft_free_list(t_list **list)
 	*list = NULL;
 }
 
-void	ft_free_char(char **ptr)
+int	ft_free_char(char **ptr)
 {
 	int	i;
 
 	i = 0;
 	if (!ptr)
-		return ;
+		return (-1);
 	while (ptr[i] != NULL)
 	{
 		free(ptr[i]);
 		i++;
 	}
 	free(ptr);
+	return (0);
 }
 
 void	print_string(void *str)
