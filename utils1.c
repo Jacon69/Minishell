@@ -183,7 +183,7 @@ int	ft_print_list_env(t_command *command, t_list **env)
 	}
 	return((ok <= 0) ? 1 : 0);
 }
-
+/*comprueba su el dir existe*/
 int	ft_is_dir_ok(const char *path)
 {
 	struct stat	statbuf;

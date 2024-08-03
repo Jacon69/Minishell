@@ -6,13 +6,11 @@
 /*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 05:32:30 by jaimecondea       #+#    #+#             */
-/*   Updated: 2024/08/02 09:45:08 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/08/03 09:32:42 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "minishell.h"
-
 
 int	ft_checkwithout_n(char *cad)
 {
@@ -35,18 +33,17 @@ int	ft_built_echo(t_command *command)
 	i = (1 + ft_checkwithout_n(command -> args[1]));
 	while (command -> args[i])
 	{
-		if( 0 > write(command -> file_output, command -> args[i], ft_strlen(command -> args[i])))
-			return(1);
+		if (0 > write(command -> file_output, command -> args[i],
+				ft_strlen(command -> args[i])))
+			return (1);
 		if (command -> args[i+1])
 			write(command -> file_output, " ", 1);
 		i++;
 	}
-		if (!ft_checkwithout_n(command -> args[1]))
-			 write(command -> file_output, "\n", 1);
-	return(ok);
+	if (!ft_checkwithout_n(command -> args[1]))
+		write(command -> file_output, "\n", 1);
+	return (ok);
 }
-
-
 
 /* Changes the current working directory.
    Supports relative and absolute paths.
@@ -54,8 +51,8 @@ int	ft_built_echo(t_command *command)
    Returns 0 on success, or a non-zero value on error.*/
 int	ft_built_cd(t_command *command, t_list **env)
 {
-	int		ok;
-	t_struct_path *dir;
+	int				ok;
+	t_struct_path	*dir;
 
 	dir = malloc(sizeof(t_struct_path));
 	if (dir == NULL)
@@ -65,8 +62,8 @@ int	ft_built_cd(t_command *command, t_list **env)
 	dir->num_dir = 0;
 	dir->path = NULL;
 	ok = 0;
-	if( ok != ft_aux1_buil_cd(command, dir))
-		return(1); 
+	if (ok != ft_aux1_buil_cd(command, dir))
+		return (1); 
 	ok = ft_aux2_buil_cd(command, dir);
 	ft_save_var_env("PWD", dir->route, env);
 	ft_save_var_env("OLDPWD", dir->line_path, env);
@@ -74,23 +71,29 @@ int	ft_built_cd(t_command *command, t_list **env)
 	free(dir->route);
 	ft_free_char(dir->path);
 	free(dir);
-	return (ok);	
+	return (ok);
 }
 
-/* ft_built_pwd(t_command *command): Returns the absolute path of the current directory. */
+/* ft_built_pwd(t_command *command): Returns the absolute
+path of the current directory. */
 int	ft_built_pwd(t_command *command)
 {
 	int	ok;
 
 	ok = write(command -> file_output, command -> path,
 			ft_strlen(command -> path));
-	write(command -> file_output, "\n", 1);
-	return((ok <= 0) ? 1 : 0);
+	ok *= write(command -> file_output, "\n", 1);
+	if (ok < 1)
+		ok = 1;
+	else
+		ok=0;
+	return (ok);
 }
 
 /* ft_built_export:
    - Assigns values to existing or new environment variables.
-   - If no assignment is specified, prints the entire list of environment variables in "VAR=value" format.
+   - If no assignment is specified, prints the entire list of 
+   		environment variables in "VAR=value" format.
    - Syntax: export [VAR=value]
    - Returns 0 on success, or a non-zero value on error.
 */
@@ -111,7 +114,8 @@ int	ft_built_export(t_command *command, t_list **env)
 	return (0);
 }
 
-/* ft_built_unset: Deletes the specified environment variables from the global environment. 
+/* ft_built_unset: Deletes the specified environment 
+		variables from the global environment. 
    If the variable doesn't exist, it is ignored. */
 int	ft_built_unset(t_command *command, t_list **env)
 {
@@ -152,21 +156,20 @@ int ft_aux1_build_int(t_command *command_act, t_list **env)
 	return (ok);
 }
 
-
 /* ft_build_int: Handles built-in commands of the 
 minishell: echo, cd, pwd, export, unset, env, exit */
 int	ft_build_int(t_command *command_act, t_list **env)
 {
-	char	*comando;
+	char	*com;
 	int		ok;
 
-	comando = command_act -> command;
+	com = command_act -> command;
 	ok = 0;
-	if ((ft_memcmp(comando, "echo", 4) == 0) || (ft_memcmp(comando, "cd", 2) == 0) ||
-	(ft_memcmp(comando, "pwd", 3) == 0) || (ft_memcmp(comando, "export", 6) == 0) ||
-	(ft_memcmp(comando, "unset", 5) == 0) || (ft_memcmp(comando, "env", 3) == 0))
+	if ((ft_memcmp(com, "echo", 4) == 0) || (ft_memcmp(com, "cd", 2) == 0)
+		|| (ft_memcmp(com, "pwd", 3) == 0) || (ft_memcmp(com, "export", 6) == 0)
+		|| (ft_memcmp(com, "unset", 5) == 0) || (ft_memcmp(com, "env", 3) == 0))
 		ft_aux1_build_int(command_act, env);
-	else if (ft_memcmp(comando, "exit", 4) == 0)
+	else if (ft_memcmp(com, "exit", 4) == 0)
 	{
 		write(command_act -> file_output, "exit built_int\n", 15);
 		free(command_act);
