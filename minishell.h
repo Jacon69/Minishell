@@ -6,7 +6,7 @@
 /*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 16:17:26 by aiturria          #+#    #+#             */
-/*   Updated: 2024/08/01 22:37:54 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/08/04 09:58:21 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,14 +87,15 @@ void		prom(t_list **env);
 /*Funciones gestión Variable de entorno*/
 t_list		**ft_ini_env(char **environment);
 char		**ft_get_env(t_list **env);
-void		ft_del_v_env(char *var_env, t_list **env);
+char		*ft_del_v_env(char *var_env, t_list **env);
 void		ft_add_v_env(char *var_env, t_list **env);
 char		*ft_get_var_env(t_list **env, char *var_env);
 void		ft_save_var_env(char *var, char *val_var, t_list **env);
 
 /*Utils*/
 int			ft_free_char(char **ptr);
-void		ft_free_list(t_list **list);
+t_list		**ft_free_list(t_list **list, char *msg_err);
+char		**ft_free_list_r_char(t_list **list, char *msg_err);
 void		print_string(void *str);
 int			ft_pos_chr(const char *str, int c);
 char		*ft_strndup(const char *str, size_t n);

@@ -6,7 +6,7 @@
 /*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 05:32:30 by jaimecondea       #+#    #+#             */
-/*   Updated: 2024/08/03 09:32:42 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/08/04 12:28:07 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,7 +121,8 @@ int	ft_built_unset(t_command *command, t_list **env)
 {
 	(void)command;
 	(void)env;
-	if (ft_strlen(command -> args[1]) > 1)
+
+	if ((command -> args[1]) && (ft_strlen(command -> args[1])) > 1)
 	{
 		ft_del_v_env(command -> args[1], env);
 		return (0);
@@ -131,6 +132,12 @@ int	ft_built_unset(t_command *command, t_list **env)
 
 int	ft_built_env(t_command *command, t_list **env)
 {
+	if (command->args[1])
+		{
+			
+			perror("env: No such file or directory");
+			return(1);
+		}
 	return (ft_print_list_env(command, env));
 }
 
@@ -173,7 +180,7 @@ int	ft_build_int(t_command *command_act, t_list **env)
 	{
 		write(command_act -> file_output, "exit built_int\n", 15);
 		free(command_act);
-		ft_free_list(env);
+		ft_free_list(env, NULL);
 		return (-2);
 	}
 	if (command_act -> file_input != 1)

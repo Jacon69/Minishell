@@ -1,19 +1,47 @@
 #include "minishell.h"
 
-void	ft_free_list(t_list **list)
+t_list	**ft_free_list(t_list **list, char *msg_err)
 {
 	t_list	*p_nodo;
 	t_list	*aux;
 
 	p_nodo = *list;
-	while (p_nodo)
+	if (!list)
 	{
-		aux = p_nodo->next;
-		free(p_nodo->content);
-		free(p_nodo);
-		p_nodo = aux;
+		while (p_nodo)
+		{
+			aux = p_nodo->next;
+			free(p_nodo->content);
+			free(p_nodo);
+			p_nodo = aux;
+		}
+		*list = NULL;
+		if (!msg_err)
+			perror(msg_err);
 	}
-	*list = NULL;
+	return (NULL);
+}
+
+char	**ft_free_list_r_char(t_list **list, char *msg_err)
+{
+	t_list	*p_nodo;
+	t_list	*aux;
+
+	p_nodo = *list;
+	if (!list)
+	{
+		while (p_nodo)
+		{
+			aux = p_nodo->next;
+			free(p_nodo->content);
+			free(p_nodo);
+			p_nodo = aux;
+		}
+		*list = NULL;
+		if (!msg_err)
+			perror(msg_err);
+	}
+	return (NULL);
 }
 
 int	ft_free_char(char **ptr)
@@ -37,6 +65,7 @@ void	print_string(void *str)
 	printf("%s\n", (char *)str);
 }
 
+/*return possition char in stream*/
 int	ft_pos_chr(const char *str, int c)
 {
 	int	i;
@@ -93,20 +122,14 @@ t_list	**ft_dup_ord_list(t_list **env)
 	*dup_env = NULL;
 	p_env = ft_lstnew(ft_strdup(p_env_ori->content));
 	if (!p_env)
-	{
-		ft_free_list(dup_env);
-		return (NULL);
-	}
+		return (ft_free_list(dup_env, NULL));
 	ft_lstadd_back(dup_env, p_env);
 	while (p_env_ori -> next)
 	{
 		p_env_ori = p_env_ori -> next;
 		p_env_aux = ft_lstnew(ft_strdup(p_env_ori->content));
 		if (!p_env_aux)
-		{
-			ft_free_list(dup_env);
-			return (NULL);
-		}
+			return (ft_free_list(dup_env, NULL));
 		p_env = *dup_env;
 		if (ft_strncmp(p_env -> content, p_env_aux -> content,
 				ft_smaller(ft_strlen(p_env -> content),
@@ -162,7 +185,7 @@ int	ft_print_list_env(t_command *command, t_list **env)
 		}
 		command -> command = "env";
 		ft_print_list_env(command, dup_env);
-		ft_free_list(dup_env);
+		ft_free_list(dup_env,NULL);
 		dup_env = NULL;
 		return (1);
 	}
@@ -181,6 +204,7 @@ int	ft_print_list_env(t_command *command, t_list **env)
 		}
 		p_env = p_env -> next;
 	}
+	
 	return((ok <= 0) ? 1 : 0);
 }
 /*comprueba su el dir existe*/

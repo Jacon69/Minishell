@@ -6,7 +6,7 @@
 /*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 12:43:54 by jconde-a          #+#    #+#             */
-/*   Updated: 2024/08/01 10:36:57 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/08/04 09:34:46 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,8 +116,7 @@ void prom(t_list  **env)
 			{
 				free(line);
 				free(path_act);
-				ft_free_list(env);
-				perror("Error Mem en LEXER");
+				ft_free_list(env, "Error Mem en LEXER");
 				exit(1);
 			}
 			if (!expander(token, env))
@@ -125,8 +124,7 @@ void prom(t_list  **env)
 				free(line);
 				free(path_act);
 				ft_free_char(token);
-				ft_free_list(env);
-				perror("Error Mem en EXPANDER");
+				ft_free_list(env, "Error Mem en EXPANDER");
 				exit(1);
 			}
 			commands = parser(token, env);
@@ -135,8 +133,7 @@ void prom(t_list  **env)
 				free(line);
 				free(path_act);
 				ft_free_char(token);
-				ft_free_list(env);
-				perror("Error Mem en PARSER");
+				ft_free_list(env, "Error Mem en PARSER");
 				exit(1);
 			}
 			last_return = executor(commands, env);
@@ -145,9 +142,8 @@ void prom(t_list  **env)
 				free(line);
 				free(path_act);
 				ft_free_char(token);
-				ft_free_list(env);
+				ft_free_list(env, "Error Mem en EXECUTOR");
 				free_commands(commands);
-				perror("Error Mem in EXECUTOR");
 				exit(1);
 			}
 			if (last_return == -2)
@@ -155,13 +151,12 @@ void prom(t_list  **env)
 				free(line);
 				free(path_act);
 				ft_free_char(token);
-				ft_free_list(env);
+				ft_free_list(env, NULL);
 				free_commands(commands);
-				return;
+				return ;
 			}
-
-			str_last_return= ft_itoa(last_return);
-			ft_save_var_env("?", str_last_return,env);
+			str_last_return = ft_itoa(last_return);
+			ft_save_var_env("?", str_last_return, env);
 			free(str_last_return);
 			ft_free_char(token);
 			free(line);

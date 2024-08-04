@@ -6,7 +6,7 @@
 /*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 12:43:45 by jconde-a          #+#    #+#             */
-/*   Updated: 2024/07/30 12:44:24 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/08/04 09:32:37 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,6 @@ int	main(int narg, char *carg[], char **environment)
 	attributes.c_lflag &= ~ECHOCTL;
 	tcsetattr(STDIN_FILENO, TCSAFLUSH, &attributes);
 	prom(env);
-	ft_free_list(env);
+	ft_free_list(env, NULL);
 	return (0);
 }

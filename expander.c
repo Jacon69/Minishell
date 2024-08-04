@@ -6,13 +6,13 @@
 /*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 19:52:48 by jconde-a          #+#    #+#             */
-/*   Updated: 2024/08/01 16:46:39 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/08/04 08:40:02 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-char	*ft_free_char_n(char *par1, char *par2, char *par3, char *par4)
+/*libeera var y tex_error*/
+char	*ft_free_char_n(char *par1, char *par2, char *par3, char *txt_err)
 {
 	if (par1)
 		free(par1);
@@ -20,8 +20,8 @@ char	*ft_free_char_n(char *par1, char *par2, char *par3, char *par4)
 		free(par2);
 	if (par3)
 		free(par3);
-	if (par4)
-		free(par4);
+	if (txt_err)
+		perror(txt_err);
 	return (NULL);
 }
 
@@ -43,11 +43,12 @@ static char	*ft_expander_home(char *token, t_list **env)
 	{
 		var_env = ft_get_var_env(env, "HOME");
 		if (!var_env)
-			return (ft_free_char_n(token, NULL, NULL, NULL));
+			return (ft_free_char_n(token, NULL, NULL
+					, "Mem error getting \"HOME\""));
 		aux1 = ft_substr(token, 1,
 				ft_strlen(token) - 1);
 		if (!aux1)
-			return (ft_free_char_n(token, var_env, NULL, NULL));
+			return (ft_free_char_n(token, var_env, NULL, "Mem err1"));
 		aux = token;
 		token = ft_strjoin(var_env, aux1);
 		ft_free_char_n(aux, var_env, aux1, NULL);
