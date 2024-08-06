@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   environment.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/08/06 11:45:02 by jaimecondea       #+#    #+#             */
+/*   Updated: 2024/08/06 11:45:06 by jaimecondea      ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 static void	ft_ini_empty_env(t_list **env)
@@ -34,7 +46,6 @@ char	**ft_aux_get_env(t_list **env, char	**var_entorno)
 	}
 	var_entorno[i] = NULL;
 	return (var_entorno);
-
 }
 
 // función que convierte list de var-env en doble cadena de  var-env
@@ -97,21 +108,18 @@ t_list	**ft_ini_env(char **environment)
 	return (env);
 }
 
-char	*ft_aux_del_v_env(t_list **env, t_list	**p_env, t_list	**aux2, char *str_aux)
+void	ft_aux_del_v_env(t_list **env, t_list	**p_env
+	, t_list	**aux2, char *str_aux)
 {
 	t_list	*aux;
-	size_t	nlong;
 	t_list	*p_aux;
 	t_list	*p_aux2;
 
 	p_aux = *p_env;
 	p_aux2 = *aux2;
-
-	nlong = ft_pos_chr(p_aux->content, '=');
 	if ((ft_strncmp(p_aux->content, str_aux, ft_strlen(str_aux)) == 0)
-		&& (nlong == ft_strlen(str_aux)))
+		&& (ft_pos_chr(p_aux->content, '=') == (int)ft_strlen(str_aux)))
 	{
-	printf("poraquí %s  \n", (char*)p_aux->content);
 		aux = p_aux->next;
 		free(p_aux->content);
 		free(p_aux);
@@ -119,16 +127,15 @@ char	*ft_aux_del_v_env(t_list **env, t_list	**p_env, t_list	**aux2, char *str_au
 		if (p_aux2)
 		{
 			p_aux2->next = p_aux;
-			*aux2  = p_aux2;
+			*aux2 = p_aux2;
 			*p_env = aux;
 		}
 		else
 			*env = p_aux;
-		return (NULL);
+		return;
 	}
 	*aux2 = p_aux;
 	*p_env = p_aux->next;
-	return (NULL);
 }
 
 /*delete enviroment variable*/
@@ -147,13 +154,9 @@ char	*ft_del_v_env(char *var_env, t_list **env)
 	p_env = *env;
 	aux2 = NULL;
 	while (p_env)
-	{
-
 		ft_aux_del_v_env(env, &p_env, &aux2, str_aux);
-	}
 	free(str_aux);
 	return (NULL);
-
 }
 
 /*get enviroment variable*/
@@ -190,6 +193,7 @@ int	ft_aux_add_v_env(char *var_env, t_list **env, char	*var)
 {
 	t_list	*p_env;
 	char	*aux;
+
 	p_env = *env;
 	while (p_env)
 	{
@@ -201,14 +205,14 @@ int	ft_aux_add_v_env(char *var_env, t_list **env, char	*var)
 			if (!p_env->content)
 			{
 				ft_free_list(env, "Mem error6 enviroment");
-				return (-1);
+				exit(EXIT_FAILURE);
 			}
 			free(aux);
-			return (1) ;
+			return (1);
 		}
 		p_env = p_env->next;
 	}
-	return(0);
+	return (0);
 }
 
 /*add enviroment variable*/
@@ -216,7 +220,6 @@ void	ft_add_v_env(char *var_env, t_list **env)
 {
 	t_list	*p_env;
 	char	*var;
-	int 	back;
 
 	if (ft_memchr(var_env, '=', ft_strlen(var_env)) != NULL)
 		var = ft_strndup((const char *)var_env,
@@ -228,10 +231,7 @@ void	ft_add_v_env(char *var_env, t_list **env)
 		ft_free_list(env, "Mem error5 enviroment");
 		exit(EXIT_FAILURE);
 	}
-	back = ft_aux_add_v_env(var_env, env, var);
-	if (back == -1)
-		exit(EXIT_FAILURE);
-	if (back == 0)
+	if (ft_aux_add_v_env(var_env, env, var) == 0)
 	{
 		p_env = ft_lstnew(ft_strdup(var_env));
 		free(var);
@@ -242,9 +242,6 @@ void	ft_add_v_env(char *var_env, t_list **env)
 		}
 		ft_lstadd_back(env, p_env);
 	}
-
-
-
 }
 
 void	ft_save_var_env(char *var, char *val_var, t_list **env)
