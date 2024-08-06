@@ -185,7 +185,8 @@ char	*ft_get_var_env(t_list **env, char *var_env)
 	return (var);
 }
 
-void	ft_aux_add_v_env(char *var_env, t_list **env, char	*var)
+/*encuentra y sustituye la variable*/
+int	ft_aux_add_v_env(char *var_env, t_list **env, char	*var)
 {
 	t_list	*p_env;
 	char	*aux;
@@ -200,13 +201,14 @@ void	ft_aux_add_v_env(char *var_env, t_list **env, char	*var)
 			if (!p_env->content)
 			{
 				ft_free_list(env, "Mem error6 enviroment");
-				return ;
+				return (-1);
 			}
 			free(aux);
-			return ;
+			return (1) ;
 		}
 		p_env = p_env->next;
 	}
+	return(0);
 }
 
 /*add enviroment variable*/
@@ -214,6 +216,7 @@ void	ft_add_v_env(char *var_env, t_list **env)
 {
 	t_list	*p_env;
 	char	*var;
+	int 	back;
 
 	if (ft_memchr(var_env, '=', ft_strlen(var_env)) != NULL)
 		var = ft_strndup((const char *)var_env,
@@ -225,15 +228,23 @@ void	ft_add_v_env(char *var_env, t_list **env)
 		ft_free_list(env, "Mem error5 enviroment");
 		exit(EXIT_FAILURE);
 	}
-	ft_aux_add_v_env(var_env, env, var);
-	p_env = ft_lstnew(ft_strdup(var_env));
-	free(var);
-	if (!p_env)
+	back = ft_aux_add_v_env(var_env, env, var);
+	if (back == -1)
+		exit(EXIT_FAILURE);
+	if (back == 0)
 	{
-		ft_free_list(env, "Mem error7 enviroment");
-		return ;
+		p_env = ft_lstnew(ft_strdup(var_env));
+		free(var);
+		if (!p_env)
+		{
+			ft_free_list(env, "Mem error7 enviroment");
+			return ;
+		}
+		ft_lstadd_back(env, p_env);
 	}
-	ft_lstadd_back(env, p_env);
+
+
+
 }
 
 void	ft_save_var_env(char *var, char *val_var, t_list **env)

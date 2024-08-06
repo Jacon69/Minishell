@@ -96,7 +96,6 @@ void		ft_save_var_env(char *var, char *val_var, t_list **env);
 int			ft_free_char(char **ptr);
 t_list		**ft_free_list(t_list **list, char *msg_err);
 char		**ft_free_list_r_char(t_list **list, char *msg_err);
-void		print_string(void *str);
 int			ft_pos_chr(const char *str, int c);
 char		*ft_strndup(const char *str, size_t n);
 int			ft_is_dir_ok(const char *path);

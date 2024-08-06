@@ -132,13 +132,15 @@ int	ft_built_unset(t_command *command, t_list **env)
 
 int	ft_built_env(t_command *command, t_list **env)
 {
+	int ok;
 	if (command->args[1])
 		{
 			
 			perror("env: No such file or directory");
 			return(1);
 		}
-	return (ft_print_list_env(command, env));
+	ok = ft_print_list_env(command, env);
+	return (ok);
 }
 
 int ft_aux1_build_int(t_command *command_act, t_list **env)

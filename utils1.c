@@ -60,11 +60,6 @@ int	ft_free_char(char **ptr)
 	return (0);
 }
 
-void	print_string(void *str)
-{
-	printf("%s\n", (char *)str);
-}
-
 /*return possition char in stream*/
 int	ft_pos_chr(const char *str, int c)
 {
@@ -190,7 +185,7 @@ int	ft_print_list_env(t_command *command, t_list **env)
 		return (1);
 	}
 	p_env = *env;
-	while (p_env)
+	while (p_env && (ok == 1))
 	{
 		if (ft_strncmp("..", p_env -> content, 2) != 0)
 		{
@@ -204,8 +199,8 @@ int	ft_print_list_env(t_command *command, t_list **env)
 		}
 		p_env = p_env -> next;
 	}
-	
-	return((ok <= 0) ? 1 : 0);
+
+	return (ok);
 }
 /*comprueba su el dir existe*/
 int	ft_is_dir_ok(const char *path)

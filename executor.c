@@ -128,10 +128,10 @@ int	executor(t_command **command_list, t_list **env)
 	char	*function_call;
 	char	**paths;
 	int		to_return;
-	int		j;
+	//int		j;
 
 	i = 0;
-	j = 0;
+//	j = 0;
 	to_return = 0;
 	function_call = ft_get_var_env(env, "PATH");
 	if (!function_call)
