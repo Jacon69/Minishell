@@ -3,17 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   prom.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 12:43:54 by jconde-a          #+#    #+#             */
-/*   Updated: 2024/08/04 09:34:46 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/08/06 20:33:46 by jaimecondea      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-/*This function intercepts and processes the SIGINT (Ctrl+C) and SIGQUIT (Ctrl+barra) signals,
- enabling custom actions to be taken when these signals are received by the shell.*/
+/*This function intercepts and processes the SIGINT (Ctrl+C)
+ and SIGQUIT (Ctrl+barra) signals,enabling custom actions to
+  be taken when these signals are received by the shell.*/
 static void	signal_handler(int signum)
 {
 	if (signum == SIGINT)
@@ -49,16 +50,72 @@ static void	signal_handler(int signum)
 			return ;
 	}
 }
-/*  Main command interpreter loop.
-    Initializes signal handling, reads user input,
-    parses and executes commands.*/
-void prom(t_list  **env)
+
+/*Libera y devuelve el prom*/
+int fr_free_prom2(t_list **env, char **token, t_command **commands, char *msg)
 {
-	char				*line;
+	if (env)
+		ft_free_list(env, msg);
+	if (token)
+		ft_free_char(token);
+	if (commands)
+		free_commands(commands);
+	return (1);
+}
+/*Libera y cierra programa*/
+void fr_free_prom(t_list **env, char **token, t_command **commands, char *msg)
+{
+	if (env)
+		ft_free_list(env, msg);
+	if (token)
+		ft_free_char(token);
+	if (commands)
+		free_commands(commands);
+	exit(1);
+}
+
+/*Si la guarda la salida de la ejecución*/
+void ft_save_last_return(char *last_return, t_list **env)
+{
+	char *str_last_return;
+
+	str_last_return = ft_itoa(last_return);
+	ft_save_var_env("?", str_last_return, env);
+	free(str_last_return);
+}
+/*procesa line y si hay exit despues de pipe devuelve 1 para salir*/
+int	ft_proces(char *line, t_list **env)
+{
 	char				**token;
 	t_command			**commands;
 	int					last_return;
 	char				*str_last_return;
+
+	token = lexer(line);
+	free(line);
+	if (!token)
+		fr_free_prom(env, NULL, NULL, "Error Mem en LEXER");
+	if (!expander(token, env))
+		fr_free_prom(env, token, NULL, "Error Mem en EXPANDER");
+	commands = parser(token, env);
+	if (!commands)
+		fr_free_prom(env, token, NULL, "Error Mem en PARSER");
+	last_return = executor(commands, env);
+	if (last_return == -1)
+		fr_free_prom(env, token, commands, "Error Mem en EXECUTOR");
+	if (last_return == -2)
+		return (fr_free_prom2(env, token, commands, NULL));
+	ft_save_last_return(last_return, env);
+	fr_free_prom2(NULL, token, commands, NULL);
+	return (0);
+}
+
+/*  Main command interpreter loop.
+    Initializes signal handlling, reads user input,
+    parses and executes commands.*/
+void prom(t_list  **env)
+{
+	char				*line;
 	int					control;
 	char				*path_act;
 	char				*aux;
@@ -81,10 +138,10 @@ void prom(t_list  **env)
 		if (!path_act)
 			return ;
 		line = readline(path_act);
+		free(path_act);
 		if (g_is_executing == -1)
 		{
 			free(line);
-			free(path_act);
 			g_is_executing = 0;
 			continue ;
 		}
@@ -93,75 +150,23 @@ void prom(t_list  **env)
 			g_is_executing = 0;
 			if (!line)
 			{
-				printf("exit\n");
-				printf("Line es nulo\n");
+				perror("Line es nulo\n");
 				break ;
 			}
 			if (line[0] == '\0')
 			{
 				free(line);
-				free(path_act);
 				continue ;
 			}
 			if (ft_memcmp(line, "exit", 4) == 0 && ft_strlen(line) == 4)
 			{
 				free(line);
-				free(path_act);
 				control = 0;
 				return ;
 			}
 			add_history(line);
-			token = lexer(line);
-			if (!token)
-			{
-				free(line);
-				free(path_act);
-				ft_free_list(env, "Error Mem en LEXER");
-				exit(1);
-			}
-			if (!expander(token, env))
-			{
-				free(line);
-				free(path_act);
-				ft_free_char(token);
-				ft_free_list(env, "Error Mem en EXPANDER");
-				exit(1);
-			}
-			commands = parser(token, env);
-			if (!commands)
-			{
-				free(line);
-				free(path_act);
-				ft_free_char(token);
-				ft_free_list(env, "Error Mem en PARSER");
-				exit(1);
-			}
-			last_return = executor(commands, env);
-			if (last_return == -1)
-			{
-				free(line);
-				free(path_act);
-				ft_free_char(token);
-				ft_free_list(env, "Error Mem en EXECUTOR");
-				free_commands(commands);
-				exit(1);
-			}
-			if (last_return == -2)
-			{
-				free(line);
-				free(path_act);
-				ft_free_char(token);
-				ft_free_list(env, NULL);
-				free_commands(commands);
+			if (ft_proces (line, env) == 1)
 				return ;
-			}
-			str_last_return = ft_itoa(last_return);
-			ft_save_var_env("?", str_last_return, env);
-			free(str_last_return);
-			ft_free_char(token);
-			free(line);
-			free(path_act);
-			free_commands(commands);
 		}
 	}
 }

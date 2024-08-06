@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   build-int.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 05:32:30 by jaimecondea       #+#    #+#             */
-/*   Updated: 2024/08/04 12:28:07 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/08/06 20:14:40 by jaimecondea      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,13 +132,13 @@ int	ft_built_unset(t_command *command, t_list **env)
 
 int	ft_built_env(t_command *command, t_list **env)
 {
-	int ok;
+	int	ok;
+
 	if (command->args[1])
-		{
-			
-			perror("env: No such file or directory");
-			return(1);
-		}
+	{
+		perror("env: No such file or directory");
+		return (1);
+	}
 	ok = ft_print_list_env(command, env);
 	return (ok);
 }
@@ -179,12 +179,7 @@ int	ft_build_int(t_command *command_act, t_list **env)
 		|| (ft_memcmp(com, "unset", 5) == 0) || (ft_memcmp(com, "env", 3) == 0))
 		ft_aux1_build_int(command_act, env);
 	else if (ft_memcmp(com, "exit", 4) == 0)
-	{
-		write(command_act -> file_output, "exit built_int\n", 15);
-		free(command_act);
-		ft_free_list(env, NULL);
 		return (-2);
-	}
 	if (command_act -> file_input != 1)
 		close(command_act -> file_input);
 	if (command_act -> file_output != 1)
