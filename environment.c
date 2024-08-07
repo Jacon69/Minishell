@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/06 11:45:02 by jaimecondea       #+#    #+#             */
-/*   Updated: 2024/08/07 19:12:08 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/07 19:53:31 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,9 +96,10 @@ t_list	**ft_ini_env(char **environment)
 {
 	t_list	**env;
 
-	env = (t_list **)malloc(sizeof(t_list *));
+	env = (t_list **)malloc(sizeof(t_list *)); //leak
 	if (!env)
 		ft_free_list(NULL, "Mem error 2 enviroment");
+	env[0] = NULL;
 	if (*environment == NULL)
 	{
 		ft_ini_empty_env(env);

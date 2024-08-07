@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/07 19:11:01 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/07 19:11:33 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/07 19:52:40 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ char	*ft_get_var_env(t_list **env, char *var_env)
 		if (ft_strncmp(val_var, var_env, ft_strlen(var_env)) == 0
 			&& ((val_var[ft_strlen(var_env)] == '=')))
 		{
-			var = ft_substr(val_var, ft_strlen(var_env) + 1,
+			var = ft_substr(val_var, ft_strlen(var_env) + 1, //leak
 					ft_strlen(val_var) - (ft_strlen(var_env) + 1));
 			if (!var)
 				return (NULL);

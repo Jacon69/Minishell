@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 10:12:42 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/07 17:44:08 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/07 19:39:46 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,8 +102,8 @@ int	try_call(char **paths, t_command *com, t_list **env)
 			i++;
 		}
 	}
-	perror("Error: command not found\n");
-	free_function_call(com, function_call);
+	printf("Error: command not found\n");
+	//free_function_call(com, function_call);
 	return (127);
 }
 
