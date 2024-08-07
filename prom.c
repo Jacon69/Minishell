@@ -6,7 +6,7 @@
 /*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 12:43:54 by jconde-a          #+#    #+#             */
-/*   Updated: 2024/08/06 20:33:46 by jaimecondea      ###   ########.fr       */
+/*   Updated: 2024/08/07 07:30:24 by jaimecondea      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ void fr_free_prom(t_list **env, char **token, t_command **commands, char *msg)
 }
 
 /*Si la guarda la salida de la ejecución*/
-void ft_save_last_return(char *last_return, t_list **env)
+void ft_save_last_return(int last_return, t_list **env)
 {
 	char *str_last_return;
 
@@ -83,13 +83,13 @@ void ft_save_last_return(char *last_return, t_list **env)
 	ft_save_var_env("?", str_last_return, env);
 	free(str_last_return);
 }
+
 /*procesa line y si hay exit despues de pipe devuelve 1 para salir*/
 int	ft_proces(char *line, t_list **env)
 {
 	char				**token;
 	t_command			**commands;
 	int					last_return;
-	char				*str_last_return;
 
 	token = lexer(line);
 	free(line);

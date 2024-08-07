@@ -6,12 +6,13 @@
 /*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/06 13:22:20 by jaimecondea       #+#    #+#             */
-/*   Updated: 2024/08/06 18:53:25 by jaimecondea      ###   ########.fr       */
+/*   Updated: 2024/08/07 10:04:21 by jaimecondea      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+/* busca el caracter en la cadena y devuelve la posicion*/
 static int	next_delimiter(char const *str, char c, int i)
 {
 	while ((str[i] && str[i] != c))
@@ -19,7 +20,37 @@ static int	next_delimiter(char const *str, char c, int i)
 	return (i);
 }
 
-static int	count_tokens(char *line)
+/*avanza posiciones para contar tokens*/
+int	ft_aux_count_tokens(char *line,int i )
+{
+	while (line[i] != ' ' && line[i])
+	{
+		if (((line[i] == '<') || (line[i] == '>')) && (line[i] == line[i+1] ))
+		{
+			i += 2;
+			break ;
+		}
+		if ((line[i] == '<') || (line[i] == '>'))
+		{
+			i++;
+			break ;
+		}
+		if ((line[i] == '"') || (line[i] == '\''))
+			break ;
+		if (line[i] == '|' || line[i + 1] == '|'
+			|| line[i + 1] == '<' || line[i + 1] == '>')
+		{
+			i++;
+			break ;
+		}
+		i++;
+	}
+	return (i);
+}
+
+
+/*cuenta tokens*/
+static int	ft_count_tokens(char *line)
 {
 	int		tokens;
 	int		i;
@@ -37,32 +68,7 @@ static int	count_tokens(char *line)
 		}
 		else if (line[i])
 		{
-			while (line[i] != ' ' && line[i])
-			{
-				if (line[i] == '<')
-				{
-					if (line[i + 1] == '<')
-						i++;
-					i++;
-					break ;
-				}
-				if (line[i] == '>')
-				{
-					if (line[i + 1] == '>')
-						i++;
-					i++;
-					break ;
-				}
-				if ((line[i] == '"') || (line[i] == '\''))
-					break ;
-				if (line[i] == '|' || line[i + 1] == '|'
-					|| line[i + 1] == '<' || line[i + 1] == '>')
-				{
-					i++;
-					break ;
-				}
-				i++;
-			}
+			i = ft_aux_count_tokens(line, i);
 			tokens++;
 		}
 	}
@@ -87,16 +93,18 @@ int	ft_aux_assig_token(char *line, char **token, int j, int i)
 	i = next_delimiter(line, line[i], i + 1) + 1;
 	return (i);
 }
+
 /*indica si line[i] es simbolo token <>| >><<*/
 int	ft_is_asignsymbol(char *line, int i)
 {
 	int	position;
 
 	position = 0;
-	if ((line[i] == '<') || (line[i] == '>') || (line[i] == '|')
-		|| (line[i + 1] == '|') || (line[i] == '<') || (line[i] == '>'))
+	if (((line[i] == '<') && (line[i+1] != '<')) || ((line[i] == '>')
+			&& (line[i + 1] != '>')) || (line[i] == '|')
+		|| (line[i + 1] == '|'))
 		position = 1;
-	if (line[i] == line[i+1] && (line[i] != '|'))
+	if (line[i] == line[i + 1] && ((line[i] == '<') || (line[i] == '>')))
 		position = 2;
 	return (position);
 }
@@ -113,7 +121,7 @@ int	add_chartotoken(char *line, char **token, int i, int j)
 	token[j] = ft_strjoin(token[j], simbol);
 	if (*aux)
 		free(aux);
-	if ((!token[j]))
+	if (!token[j])
 		return (-1);
 	return (0);
 }
@@ -181,7 +189,7 @@ char	**lexer(char *line)
 	int		ntoken;
 
 
-	ntoken = count_tokens(line);
+	ntoken = ft_count_tokens(line);
 	if (!line)
 		return (NULL);
 	token = (char **) malloc(sizeof(char *) * (ntoken + 1));
@@ -189,5 +197,13 @@ char	**lexer(char *line)
 		return (NULL);
 	token = aux_lexer(line, ntoken, token);
 	token[ntoken] = NULL;
+
+	/*int i = 0;
+	while (i<ntoken)
+	{
+		
+		i++;
+	}*/
+	
 	return (token);
 }
