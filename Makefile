@@ -7,16 +7,24 @@ LIBFT = $(LIBFT_DIR)/libft.a
 
 SRC = main.c \
 		prom.c \
+		prom_utils.c \
 		environment.c \
+		environment_utils.c \
+		environment_utils2.c \
 		utils1.c \
 		lexer.c \
+		lexer_utils.c \
 		expander.c \
+		expander_utils.c \
 		parser.c \
 		executor.c \
 		utils2.c \
+		utils3.c \
 		build-int.c \
+		build_int2.c \
 		get_next_line/get_next_line.c \
 		build_in_cd.c\
+		build_in_cd_aux.c \
 		executor_utils.c\
 
 OBJ = $(SRC:.c=.o)

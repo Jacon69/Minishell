@@ -1,4 +1,3 @@
-
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
@@ -7,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 10:01:14 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/06 19:33:29 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/07 17:16:03 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,7 +181,6 @@ void	check_pipe_token(char *token, t_command **command, int *i)
 		(*command)-> piped = 1;
 		*i += 1;
 	}
-
 }
 
 void	fill_args(char **tokens, int *i, t_command **com, int *k)
@@ -201,7 +199,8 @@ void	fill_args(char **tokens, int *i, t_command **com, int *k)
 	}
 }
 
-t_command	**ft_aux1_parser(char **tokens, int *i, t_command	**current_command, t_command	**list)
+t_command	**ft_aux1_parser(char **tokens, int *i,
+	t_command **current_command, t_command **list)
 {
 	while ((tokens[*i][0] == '>') && (++*i < count_nbr_tokens(tokens)))
 	{
@@ -226,15 +225,12 @@ void	ft_ini_dup(int *dup)
 	dup[3] = 0;
 }
 
-
-void ft_aux2_parser(t_command **list, t_command *current_command, int *dup )
+void	ft_aux2_parser(t_command **list, t_command *current_command, int *dup)
 {
 	list[dup[0]] = current_command;
 	dup[0]++;
 	dup[1] = 0;
 }
-
-
 
 t_command	**ft_aux3_parser(t_command **list, t_command *current_command
 			, int *dup, char **tokens )
@@ -253,7 +249,7 @@ t_command	**ft_aux3_parser(t_command **list, t_command *current_command
 	else
 	{
 		if (!ft_aux1_parser(tokens, &dup[2], &current_command, list))
-			dup[3]=1;
+			dup[3] = 1;
 		if (dup[2] >= count_nbr_tokens(tokens))
 			aux = end_list(current_command, list, dup);
 		check_pipe_token(tokens[dup[2]], &current_command, &dup[2]);
@@ -276,11 +272,10 @@ t_command	**parser(char **tokens, t_list **env)
 	{
 		current_command = new_command(tokens, env, dup[2], dup[0]);
 		aux = ft_aux3_parser(list, current_command, dup, tokens);
-		if (dup[3]==1)
+		if (dup[3] == 1)
 			return (aux);
 		ft_aux2_parser(list, current_command, dup);
 	}
 	list[dup[0]] = NULL;
 	return (list);
 }
-

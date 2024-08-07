@@ -3,85 +3,30 @@
 /*                                                        :::      ::::::::   */
 /*   prom.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
+/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 12:43:54 by jconde-a          #+#    #+#             */
-/*   Updated: 2024/08/07 07:30:24 by jaimecondea      ###   ########.fr       */
+/*   Updated: 2024/08/07 19:05:42 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-/*This function intercepts and processes the SIGINT (Ctrl+C)
- and SIGQUIT (Ctrl+barra) signals,enabling custom actions to
-  be taken when these signals are received by the shell.*/
-static void	signal_handler(int signum)
+int	sigint_handler(void)
 {
-	if (signum == SIGINT)
+	if (g_is_executing == 0)
 	{
-		if (g_is_executing == 0)
-		{
-			rl_replace_line("", 1);
-			printf("\n");
-			rl_on_new_line();
-			rl_redisplay();
-		}
-		else if (g_is_executing == 1)
-		{
-			g_is_executing = 0;
-			return ;
-		}
-		else
-		{
-			printf("%d\n", g_is_executing);
-			g_is_executing = -1;
-			return ;
-		}
+		rl_replace_line("", 1);
+		printf("\n");
+		rl_on_new_line();
+		rl_redisplay();
+		return (0);
 	}
-	if (signum == SIGQUIT)
+	else
 	{
-		if (g_is_executing == 1)
-		{
-			printf("Quit");
-			g_is_executing = 0;
-			return ;
-		}
-		else
-			return ;
+		g_is_executing = 0;
+		return (1);
 	}
-}
-
-/*Libera y devuelve el prom*/
-int fr_free_prom2(t_list **env, char **token, t_command **commands, char *msg)
-{
-	if (env)
-		ft_free_list(env, msg);
-	if (token)
-		ft_free_char(token);
-	if (commands)
-		free_commands(commands);
-	return (1);
-}
-/*Libera y cierra programa*/
-void fr_free_prom(t_list **env, char **token, t_command **commands, char *msg)
-{
-	if (env)
-		ft_free_list(env, msg);
-	if (token)
-		ft_free_char(token);
-	if (commands)
-		free_commands(commands);
-	exit(1);
-}
-
-/*Si la guarda la salida de la ejecución*/
-void ft_save_last_return(int last_return, t_list **env)
-{
-	char *str_last_return;
-
-	str_last_return = ft_itoa(last_return);
-	ft_save_var_env("?", str_last_return, env);
-	free(str_last_return);
 }
 
 /*procesa line y si hay exit despues de pipe devuelve 1 para salir*/
@@ -100,7 +45,9 @@ int	ft_proces(char *line, t_list **env)
 	commands = parser(token, env);
 	if (!commands)
 		fr_free_prom(env, token, NULL, "Error Mem en PARSER");
+	g_is_executing = 1;
 	last_return = executor(commands, env);
+	g_is_executing = 0;
 	if (last_return == -1)
 		fr_free_prom(env, token, commands, "Error Mem en EXECUTOR");
 	if (last_return == -2)
@@ -110,10 +57,31 @@ int	ft_proces(char *line, t_list **env)
 	return (0);
 }
 
+int	manage_line(char *line, int *control, t_list **env)
+{
+	if (!line)
+		return (0);
+	if (line[0] == '\0')
+	{
+		free(line);
+		return (1);
+	}
+	if (ft_memcmp(line, "exit", 4) == 0 && ft_strlen(line) == 4)
+	{
+		free(line);
+		control = 0;
+		return (0);
+	}
+	add_history(line);
+	if (ft_proces (line, env) == 1)
+		return (0);
+	return (1);
+}
+
 /*  Main command interpreter loop.
     Initializes signal handlling, reads user input,
     parses and executes commands.*/
-void prom(t_list  **env)
+void	prom(t_list **env)
 {
 	char				*line;
 	int					control;
@@ -122,11 +90,7 @@ void prom(t_list  **env)
 	struct sigaction	action;
 
 	control = 1;
-	action.sa_handler = signal_handler;
-	action.sa_flags = 0;
-	sigemptyset(&action.sa_mask);
-	sigaction(SIGINT, &action, NULL);
-	sigaction(SIGQUIT, &action, NULL);
+	action = create_sigaction();
 	while (control == 1)
 	{
 		path_act = ft_get_var_env(env, "..PWD");
@@ -139,34 +103,7 @@ void prom(t_list  **env)
 			return ;
 		line = readline(path_act);
 		free(path_act);
-		if (g_is_executing == -1)
-		{
-			free(line);
-			g_is_executing = 0;
-			continue ;
-		}
-		else
-		{
-			g_is_executing = 0;
-			if (!line)
-			{
-				perror("Line es nulo\n");
-				break ;
-			}
-			if (line[0] == '\0')
-			{
-				free(line);
-				continue ;
-			}
-			if (ft_memcmp(line, "exit", 4) == 0 && ft_strlen(line) == 4)
-			{
-				free(line);
-				control = 0;
-				return ;
-			}
-			add_history(line);
-			if (ft_proces (line, env) == 1)
-				return ;
-		}
+		if (!manage_line(line, &control, env))
+			return ;
 	}
 }

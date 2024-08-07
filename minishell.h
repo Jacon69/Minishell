@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
+/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 16:17:26 by aiturria          #+#    #+#             */
-/*   Updated: 2024/08/07 07:32:30 by jaimecondea      ###   ########.fr       */
+/*   Updated: 2024/08/07 19:14:22 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,58 +63,83 @@ typedef struct s_path
 
 //global funtions
 //parsing
-t_command	**parser(char **tokens, t_list **env);
-int			count_nbr_tokens(char **tokens);
+t_command			**parser(char **tokens, t_list **env);
+int					count_nbr_tokens(char **tokens);
 //char		*read_all(int fd);
 
 //build_in
-int			ft_built_echo(t_command *command);
-int			ft_built_cd(t_command *command, t_list **env);
-int			ft_aux1_buil_cd(t_command *command, t_struct_path *dir);
-int 		ft_aux2_buil_cd(t_command *command, t_struct_path *dir);
-int			ft_built_pwd(t_command *command);
-int			ft_built_export(t_command *command, t_list **env);
-int			ft_built_unset(t_command *command, t_list **env);
-int			ft_built_env(t_command *command, t_list **env);
-int			ft_print_list_env(t_command *command, t_list **env);
-int			ft_build_int(t_command *command, t_list **env);
-int			is_built_in(char *command);
+int					ft_built_echo(t_command *command);
+int					ft_built_cd(t_command *command, t_list **env);
+int					ft_aux1_buil_cd(t_command *command, t_struct_path *dir);
+int					ft_aux2_buil_cd(t_command *command, t_struct_path *dir);
+int					ft_built_pwd(t_command *command);
+int					ft_built_export(t_command *command, t_list **env);
+int					ft_built_unset(t_command *command, t_list **env);
+int					ft_built_env(t_command *command, t_list **env);
+int					ft_print_list_env(t_command *command, t_list **env);
+int					ft_build_int(t_command *command, t_list **env);
+int					is_built_in(char *command);
+
+int					ft_aux1_buil_cd(t_command *command, t_struct_path *dir);
+int					ft_aux2_buil_cd(t_command *command, t_struct_path *dir);
+int					ft_equal_dir(t_struct_path *dir);
+int					ft_minus_dir( t_struct_path *dir);
+int					ft_cd_dir(t_command *command, t_struct_path *dir);
 
 //Desarrollo
-int			executor(t_command **command_list, t_list **env);
-t_command	**free_commands(t_command **command_list);
-void		prom(t_list **env);
+int					executor(t_command **command_list, t_list **env);
+t_command			**free_commands(t_command **command_list);
+void				prom(t_list **env);
 
 /*Funciones gestión Variable de entorno*/
-t_list		**ft_ini_env(char **environment);
-char		**ft_get_env(t_list **env);
-char		*ft_del_v_env(char *var_env, t_list **env);
-void		ft_add_v_env(char *var_env, t_list **env);
-char		*ft_get_var_env(t_list **env, char *var_env);
-void		ft_save_var_env(char *var, char *val_var, t_list **env);
+t_list				**ft_ini_env(char **environment);
+char				**ft_get_env(t_list **env);
+char				*ft_del_v_env(char *var_env, t_list **env);
+void				ft_add_v_env(char *var_env, t_list **env);
+char				*ft_get_var_env(t_list **env, char *var_env);
+void				ft_save_var_env(char *var, char *val_var, t_list **env);
+void				ft_aux_del_v_env(t_list **env, t_list **p_env,
+						t_list **aux2, char *str_aux);
 
 /*Utils*/
-int			ft_free_char(char **ptr);
-t_list		**ft_free_list(t_list **list, char *msg_err);
-char		**ft_free_list_r_char(t_list **list, char *msg_err);
-int			ft_pos_chr(const char *str, int c);
-char		*ft_strndup(const char *str, size_t n);
-int			ft_is_dir_ok(const char *path);
-char		*ft_free_char_n(char *par1, char *par2, char *par3, char *par4);
+int					ft_free_char(char **ptr);
+t_list				**ft_free_list(t_list **list, char *msg_err);
+char				**ft_free_list_r_char(t_list **list, char *msg_err);
+int					ft_pos_chr(const char *str, int c);
+char				*ft_strndup(const char *str, size_t n);
+int					ft_is_dir_ok(const char *path);
+char				*ft_free_char_n(char *par1, char *par2,
+						char *par3, char *par4);
 
 /*lexer*/
-char		**lexer(char *line); // Crea
-void		free_token(char **token);
-int			expander(char **token, t_list **env);
+char				**lexer(char *line); // Crea
+void				free_token(char **token);
+int					expander(char **token, t_list **env);
+int					ft_aux_assig_token(char *line, char **token, int j, int i);
+int					ft_is_asignsymbol(char *line, int i);
+int					ft_count_tokens(char *line);
 
 /*executor*/
-char	**get_paths(t_list **env);
-char	*get_function_call(char *command, char *path);
-void	free_function_call(t_command *com, char *function_call);
-void	fail_fork(t_command *com, char *function_call);
-
-
-
+char				**get_paths(t_list **env);
+char				*get_function_call(char *command, char *path);
+void				free_function_call(t_command *com, char *function_call);
+void				fail_fork(t_command *com, char *function_call);
 
 //char		*read_all(int fd);
+t_list				**ft_aux_dup_ord_list(t_list **dup_env, t_list *p_env,
+						t_list *p_env_ori);
+int					ft_smaller(int val_1, int val_2);
+
+void				fr_free_prom(t_list **env, char **token,
+						t_command **commands, char *msg);
+void				ft_save_last_return(int last_return, t_list **env);
+struct sigaction	create_sigaction(void);
+int					fr_free_prom2(t_list **env, char **token,
+						t_command **commands, char *msg);
+int					sigint_handler(void);
+
+char				*ft_ext_var_env(char *str);
+char				*ft_token_exp(char *token, int j,
+						char *var_env, int lng_var);
+char				*ft_expander_home(char *token, t_list **env);
 #endif
