@@ -150,11 +150,12 @@ int	check_piped(t_command ***list, int j, t_command **command)
 	return (1);
 }
 
-t_command	**end_list(t_command *command, t_command **list, int j, int k)
+t_command	**end_list(t_command *command, t_command **list, int *dup)
 {
-	command -> args[k] = NULL;
-	list[j] = command;
-	list[++j] = NULL;
+	command -> args[dup[1]] = NULL;
+	list[dup[0]] = command;
+	list[++dup[0]] = NULL;
+	dup[3] = 1;
 	return (list);
 }
 
@@ -181,6 +182,7 @@ void	check_pipe_token(char *token, t_command **command, int *i)
 		(*command)-> piped = 1;
 		*i += 1;
 	}
+
 }
 
 void	fill_args(char **tokens, int *i, t_command **com, int *k)
@@ -216,34 +218,67 @@ t_command	**ft_aux1_parser(char **tokens, int *i, t_command	**current_command, t
 	return (current_command);
 }
 
+void	ft_ini_dup(int *dup)
+{
+	dup[0] = 0;
+	dup[1] = 0;
+	dup[2] = 0;
+	dup[3] = 0;
+}
+
+
+void ft_aux2_parser(t_command **list, t_command *current_command, int *dup )
+{
+	list[dup[0]] = current_command;
+	dup[0]++;
+	dup[1] = 0;
+}
+
+
+
+t_command	**ft_aux3_parser(t_command **list, t_command *current_command
+			, int *dup, char **tokens )
+{
+	t_command	**aux;
+
+	aux = NULL;
+	if (!current_command || !check_piped(&list, dup[0], &current_command))
+	{
+		free_commands(list);
+		dup[3] = 1;
+	}
+	fill_args(tokens, &dup[2], &current_command, &dup[1]);
+	if (!tokens[dup[2]])
+		aux = end_list(current_command, list, dup);
+	else
+	{
+		if (!ft_aux1_parser(tokens, &dup[2], &current_command, list))
+			dup[3]=1;
+		if (dup[2] >= count_nbr_tokens(tokens))
+			aux = end_list(current_command, list, dup);
+		check_pipe_token(tokens[dup[2]], &current_command, &dup[2]);
+	}
+	return (aux);
+}
+
 t_command	**parser(char **tokens, t_list **env)
 {
-	int 		dup[3]={0, 0, 0}; //j, k ,i
+	int			dup[4];
 	t_command	*current_command;
 	t_command	**list;
+	t_command	**aux;
 
+	ft_ini_dup(dup);
 	list = malloc(sizeof(t_command *) * (count_nbr_tokens(tokens) + 1));
 	if (!list)
 		return (NULL);
 	while (tokens[dup[2]])
 	{
 		current_command = new_command(tokens, env, dup[2], dup[0]);
-		if (!current_command || !check_piped(&list, dup[0], &current_command))
-			return (free_commands(list));
-		fill_args(tokens, &dup[2], &current_command, &dup[1]);
-		if (!tokens[dup[2]])
-			return (end_list(current_command, list, dup[0], dup[1]));
-		else
-		{
-			if (!ft_aux1_parser(tokens, &dup[2], &current_command, list))
-				return (NULL);
-			if (dup[2] >= count_nbr_tokens(tokens))
-				return (end_list(current_command, list, dup[0], dup[1]));
-			check_pipe_token(tokens[dup[2]], &current_command, &dup[2]);
-		}
-		list[dup[0]] = current_command;
-		dup[0]++;
-		dup[1] = 0;
+		aux = ft_aux3_parser(list, current_command, dup, tokens);
+		if (dup[3]==1)
+			return (aux);
+		ft_aux2_parser(list, current_command, dup);
 	}
 	list[dup[0]] = NULL;
 	return (list);

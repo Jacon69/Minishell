@@ -16,7 +16,7 @@
 /*
 Duplicates both input and output if necessary, then executes a command
 */
-void	execute_function(t_command *com, char *function_call)
+void	execute_function(t_command *com, char *function_call, t_list **env)
 {
 	if (com -> file_input != 1)
 	{
@@ -28,7 +28,7 @@ void	execute_function(t_command *com, char *function_call)
 		dup2(com -> file_output, STDOUT_FILENO);
 		close(com -> file_output);
 	}
-	if (execve(function_call, com -> args, NULL) == -1)
+	if (execve(function_call, com -> args, ft_get_env(env)) == -1)
 	{
 		perror("Command not found");
 		if (function_call != com->command)
@@ -60,7 +60,7 @@ Creates a child process which will execute something.
 The parent process waits by calling function_return.
 Returns -1 if something fails
 */
-int	fork_function(t_command *com, char *function_call)
+int	fork_function(t_command *com, char *function_call, t_list **env)
 {
 	pid_t	pid;
 
@@ -68,7 +68,7 @@ int	fork_function(t_command *com, char *function_call)
 	if (pid < 0)
 		fail_fork(com, function_call);
 	if (pid == 0)
-		execute_function(com, function_call);
+		execute_function(com, function_call, env);
 	else
 		return (function_return(com, function_call, pid));
 	return (-1);
@@ -79,7 +79,7 @@ Tries to execute the command passed as an
 argument using the paths in the other argument.
 Returns -1 in case of a memory-related error and 127 if the command is not found
 */
-int	try_call(char **paths, t_command *com)
+int	try_call(char **paths, t_command *com, t_list **env)
 {
 	int			i;
 	char		*function_call;
@@ -96,7 +96,7 @@ int	try_call(char **paths, t_command *com)
 			return (-1);
 		if (stat(function_call, &buf) == 0
 			&& S_ISREG(buf.st_mode) && (buf.st_mode & S_IXUSR))
-			return (fork_function(com, function_call));
+			return (fork_function(com, function_call, env));
 		else
 		{
 			free_function_call(com, function_call);
@@ -134,7 +134,7 @@ int	executor(t_command **command_list, t_list **env)
 		else if (is_built_in(command_list[i]-> command))
 			to_return = ft_build_int(command_list[i], env);
 		else
-			to_return = try_call(paths, command_list[i]);
+			to_return = try_call(paths, command_list[i], env);
 		if (command_list[i]-> returned_output == -1)
 			return (1);
 		i++;
