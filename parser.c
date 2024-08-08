@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 10:01:14 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/08 12:28:09 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/08 13:12:43 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -276,7 +276,6 @@ t_command	**parser(char **tokens, t_list **env)
 	t_command	**list;
 	t_command	**aux;
 
-	printf("%s\n", tokens[2]);
 	ft_ini_dup(dup);
 	list = malloc(sizeof(t_command *) * (count_nbr_tokens(tokens) + 1));
 	if (!list)

@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/06 13:22:20 by jaimecondea       #+#    #+#             */
-/*   Updated: 2024/08/08 10:28:59 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/08 13:12:08 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,9 +46,10 @@ static int	ft_assig_token(char *line, char **token, int j, int i)
 		}
 		if (ft_is_asignsymbol(line, i) == 2)
 		{
-			i += 2;
+			i++;
 			if (add_chartotoken(line, token, i, j) == -1)
 				return (-1);
+			i++;
 			break ;
 		}
 		i++;
