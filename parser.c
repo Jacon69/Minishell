@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 10:01:14 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/08 11:32:21 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/08 12:28:09 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,8 @@ void	right_redir(char **tokens, int *i, t_command **command)
 					O_WRONLY | O_CREAT | O_APPEND, 0644);
 		}
 		*i += 1;
+		if (*i >= count_nbr_tokens(tokens))
+			return ;
 	}
 }
 
@@ -203,17 +205,23 @@ void	fill_args(char **tokens, int *i, t_command **com, int *k)
 t_command	**ft_aux1_parser(char **tokens, int *i,
 	t_command **current_command, t_command **list)
 {
-	while ((tokens[*i][0] == '>') && (++*i < count_nbr_tokens(tokens)))
+	while ((tokens[*i][0] == '>') && (*i < count_nbr_tokens(tokens)))
 	{
 		put_redir2(current_command, tokens[*i]);
 		right_redir(tokens, i, current_command);
+		*i += 1;
+		if (*i >= count_nbr_tokens(tokens))
+			return (current_command);
 	}
-	while ((tokens[*i][0] == '<') && (++*i < count_nbr_tokens(tokens)))
+	while ((tokens[*i][0] == '<') && (*i < count_nbr_tokens(tokens)))
 	{
 		put_redir1(current_command, tokens[*i]);
 		*current_command = left_redir(tokens, i, current_command);
+		*i += 1;
 		if (!*current_command)
 			return (free_commands(list));
+		if (*i >= count_nbr_tokens(tokens))
+			return (current_command);
 	}
 	return (current_command);
 }
@@ -252,7 +260,10 @@ t_command	**ft_aux3_parser(t_command **list, t_command *current_command
 		if (!ft_aux1_parser(tokens, &dup[2], &current_command, list))
 			dup[3] = 1;
 		if (dup[2] >= count_nbr_tokens(tokens))
+		{
 			aux = end_list(current_command, list, dup);
+			return (aux);
+		}
 		check_pipe_token(tokens[dup[2]], &current_command, &dup[2]);
 	}
 	return (aux);
@@ -265,6 +276,7 @@ t_command	**parser(char **tokens, t_list **env)
 	t_command	**list;
 	t_command	**aux;
 
+	printf("%s\n", tokens[2]);
 	ft_ini_dup(dup);
 	list = malloc(sizeof(t_command *) * (count_nbr_tokens(tokens) + 1));
 	if (!list)
