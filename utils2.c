@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 10:19:58 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/07 18:47:32 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/08 10:11:59 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ t_list	**ft_dup_ord_list(t_list **env)
 	p_env_ori = *env;
 	if (!p_env_ori)
 		return (NULL);
-	dup_env = (t_list **)malloc(sizeof(t_list *));
+	dup_env = (t_list **)malloc(sizeof(t_list *)); //leak
 	if (!dup_env)
 		return (NULL);
 	*dup_env = NULL;

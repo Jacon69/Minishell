@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/06 13:22:20 by jaimecondea       #+#    #+#             */
-/*   Updated: 2024/08/07 18:52:33 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/08 10:28:59 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ char	**aux_lexer(char *line, int ntoken, char **token)
 	{
 		while (line[i] == ' ')
 			i++;
-		token[j] = (char *)malloc(sizeof(char));
+		token[j] = (char *)malloc(sizeof(char)); //leak
 		if (!token[j])
 		{
 			ft_free_char(token);
@@ -97,7 +97,7 @@ char	**lexer(char *line)
 	token = (char **) malloc(sizeof(char *) * (ntoken + 1));
 	if (!token)
 		return (NULL);
-	token = aux_lexer(line, ntoken, token);
+	token = aux_lexer(line, ntoken, token); //leak
 	token[ntoken] = NULL;
 	return (token);
 }

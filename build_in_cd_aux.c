@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/07 18:55:17 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/07 18:56:07 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/08 10:37:00 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ int	ft_aux2_buil_cd(t_command *command, t_struct_path *dir)
 					|| !ft_memcmp(arg, "../", 3)) && (command -> args[2]))))
 		perror("Error cd: too many arguments");
 	else if (ft_strlen(arg) > 0)
-		ok = ft_cd_dir(command, dir);
+		ok = ft_cd_dir(command, dir); //leak
 	return (ok);
 }
 

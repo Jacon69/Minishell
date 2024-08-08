@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 05:32:30 by jaimecondea       #+#    #+#             */
-/*   Updated: 2024/08/07 18:59:56 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/08 10:39:52 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ int	ft_aux1_build_int(t_command *command_act, t_list **env)
 	if (ft_memcmp(comando, "echo", 4) == 0)
 		ok = ft_built_echo(command_act);
 	else if (ft_memcmp(comando, "cd", 2) == 0)
-		ok = (command_act->args[1]) == NULL ? 1 : ft_built_cd(command_act, env);
+		ok = (command_act->args[1]) == NULL ? 1 : ft_built_cd(command_act, env); //leak
 	else if (ft_memcmp(comando, "pwd", 3) == 0)
 		ok = ft_built_pwd(command_act);
 	else if (ft_memcmp(comando, "export", 6) == 0)
@@ -98,7 +98,7 @@ int	ft_build_int(t_command *command_act, t_list **env)
 	if ((ft_memcmp(com, "echo", 4) == 0) || (ft_memcmp(com, "cd", 2) == 0)
 		|| (ft_memcmp(com, "pwd", 3) == 0) || (ft_memcmp(com, "export", 6) == 0)
 		|| (ft_memcmp(com, "unset", 5) == 0) || (ft_memcmp(com, "env", 3) == 0))
-		ft_aux1_build_int(command_act, env);
+		ft_aux1_build_int(command_act, env); //leak
 	else if (ft_memcmp(com, "exit", 4) == 0)
 		return (-2);
 	if (command_act -> file_input != 1)

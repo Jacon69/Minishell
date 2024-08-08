@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 10:01:14 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/07 17:16:03 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/08 11:32:21 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ t_command	*new_command(char **tokens, t_list **env, int i, int j)
 	current_command -> file_output = 1;
 	current_command -> piped = 0;
 	current_command -> index = j;
+	current_command -> returned_output = 0;
 	dup2(STDIN_FILENO, current_command -> file_input);
 	dup2(STDOUT_FILENO, current_command -> file_output);
 	return (current_command);

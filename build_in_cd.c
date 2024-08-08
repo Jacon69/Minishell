@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 19:42:49 by jconde-a          #+#    #+#             */
-/*   Updated: 2024/08/07 18:55:34 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/08 10:10:55 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,7 +128,7 @@ int	ft_cd_dir(t_command *command, t_struct_path *dir)
 
 	if (ft_aux2_cd_dir(dir))
 		return (-1);
-	aux = ft_strdup(dir->route);
+	aux = ft_strdup(dir->route); //leak
 	aux[ft_strlen(aux)-1] = '\0';
 	if (ft_aux_cd_dir(command, dir) == -1)
 		return (-1);

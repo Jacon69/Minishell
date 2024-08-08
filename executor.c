@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 10:12:42 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/07 19:39:46 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/08 10:39:50 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ int	function_return(t_command *com, char *function_call, pid_t pid)
 {
 	int	returned;
 
+	returned = 0;
 	waitpid(pid, &returned, 0);
 	com -> returned_output = WEXITSTATUS(returned);
 	if (function_call != com->command)
@@ -131,7 +132,7 @@ int	executor(t_command **command_list, t_list **env)
 		if (command_list[i]-> file_input == -1)
 			to_return = 1;
 		else if (is_built_in(command_list[i]-> command))
-			to_return = ft_build_int(command_list[i], env);
+			to_return = ft_build_int(command_list[i], env); //leak
 		else
 			to_return = try_call(paths, command_list[i], env);
 		if (command_list[i]-> returned_output == -1)

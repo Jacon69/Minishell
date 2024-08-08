@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/06 11:45:02 by jaimecondea       #+#    #+#             */
-/*   Updated: 2024/08/07 19:53:31 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/08 10:28:06 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,6 +106,6 @@ t_list	**ft_ini_env(char **environment)
 		return (env);
 	}
 	env = ft_aux_ini_env(environment, env);
-	ft_save_var_env("..PWD", ft_get_var_env(env, "PWD"), env);
+	ft_save_var_env("..PWD", ft_get_var_env(env, "PWD"), env); //leak
 	return (env);
 }
