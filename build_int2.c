@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   build_int2.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/07 18:59:47 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/08 10:39:51 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/09 20:31:31 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ int	ft_built_cd(t_command *command, t_list **env)
 	ok = 0;
 	if (ok != ft_aux1_buil_cd(command, dir))
 		return (1);
-	ok = ft_aux2_buil_cd(command, dir); //leak
+	ok = ft_aux2_buil_cd(command, dir);
 	ft_save_var_env("PWD", dir->route, env);
 	chdir(dir->route);
 	ft_save_var_env("OLDPWD", dir->line_path, env);

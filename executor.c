@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 10:12:42 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/08 10:39:50 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/09 20:32:38 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,6 @@ int	try_call(char **paths, t_command *com, t_list **env)
 		}
 	}
 	printf("Error: command not found\n");
-	//free_function_call(com, function_call);
 	return (127);
 }
 
@@ -132,7 +131,7 @@ int	executor(t_command **command_list, t_list **env)
 		if (command_list[i]-> file_input == -1)
 			to_return = 1;
 		else if (is_built_in(command_list[i]-> command))
-			to_return = ft_build_int(command_list[i], env); //leak
+			to_return = ft_build_int(command_list[i], env);
 		else
 			to_return = try_call(paths, command_list[i], env);
 		if (command_list[i]-> returned_output == -1)

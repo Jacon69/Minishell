@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   prom.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 12:43:54 by jconde-a          #+#    #+#             */
-/*   Updated: 2024/08/08 10:45:33 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/09 20:34:15 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,11 +35,18 @@ int	ft_proces(char *line, t_list **env)
 	char				**token;
 	t_command			**commands;
 	int					last_return;
+	int					flag;
 
-	token = lexer(line);
+	flag = 0;
+	token = lexer(line, &flag);
 	free(line);
 	if (!token)
-		fr_free_prom(env, NULL, NULL, "Error Mem en LEXER");
+	{
+		if (flag == 0)
+			fr_free_prom(env, NULL, NULL, "Error Mem en LEXER");
+		else
+			return (0);
+	}
 	if (!expander(token, env))
 		fr_free_prom(env, token, NULL, "Error Mem en EXPANDER");
 	commands = parser(token, env);
@@ -51,7 +58,7 @@ int	ft_proces(char *line, t_list **env)
 	if (last_return == -1)
 		fr_free_prom(env, token, commands, "Error Mem en EXECUTOR");
 	if (last_return == -2)
-		return (fr_free_prom2(env, token, commands, NULL));
+		return (fr_free_prom2(NULL, token, commands, NULL));
 	ft_save_last_return(last_return, env);
 	fr_free_prom2(NULL, token, commands, NULL);
 	return (0);
@@ -66,7 +73,7 @@ int	manage_line(char *line, int *control, t_list **env)
 		free(line);
 		return (1);
 	}
-	if (ft_memcmp(line, "exit", 4) == 0 && ft_strlen(line) == 4)
+	if (ft_memcmp(line, "exit", 4) == 0 && (line[4] == ' '))
 	{
 		free(line);
 		control = 0;

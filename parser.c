@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 10:01:14 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/08 13:12:43 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/09 18:39:52 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,15 +135,15 @@ t_command	*left_redir(char **tokens, int *i, t_command **command)
 	return (*command);
 }
 
-int	check_piped(t_command ***list, int j, t_command **command)
+int	check_piped(t_command **list, int j, t_command **command)
 {
 	int	pipefd[2];
 
-	if (j > 0 && (*list[j - 1])-> piped)
+	if (j > 0 && (list[j - 1])-> piped)
 	{
 		if (pipe(pipefd) == 0)
 		{
-			(*list[j - 1])-> file_output = pipefd[1];
+			(list[j - 1])-> file_output = pipefd[1];
 			(*command)-> file_input = pipefd[0];
 		}
 		else
@@ -247,7 +247,7 @@ t_command	**ft_aux3_parser(t_command **list, t_command *current_command
 	t_command	**aux;
 
 	aux = NULL;
-	if (!current_command || !check_piped(&list, dup[0], &current_command))
+	if (!current_command || !check_piped(list, dup[0], &current_command))
 	{
 		free_commands(list);
 		dup[3] = 1;
@@ -269,6 +269,25 @@ t_command	**ft_aux3_parser(t_command **list, t_command *current_command
 	return (aux);
 }
 
+t_command	**ft_init_com_list(char **tokens)
+{
+	t_command	**list;
+	int			nbr_tokens;
+	int			i;
+
+	nbr_tokens = count_nbr_tokens(tokens);
+	list = malloc(sizeof(t_command *) * (nbr_tokens + 1));
+	if (!list)
+		return (NULL);
+	i = 0;
+	while (i < nbr_tokens)
+	{
+		list[i] = NULL;
+		i++;
+	}
+	return (list);
+}
+
 t_command	**parser(char **tokens, t_list **env)
 {
 	int			dup[4];
@@ -277,7 +296,7 @@ t_command	**parser(char **tokens, t_list **env)
 	t_command	**aux;
 
 	ft_ini_dup(dup);
-	list = malloc(sizeof(t_command *) * (count_nbr_tokens(tokens) + 1));
+	list = ft_init_com_list(tokens);
 	if (!list)
 		return (NULL);
 	while (tokens[dup[2]])

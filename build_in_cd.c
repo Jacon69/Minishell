@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   build_in_cd.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 19:42:49 by jconde-a          #+#    #+#             */
-/*   Updated: 2024/08/08 10:10:55 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/09 17:30:36 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,17 +128,23 @@ int	ft_cd_dir(t_command *command, t_struct_path *dir)
 
 	if (ft_aux2_cd_dir(dir))
 		return (-1);
-	aux = ft_strdup(dir->route); //leak
+	aux = ft_strdup(dir->route);
+	if (!aux)
+		return (-1);
 	aux[ft_strlen(aux)-1] = '\0';
 	if (ft_aux_cd_dir(command, dir) == -1)
+	{
+		free(aux);
 		return (-1);
+	}
 	if (!ft_is_dir_ok(dir->route))
 	{
 		write(command -> file_output, "Not a directory\n", 16);
 		free(dir->route);
 		dir->route = aux;
-		return (1);
 		free(aux);
+		return (1);
 	}
+	free(aux);
 	return (0);
 }

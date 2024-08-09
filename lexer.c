@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/06 13:22:20 by jaimecondea       #+#    #+#             */
-/*   Updated: 2024/08/08 13:12:08 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/09 20:06:48 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,75 +22,75 @@ int	add_chartotoken(char *line, char **token, int i, int j)
 	simbol[0] = line[i];
 	aux = token[j];
 	token[j] = ft_strjoin(token[j], simbol);
-	if (*aux)
+	if (aux)
 		free(aux);
 	if (!token[j])
 		return (-1);
 	return (0);
 }
 
-static int	ft_assig_token(char *line, char **token, int j, int i)
+static int	ft_assig_token(char *line, char **token, int *paran, int *flag)
 {
-	if ((line[i] == '"') || (line[i] == '\''))
-		return (ft_aux_assig_token(line, token, j, i));
-	while (line[i] != ' ' && line[i])
+	if ((line[paran[1]] == '"') || (line[paran[1]] == '\''))
+		return (ft_aux_assig_token(line, token, paran, flag));
+	while (line[paran[1]] != ' ' && line[paran[1]])
 	{
-		if (line[i] == '"' || line[i] == '\'')
+		if (line[paran[1]] == '"' || line[paran[1]] == '\'')
 			break ;
-		if (add_chartotoken(line, token, i, j) == -1)
+		if (add_chartotoken(line, token, paran[1], paran[0]) == -1)
 			return (-1);
-		if (ft_is_asignsymbol(line, i) == 1)
+		if (ft_is_asignsymbol(line, paran[1]) == 1)
 		{
-			i++;
+			paran[1]++;
 			break ;
 		}
-		if (ft_is_asignsymbol(line, i) == 2)
+		if (ft_is_asignsymbol(line, paran[1]) == 2)
 		{
-			i++;
-			if (add_chartotoken(line, token, i, j) == -1)
+			paran[1]++;
+			if (add_chartotoken(line, token, paran[1], paran[0]) == -1)
 				return (-1);
-			i++;
+			paran[1]++;
 			break ;
 		}
-		i++;
+		paran[1]++;
 	}
-	return (i);
+	return (paran[1]);
 }
 
-char	**aux_lexer(char *line, int ntoken, char **token)
+char	**aux_lexer(char *line, int ntoken, char **token, int *flag)
 {
-	int		i;
-	int		j;
+	int		paran[2];
 
-	j = 0;
-	i = 0;
-	while (j < ntoken)
+	paran[0] = 0;
+	paran[1] = 0;
+	while (paran[0] < ntoken)
 	{
-		while (line[i] == ' ')
-			i++;
-		token[j] = (char *)malloc(sizeof(char)); //leak
-		if (!token[j])
+		while (line[paran[1]] == ' ')
+			paran[1]++;
+		token[paran[0]] = (char *)malloc(sizeof(char));
+		if (!token[paran[0]])
 		{
 			ft_free_char(token);
 			return (NULL);
 		}
-		token[j][0] = '\0';
-		i = ft_assig_token(line, token, j, i);
-		if (i == -1)
+		token[paran[0]][0] = '\0';
+		ft_assig_token(line, token, paran, flag);
+		if (paran[1] == -1 || *flag)
 		{
 			ft_free_char(token);
 			return (NULL);
 		}
-		j++;
+		paran[0]++;
 	}
 	return (token);
 }
 
 /*Convierte la linea en tokens*/
-char	**lexer(char *line)
+char	**lexer(char *line, int *flag)
 {
 	char	**token;
 	int		ntoken;
+	int		i;
 
 	ntoken = ft_count_tokens(line);
 	if (!line)
@@ -98,7 +98,14 @@ char	**lexer(char *line)
 	token = (char **) malloc(sizeof(char *) * (ntoken + 1));
 	if (!token)
 		return (NULL);
-	token = aux_lexer(line, ntoken, token); //leak
+	i = 0;
+	while (i <= ntoken)
+	{
+		token[i] = NULL;
+		i++;
+	}
+	if (!aux_lexer(line, ntoken, token, flag))
+		return (NULL);
 	token[ntoken] = NULL;
 	return (token);
 }

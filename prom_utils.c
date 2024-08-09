@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   prom_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/07 19:01:12 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/08 10:02:16 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/09 20:29:44 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,10 @@ static void	signal_handler(int signum)
 			return ;
 		}
 		else
-			return ;
+		{
+			rl_on_new_line();
+			rl_redisplay();
+		}
 	}
 }
 

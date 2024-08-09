@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   environment_utils.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/07 19:11:01 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/07 19:52:40 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/09 20:32:09 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,13 +41,14 @@ char	*ft_get_var_env(t_list **env, char *var_env)
 	char	*val_var;
 
 	p_env = *env;
+	var = NULL;
 	while (p_env)
 	{
 		val_var = p_env->content;
 		if (ft_strncmp(val_var, var_env, ft_strlen(var_env)) == 0
 			&& ((val_var[ft_strlen(var_env)] == '=')))
 		{
-			var = ft_substr(val_var, ft_strlen(var_env) + 1, //leak
+			var = ft_substr(val_var, ft_strlen(var_env) + 1,
 					ft_strlen(val_var) - (ft_strlen(var_env) + 1));
 			if (!var)
 				return (NULL);

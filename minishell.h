@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 16:17:26 by aiturria          #+#    #+#             */
-/*   Updated: 2024/08/07 19:14:22 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/09 20:33:26 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,10 +112,11 @@ char				*ft_free_char_n(char *par1, char *par2,
 						char *par3, char *par4);
 
 /*lexer*/
-char				**lexer(char *line); // Crea
+char				**lexer(char *line, int *flag); // Crea
 void				free_token(char **token);
 int					expander(char **token, t_list **env);
-int					ft_aux_assig_token(char *line, char **token, int j, int i);
+int					ft_aux_assig_token(char *line, char **token,
+						int *paran, int *flag);
 int					ft_is_asignsymbol(char *line, int i);
 int					ft_count_tokens(char *line);
 

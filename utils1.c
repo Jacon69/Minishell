@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils1.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/06 11:45:27 by jaimecondea       #+#    #+#             */
-/*   Updated: 2024/08/07 18:48:16 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/09 17:19:56 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ t_list	**ft_free_list(t_list **list, char *msg_err)
 	t_list	*aux;
 
 	p_nodo = *list;
-	if (!list)
+	if (list)
 	{
 		while (p_nodo)
 		{
@@ -28,6 +28,8 @@ t_list	**ft_free_list(t_list **list, char *msg_err)
 			p_nodo = aux;
 		}
 		*list = NULL;
+		free(*list);
+		free(list);
 		if (!msg_err)
 			perror(msg_err);
 	}

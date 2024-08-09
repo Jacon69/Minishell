@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/07 18:52:23 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/08 12:43:48 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/09 19:26:00 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,13 @@
 /* busca el caracter en la cadena y devuelve la posicion*/
 static int	next_delimiter(char const *str, char c, int i)
 {
-	while ((str[i] && str[i] != c))
+	while ((str[i] != '\0' && str[i] != c))
 		i++;
 	return (i);
 }
 
 /*avanza posiciones para contar tokens*/
-int	ft_aux_count_tokens(char *line, int i )
+int	ft_aux_count_tokens(char *line, int i)
 {
 	while (line[i] != ' ' && line[i])
 	{
@@ -70,25 +70,28 @@ int	ft_count_tokens(char *line)
 			i = ft_aux_count_tokens(line, i);
 			tokens++;
 		}
+		if ((size_t)i >= ft_strlen(line))
+			break ;
 	}
 	return (tokens);
 }
 
 /* asigna token entre comillas*/
-int	ft_aux_assig_token(char *line, char **token, int j, int i)
+int	ft_aux_assig_token(char *line, char **token, int *paran, int *flag)
 {
-	if (!line[next_delimiter(line, line[i], i + 1)])
+	if (!line[next_delimiter(line, line[paran[1]], paran[1] + 1)])
 	{
+		*flag = 1;
 		perror("do not close quote.");
 		return (-1);
 	}
-	free(token[j]);
-	token[j] = ft_substr(line, i,
-			next_delimiter(line, line[i], i + 1) - i + 1);
-	if (!token[j])
+	free(token[paran[0]]);
+	token[paran[0]] = ft_substr(line, paran[1],
+			next_delimiter(line, line[paran[1]], paran[1] + 1) - paran[1] + 1);
+	if (!token[paran[0]])
 		return (-1);
-	i = next_delimiter(line, line[i], i + 1) + 1;
-	return (i);
+	paran[1] = next_delimiter(line, line[paran[1]], paran[1] + 1) + 1;
+	return (paran[1]);
 }
 
 /*indica si line[i] es simbolo token <>| >><<*/
