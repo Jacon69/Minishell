@@ -12,8 +12,7 @@
 
 #include "minishell.h"
 
-/*están las distintas opciones según lo que viene en arg. 
-desde ahí llamamos a funciones*/
+//Different options depending on what comes from arg, then call functions
 int	ft_aux2_buil_cd(t_command *command, t_struct_path *dir)
 {
 	int		ok;
@@ -42,7 +41,7 @@ int	ft_aux2_buil_cd(t_command *command, t_struct_path *dir)
 	return (ok);
 }
 
-/*inicializo la estructura del dir actual que me ha llegado por command*/
+//Initialize structure of current directory coming from command
 int	ft_aux1_buil_cd(t_command *command, t_struct_path *dir)
 {
 	int	i;

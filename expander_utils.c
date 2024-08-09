@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-/*libeera var y tex_error*/
+/*frees var and tex_error*/
 char	*ft_free_char_n(char *par1, char *par2, char *par3, char *txt_err)
 {
 	if (par1)
@@ -59,7 +59,7 @@ char	*ft_expander_home(char *token, t_list **env)
 	return (token);
 }
 
-/*Se extrae la var que encontramos en str[0] y devolvemos su valor si existe*/
+//Extracts var from str[0] and returns its value if it exists
 char	*ft_ext_var_env(char *str)
 {
 	int		var_long;
@@ -79,7 +79,7 @@ char	*ft_ext_var_env(char *str)
 	return (aux);
 }
 
-/*Esta función me devuelve el token expandido en el punto que se manda*/
+//Returns the expanded token in the point it is sent
 char	*ft_token_exp(char *token, int j, char *var_env, int lng_var)
 {
 	char	*str;

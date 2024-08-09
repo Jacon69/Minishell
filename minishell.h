@@ -34,7 +34,7 @@
 # include <dirent.h>
 # include <termios.h>
 
-extern int	g_is_executing; //variable  global
+extern int	g_is_executing; //global variable
 
 typedef struct s_command
 {
@@ -44,10 +44,10 @@ typedef struct s_command
 	char	**args;
 	int		redir1; //0= NULL, < = 1, << = 2
 	int		redir2; //0= NULL, > = 1, >> = 2
-	int		piped; //0 no hay pipe, 1 hay pipe (salida)
+	int		piped; //0 no pipe, 1 there is pipe
 	int		file_input;
 	int		file_output;
-	char	*input; //Entrada desde archivos o pipes
+	char	*input; //Input from files or pipes
 	char	*string_output;
 	int		returned_output;
 }	t_command;
@@ -65,7 +65,18 @@ typedef struct s_path
 //parsing
 t_command			**parser(char **tokens, t_list **env);
 int					count_nbr_tokens(char **tokens);
-//char		*read_all(int fd);
+int					check_piped(t_command **list, int j, t_command **command);
+void				check_pipe_token(char *token, t_command **command, int *i);
+t_command			**free_commands(t_command **command_list);
+t_command			*new_command(char **tokens, t_list **env, int i, int j);
+t_command			**end_list(t_command *command, t_command **list, int *dup);
+void				fill_args(char **tokens, int *i, t_command **com, int *k);
+t_command			**ft_init_com_list(char **tokens);
+void				write_in_heredoc(char *token, int *heredoc);
+void				right_redir(char **tokens, int *i, t_command **command);
+t_command			*left_redir(char **tokens, int *i, t_command **command);
+void				put_redir1(t_command **command, char *token);
+void				put_redir2(t_command **command, char *token);
 
 //build_in
 int					ft_built_echo(t_command *command);
@@ -86,12 +97,12 @@ int					ft_equal_dir(t_struct_path *dir);
 int					ft_minus_dir( t_struct_path *dir);
 int					ft_cd_dir(t_command *command, t_struct_path *dir);
 
-//Desarrollo
+//Execution
 int					executor(t_command **command_list, t_list **env);
 t_command			**free_commands(t_command **command_list);
 void				prom(t_list **env);
 
-/*Funciones gestión Variable de entorno*/
+/*Environment variables*/
 t_list				**ft_ini_env(char **environment);
 char				**ft_get_env(t_list **env);
 char				*ft_del_v_env(char *var_env, t_list **env);
@@ -112,7 +123,7 @@ char				*ft_free_char_n(char *par1, char *par2,
 						char *par3, char *par4);
 
 /*lexer*/
-char				**lexer(char *line, int *flag); // Crea
+char				**lexer(char *line, int *flag); // Creates
 void				free_token(char **token);
 int					expander(char **token, t_list **env);
 int					ft_aux_assig_token(char *line, char **token,
@@ -126,7 +137,6 @@ char				*get_function_call(char *command, char *path);
 void				free_function_call(t_command *com, char *function_call);
 void				fail_fork(t_command *com, char *function_call);
 
-//char		*read_all(int fd);
 t_list				**ft_aux_dup_ord_list(t_list **dup_env, t_list *p_env,
 						t_list *p_env_ori);
 int					ft_smaller(int val_1, int val_2);

@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-// auxiliar en la conversión de las variables de entorno
+//Auxilliary Environment variables conversion
 static int	ft_aux_expander_dollar(char **token, t_list **env, int i)
 {
 	char	*var_env;

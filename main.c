@@ -17,6 +17,7 @@ int	main(int narg, char *carg[], char **environment)
 	t_list			**env;
 	struct termios	attributes;
 
+	printf("\033[0;32m");
 	narg++;
 	carg [0] = "hola";
 	env = ft_ini_env(environment);

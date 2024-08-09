@@ -1,7 +1,7 @@
-# Nombre del ejecutable final
-NAME = prom
+# Name of executable
+NAME = minishell
 
-# Directorios y archivos
+# Directories and files
 LIBFT_DIR = ./Libft
 LIBFT = $(LIBFT_DIR)/libft.a
 
@@ -17,6 +17,9 @@ SRC = main.c \
 		expander.c \
 		expander_utils.c \
 		parser.c \
+		init_commands.c \
+		pipes.c \
+		redirs.c \
 		executor.c \
 		utils2.c \
 		utils3.c \
@@ -29,37 +32,37 @@ SRC = main.c \
 
 OBJ = $(SRC:.c=.o)
 
-# Compilador y flags
+# Compiler and flags
 CC = clang
 CFLAGS = -Wall -Wextra -Werror -g
 LDFLAGS = -L$(LIBFT_DIR) -lft -lreadline
 
-# Regla por defecto
+# Default rule
 all: $(NAME)
 
-# Regla para compilar el ejecutable
+# Compilation rule
 $(NAME): $(LIBFT) $(OBJ)
 	$(CC) $(CFLAGS) -o $(NAME) $(OBJ) $(LIBFT) $(LDFLAGS)
 
-# Regla para compilar los archivos .o
+# .o files rule
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Regla para compilar la librería libft
+# libft rule
 $(LIBFT):
 	$(MAKE) -C $(LIBFT_DIR)
 
-# Regla para limpiar los archivos .o
+# .o files clean rule
 clean:
 	rm -f $(OBJ)
 	$(MAKE) -C $(LIBFT_DIR) clean
 
-# Regla para limpiar todo, incluidos los ejecutables y la librería
+# clean all rule
 fclean: clean
 	rm -f $(NAME)
 	$(MAKE) -C $(LIBFT_DIR) fclean
 
-# Regla para recompilar todo
+# recompile all rule
 re: fclean all
 
 .PHONY: all clean fclean re

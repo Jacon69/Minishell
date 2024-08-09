@@ -24,7 +24,7 @@ int	count_nbr_tokens(char **tokens)
 	return (i);
 }
 
-/* Devuelve una copia ordenada de la lista de var de entono*/
+//Returns an ordered copy of the environment variables list
 t_list	**ft_dup_ord_list(t_list **env)
 {
 	t_list	**dup_env;
@@ -63,7 +63,7 @@ int	ft_export_print_list_env(t_command *command, t_list **env)
 	return (1);
 }
 
-/*imprime las var lista entorno. Si export las ordena*/
+//Prints the list of environment variables. If the command is export, orders them
 int	ft_print_list_env(t_command *command, t_list **env)
 {
 	t_list	*p_env;
@@ -90,7 +90,7 @@ int	ft_print_list_env(t_command *command, t_list **env)
 	return (ok);
 }
 
-/*comprueba su el dir existe*/
+//Checks if dir exists
 int	ft_is_dir_ok(const char *path)
 {
 	struct stat	statbuf;

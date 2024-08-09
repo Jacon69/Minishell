@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-/*se establece la ruta al nuevo directorio quitando un nivel al actual*/
+//Establish the path to the new directory, which is current minus one level
 int	ft_minus_dir( t_struct_path *dir)
 {
 	int		i;
@@ -39,7 +39,7 @@ int	ft_minus_dir( t_struct_path *dir)
 	return (0);
 }
 
-/*se establece la ruta al nuevo directorio dejandolo como el actual actual*/
+//Establish the path to the new directory, which is the same as current
 int	ft_equal_dir(t_struct_path *dir)
 {
 	int		i;
@@ -66,7 +66,7 @@ int	ft_equal_dir(t_struct_path *dir)
 	return (0);
 }
 
-/*crea la ruta en  route*/
+//Create the path in route
 int	ft_aux2_cd_dir(t_struct_path *dir)
 {
 	int		i;
@@ -120,8 +120,7 @@ int	ft_aux_cd_dir(t_command *command, t_struct_path *dir)
 	return (0);
 }
 
-/*/*se establece la ruta al nuevo directorio añadiendo
- a la ruta actual el agumento nuevo*/
+//Establish the path to the new directory, adding the new argument to the current path
 int	ft_cd_dir(t_command *command, t_struct_path *dir)
 {
 	char	*aux;

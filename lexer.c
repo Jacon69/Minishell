@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-/* añado el caracter line[i] a token[j]*/
+//adds line[i] to token[j]
 int	add_chartotoken(char *line, char **token, int i, int j)
 {
 	char	*aux;
@@ -85,7 +85,7 @@ char	**aux_lexer(char *line, int ntoken, char **token, int *flag)
 	return (token);
 }
 
-/*Convierte la linea en tokens*/
+/*Converts the line into tokens*/
 char	**lexer(char *line, int *flag)
 {
 	char	**token;

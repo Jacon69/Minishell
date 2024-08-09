@@ -63,7 +63,7 @@ char	*ft_get_var_env(t_list **env, char *var_env)
 	return (var);
 }
 
-/*encuentra y sustituye la variable*/
+/*finds and changes the variable*/
 int	ft_aux_add_v_env(char *var_env, t_list **env, char	*var)
 {
 	t_list	*p_env;

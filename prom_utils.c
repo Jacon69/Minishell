@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-/*Libera y devuelve el prom*/
+/*Frees and returns prom*/
 int	fr_free_prom2(t_list **env, char **token, t_command **commands, char *msg)
 {
 	if (env)
@@ -24,7 +24,7 @@ int	fr_free_prom2(t_list **env, char **token, t_command **commands, char *msg)
 	return (1);
 }
 
-/*Libera y cierra programa*/
+/*Frees and exits program*/
 void	fr_free_prom(t_list **env, char **token,
 	t_command **commands, char *msg)
 {
@@ -37,11 +37,15 @@ void	fr_free_prom(t_list **env, char **token,
 	exit(1);
 }
 
-/*Si la guarda la salida de la ejecución*/
+/*Saves the execution exit*/
 void	ft_save_last_return(int last_return, t_list **env)
 {
 	char	*str_last_return;
 
+	if (last_return == 0)
+		printf("\033[0;32m")
+	else
+		printf("\033[0;31m")
 	str_last_return = ft_itoa(last_return);
 	ft_save_var_env("?", str_last_return, env);
 	free(str_last_return);

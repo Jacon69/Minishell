@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-/* busca el caracter en la cadena y devuelve la posicion*/
+//Finds the character and returns its position
 static int	next_delimiter(char const *str, char c, int i)
 {
 	while ((str[i] != '\0' && str[i] != c))
@@ -20,7 +20,7 @@ static int	next_delimiter(char const *str, char c, int i)
 	return (i);
 }
 
-/*avanza posiciones para contar tokens*/
+/*Counts tokens by advancing positions*/
 int	ft_aux_count_tokens(char *line, int i)
 {
 	while (line[i] != ' ' && line[i])
@@ -48,7 +48,7 @@ int	ft_aux_count_tokens(char *line, int i)
 	return (i);
 }
 
-/*cuenta tokens*/
+/*counts tokens*/
 int	ft_count_tokens(char *line)
 {
 	int		tokens;
@@ -76,7 +76,7 @@ int	ft_count_tokens(char *line)
 	return (tokens);
 }
 
-/* asigna token entre comillas*/
+/* asigns token between ""*/
 int	ft_aux_assig_token(char *line, char **token, int *paran, int *flag)
 {
 	if (!line[next_delimiter(line, line[paran[1]], paran[1] + 1)])
@@ -94,7 +94,7 @@ int	ft_aux_assig_token(char *line, char **token, int *paran, int *flag)
 	return (paran[1]);
 }
 
-/*indica si line[i] es simbolo token <>| >><<*/
+//Checks if line[i] is a symbol <>| >><<
 int	ft_is_asignsymbol(char *line, int i)
 {
 	int	position;

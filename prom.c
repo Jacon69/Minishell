@@ -29,7 +29,14 @@ int	sigint_handler(void)
 	}
 }
 
-/*procesa line y si hay exit despues de pipe devuelve 1 para salir*/
+int	no_token(t_list **env, int flag)
+{
+	if (flag == 0)
+		fr_free_prom(env, NULL, NULL, "Error Mem en LEXER");
+	return (0);
+}
+
+//Processes line and returns 1 if there's exit after a pipe
 int	ft_proces(char *line, t_list **env)
 {
 	char				**token;
@@ -41,12 +48,7 @@ int	ft_proces(char *line, t_list **env)
 	token = lexer(line, &flag);
 	free(line);
 	if (!token)
-	{
-		if (flag == 0)
-			fr_free_prom(env, NULL, NULL, "Error Mem en LEXER");
-		else
-			return (0);
-	}
+		return (no_token(env, flag))
 	if (!expander(token, env))
 		fr_free_prom(env, token, NULL, "Error Mem en EXPANDER");
 	commands = parser(token, env);
@@ -109,6 +111,7 @@ void	prom(t_list **env)
 		if (!path_act)
 			return ;
 		line = readline(path_act);
+		printf("\033[0;37m");
 		free(path_act);
 		if (!manage_line(line, &control, env))
 			return ;

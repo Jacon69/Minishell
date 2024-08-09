@@ -48,7 +48,7 @@ char	**ft_aux_get_env(t_list **env, char	**var_entorno)
 	return (var_entorno);
 }
 
-// función que convierte list de var-env en doble cadena de  var-env
+//converts a list of var-env into double chain of var-env
 char	**ft_get_env(t_list **env)
 {
 	t_list	*p_env;
