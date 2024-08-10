@@ -6,7 +6,7 @@
 /*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/07 18:59:47 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/09 20:31:31 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/08/10 19:24:50 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,13 @@
 
 int	ft_checkwithout_n(char *cad)
 {
-	if (!ft_memcmp(cad, "-n", 2)
-		&& ft_strlen(cad) == 2)
-		return (1);
+	if (!ft_memcmp(cad++, "-n", 2))
+	{
+		while (*cad == 'n')
+			cad++;
+		if (*cad == '\0')
+			return (1);
+	}
 	return (0);
 }
 
@@ -91,4 +95,31 @@ int	ft_built_pwd(t_command *command)
 	else
 		ok = 0;
 	return (ok);
+}
+
+int	ft_check_export_arg(char *argument)
+{
+	char	*error;
+
+	error = ft_strjoin(argument, " export: not a valid identifier");
+	if (!error)
+		return (1);
+	if (argument[0] >= '0' && argument[0] <= '9')
+	{
+		perror(error);
+		free (error);
+		return (1);
+	}
+	while (*argument != '=')
+	{
+		if ((ft_isalnum(*argument) == 0))
+		{
+			perror(error);
+			free (error);
+			return (1);
+		}
+		argument++;
+	}
+	free (error);
+	return (0);
 }

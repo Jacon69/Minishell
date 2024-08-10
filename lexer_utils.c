@@ -6,7 +6,7 @@
 /*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/07 18:52:23 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/09 19:26:00 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/08/10 19:39:34 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,7 @@ int	ft_count_tokens(char *line)
 		if ((size_t)i >= ft_strlen(line))
 			break ;
 	}
+	printf("nº de token %d \n", tokens);
 	return (tokens);
 }
 

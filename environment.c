@@ -6,12 +6,12 @@
 /*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/06 11:45:02 by jaimecondea       #+#    #+#             */
-/*   Updated: 2024/08/09 13:58:31 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/08/10 17:04:26 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
+/*inicializo cuando no recibo variables de entorno*/
 static void	ft_ini_empty_env(t_list **env)
 {
 	char	buffer[1024];
@@ -21,6 +21,7 @@ static void	ft_ini_empty_env(t_list **env)
 		ft_save_var_env("PWD", buffer, env);
 		ft_save_var_env("SHLVL", "1", env);
 		ft_save_var_env("..PWD", ft_get_var_env(env, "PWD"), env);
+		ft_save_var_env("..HOME", ft_get_var_env(env, "PWD"), env);
 	}
 	else
 		perror("getcwd() error");
@@ -95,7 +96,6 @@ t_list	**ft_aux_ini_env(char **environment, t_list	**env)
 t_list	**ft_ini_env(char **environment)
 {
 	t_list	**env;
-	char	*val_pwd;
 
 	env = (t_list **)malloc(sizeof(t_list *));
 	if (!env)
@@ -107,8 +107,7 @@ t_list	**ft_ini_env(char **environment)
 		return (env);
 	}
 	env = ft_aux_ini_env(environment, env);
-	val_pwd = ft_get_var_env(env, "PWD");
-	ft_save_var_env("..PWD", val_pwd, env);
-	free(val_pwd);
+	ft_save_var_env("..PWD", ft_get_var_env(env, "PWD"), env);
+	ft_save_var_env("..HOME", ft_get_var_env(env, "HOME"), env);
 	return (env);
 }

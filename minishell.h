@@ -6,7 +6,7 @@
 /*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 16:17:26 by aiturria          #+#    #+#             */
-/*   Updated: 2024/08/09 20:33:26 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/08/10 19:14:20 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,7 @@ int					ft_aux2_buil_cd(t_command *command, t_struct_path *dir);
 int					ft_equal_dir(t_struct_path *dir);
 int					ft_minus_dir( t_struct_path *dir);
 int					ft_cd_dir(t_command *command, t_struct_path *dir);
+int					ft_check_export_arg(char *argument);
 
 //Execution
 int					executor(t_command **command_list, t_list **env);

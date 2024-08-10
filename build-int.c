@@ -6,7 +6,7 @@
 /*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 05:32:30 by jaimecondea       #+#    #+#             */
-/*   Updated: 2024/08/09 20:31:50 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/08/10 19:35:44 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,9 @@ int	ft_built_export(t_command *command, t_list **env)
 	}
 	if (ft_memchr(command->args[1], '=', ft_strlen(command -> args[1])) != NULL)
 	{
+		if (ft_check_export_arg(command->args[1]) == 1)
+			return (1);
+		printf("variable completa %s \n", command->args[1]);
 		ft_add_v_env(command->args[1], env);
 		return (0);
 	}
@@ -64,6 +67,17 @@ int	ft_built_env(t_command *command, t_list **env)
 	return (ok);
 }
 
+int	ft_cd_without_argument(t_command *command_act, t_list **env)
+{
+	command_act->args[1] = ft_get_var_env(env, "HOME");
+	if (command_act->args[1][0] == '\0')
+	{
+		perror("cd: HOME not set");
+		return (1);
+	}
+	return (0);
+}
+
 int	ft_aux1_build_int(t_command *command_act, t_list **env)
 {
 	char	*comando;
@@ -76,9 +90,12 @@ int	ft_aux1_build_int(t_command *command_act, t_list **env)
 	else if (ft_memcmp(comando, "cd", 2) == 0)
 	{
 		if ((command_act->args[1]) == NULL)
-			ok = 1;
-		else
-			ft_built_cd(command_act, env);
+		{
+			printf("Por aqui\n");
+			if (ft_cd_without_argument(command_act, env) == 1)
+				return (1);
+		}
+		ft_built_cd(command_act, env);
 	}
 	else if (ft_memcmp(comando, "pwd", 3) == 0)
 		ok = ft_built_pwd(command_act);

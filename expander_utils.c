@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/07 19:07:40 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/07 19:09:26 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/10 17:31:17 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ char	*ft_expander_home(char *token, t_list **env)
 	if ((token[0] == '~' && token[1] == '/')
 		|| (token[0] == '~' && ft_strlen(token) == 1))
 	{
-		var_env = ft_get_var_env(env, "HOME");
+		var_env = ft_get_var_env(env, "..HOME");
 		if (!var_env)
 			return (ft_free_char_n(token, NULL, NULL
 					, "Mem error getting \"HOME\""));
