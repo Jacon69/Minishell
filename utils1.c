@@ -12,7 +12,8 @@
 
 #include "minishell.h"
 
-t_list	**ft_free_list(t_list **list, char *msg_err)
+/*Free the list of enviroment variable*/
+void	**ft_free_list(t_list **list, char *msg_err)
 {
 	t_list	*p_nodo;
 	t_list	*aux;
@@ -30,31 +31,9 @@ t_list	**ft_free_list(t_list **list, char *msg_err)
 		*list = NULL;
 		free(*list);
 		free(list);
-		if (!msg_err)
-			perror(msg_err);
 	}
-	return (NULL);
-}
-
-char	**ft_free_list_r_char(t_list **list, char *msg_err)
-{
-	t_list	*p_nodo;
-	t_list	*aux;
-
-	p_nodo = *list;
-	if (!list)
-	{
-		while (p_nodo)
-		{
-			aux = p_nodo->next;
-			free(p_nodo->content);
-			free(p_nodo);
-			p_nodo = aux;
-		}
-		*list = NULL;
-		if (!msg_err)
-			perror(msg_err);
-	}
+	if (!msg_err)
+		perror(msg_err);
 	return (NULL);
 }
 

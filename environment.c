@@ -39,7 +39,7 @@ char	**ft_aux_get_env(t_list **env, char	**var_entorno)
 		if (!var_entorno[i])
 		{
 			ft_free_char(var_entorno);
-			return (ft_free_list_r_char(env, "Mem error2 enviroment"));
+			return ((char **)ft_free_list(env, "Mem error2 enviroment"));
 		}
 		i++;
 		p_env = p_env->next;
@@ -64,7 +64,7 @@ char	**ft_get_env(t_list **env)
 	}
 	var_entorno = (char **)malloc(sizeof(char *) * (i + 1));
 	if (!var_entorno)
-		return (ft_free_list_r_char(env, "Mem error1 enviroment"));
+		return ((char **)ft_free_list(env, "Mem error1 enviroment"));
 	var_entorno = ft_aux_get_env(env, var_entorno);
 	if (!var_entorno)
 		return (NULL);
@@ -79,14 +79,14 @@ t_list	**ft_aux_ini_env(char **environment, t_list	**env)
 	i = 0;
 	p_env = ft_lstnew(ft_strdup(environment[i]));
 	if (!p_env)
-		return (ft_free_list(env, "Mem error2.5 enviroment"));
+		return ((t_list **)ft_free_list(env, "Mem error2.5 enviroment"));
 	ft_lstadd_back(env, p_env);
 	while (environment[++i])
 	{
 		p_env = ft_lstnew(ft_strdup(environment[i]));
 		ft_lstadd_back(env, p_env);
 		if (!p_env)
-			return (ft_free_list(env, "Mem error3 enviroment"));
+			return ((t_list **)ft_free_list(env, "Mem error3 enviroment"));
 	}
 	return (env);
 }

@@ -114,8 +114,7 @@ void				ft_aux_del_v_env(t_list **env, t_list **p_env,
 
 /*Utils*/
 int					ft_free_char(char **ptr);
-t_list				**ft_free_list(t_list **list, char *msg_err);
-char				**ft_free_list_r_char(t_list **list, char *msg_err);
+void				**ft_free_list(t_list **list, char *msg_err);
 int					ft_pos_chr(const char *str, int c);
 char				*ft_strndup(const char *str, size_t n);
 int					ft_is_dir_ok(const char *path);

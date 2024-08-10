@@ -22,7 +22,7 @@ char	*ft_del_v_env(char *var_env, t_list **env)
 	str_aux = ft_strdup((const char *)var_env);
 	if (!str_aux)
 	{
-		ft_free_list_r_char(env, "Mem error4 enviroment");
+		ft_free_list(env, "Mem error4 enviroment");
 		return (NULL);
 	}
 	p_env = *env;

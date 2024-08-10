@@ -6,7 +6,7 @@
 /*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 10:01:14 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/09 18:39:52 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/08/10 16:37:46 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,7 @@ t_command	**ft_aux3_parser(t_command **list, t_command *current_command
 	return (aux);
 }
 
+/*Recibe token y prepara los comando*/
 t_command	**parser(char **tokens, t_list **env)
 {
 	int			dup[4];

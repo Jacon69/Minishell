@@ -40,7 +40,7 @@ t_list	**ft_dup_ord_list(t_list **env)
 	*dup_env = NULL;
 	p_env = ft_lstnew(ft_strdup(p_env_ori->content));
 	if (!p_env)
-		return (ft_free_list(dup_env, NULL));
+		return ((t_list **)ft_free_list(dup_env, NULL));
 	ft_lstadd_back(dup_env, p_env);
 	dup_env = ft_aux_dup_ord_list(dup_env, p_env, p_env_ori);
 	return (dup_env);

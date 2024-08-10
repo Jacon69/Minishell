@@ -67,7 +67,7 @@ t_list	**ft_aux_dup_ord_list(t_list **dup_env, t_list *p_env
 		p_env_ori = p_env_ori -> next;
 		p_env_aux = ft_lstnew(ft_strdup(p_env_ori->content));
 		if (!p_env_aux)
-			return (ft_free_list(dup_env, NULL));
+			return ((t_list **)ft_free_list(dup_env, NULL));
 		p_env = *dup_env;
 		if (ft_strncmp(p_env -> content, p_env_aux -> content,
 				ft_smaller(ft_strlen(p_env -> content),

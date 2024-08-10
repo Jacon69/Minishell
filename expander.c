@@ -34,7 +34,8 @@ static int	ft_aux_expander_dollar(char **token, t_list **env, int i)
 		return (-1);
 	}
 	*token = ft_token_exp(*token, i, var_env, ft_strlen(aux));
-	i += ft_strlen(var_env)-1;
+	if (ft_strlen(var_env) != 0)
+		i += ft_strlen(var_env) - 1;
 	ft_free_char_n(aux, var_env, aux1, NULL);
 	if (!*token)
 		return (-1);
@@ -51,7 +52,7 @@ static char	*ft_expander_dollar(char *token, t_list **env)
 	token = ft_strdup(token);
 	if (!token)
 		return (NULL);
-	while (token[i])
+	while ((size_t)i < ft_strlen(token))
 	{
 		if (token[i] == '$')
 		{
