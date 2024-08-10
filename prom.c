@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   prom.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 12:43:54 by jconde-a          #+#    #+#             */
-/*   Updated: 2024/08/09 20:34:15 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/08/10 09:29:45 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ int	no_token(t_list **env, int flag)
 {
 	if (flag == 0)
 		fr_free_prom(env, NULL, NULL, "Error Mem en LEXER");
+	printf("\033[0;31m");
 	return (0);
 }
 
@@ -48,7 +49,7 @@ int	ft_proces(char *line, t_list **env)
 	token = lexer(line, &flag);
 	free(line);
 	if (!token)
-		return (no_token(env, flag))
+		return (no_token(env, flag));
 	if (!expander(token, env))
 		fr_free_prom(env, token, NULL, "Error Mem en EXPANDER");
 	commands = parser(token, env);

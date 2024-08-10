@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   build_in_cd.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 19:42:49 by jconde-a          #+#    #+#             */
-/*   Updated: 2024/08/09 17:30:36 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/08/10 09:27:14 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,7 +120,8 @@ int	ft_aux_cd_dir(t_command *command, t_struct_path *dir)
 	return (0);
 }
 
-//Establish the path to the new directory, adding the new argument to the current path
+//Establish the path to the new directory,
+//adding the new argument to the current path
 int	ft_cd_dir(t_command *command, t_struct_path *dir)
 {
 	char	*aux;

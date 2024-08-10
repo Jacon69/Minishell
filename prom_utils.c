@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   prom_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/07 19:01:12 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/09 20:29:44 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/08/10 09:26:03 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,9 +43,9 @@ void	ft_save_last_return(int last_return, t_list **env)
 	char	*str_last_return;
 
 	if (last_return == 0)
-		printf("\033[0;32m")
+		printf("\033[0;32m");
 	else
-		printf("\033[0;31m")
+		printf("\033[0;31m");
 	str_last_return = ft_itoa(last_return);
 	ft_save_var_env("?", str_last_return, env);
 	free(str_last_return);
