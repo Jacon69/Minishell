@@ -94,7 +94,9 @@ char	*ft_aux_expander(char *token, t_list **env)
 {
 	char	*aux;
 
+	aux = token;
 	token = ft_expander_dollar(token, env);
+	free(aux);
 	if (!token)
 		return (NULL);
 	aux = token;
@@ -117,7 +119,9 @@ int	expander(char **token, t_list **env)
 	int		i;
 	char	*aux;
 
+	
 	i = -1;
+
 	while (token[++i])
 	{
 		if (token[i][0] == '"' || token[i][0] == '\'')
@@ -130,12 +134,11 @@ int	expander(char **token, t_list **env)
 		}
 		else
 		{
-			aux = token[i];
 			token[i] = ft_aux_expander(token[i], env);
-			free(aux);
 			if (!token[i])
 				return (0);
 		}
 	}
+	
 	return (1);
 }

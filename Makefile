@@ -34,7 +34,7 @@ OBJ = $(SRC:.c=.o)
 
 # Compiler and flags
 CC = clang
-CFLAGS = -Wall -Wextra -Werror -g
+CFLAGS = -Wall -Wextra -Werror -g -O0
 LDFLAGS = -L$(LIBFT_DIR) -lft -lreadline
 
 # Default rule

@@ -52,7 +52,14 @@ int	ft_proces(char *line, t_list **env)
 		return (no_token(env, flag));
 	if (!expander(token, env))
 		fr_free_prom(env, token, NULL, "Error Mem en EXPANDER");
+	/*int i=0;
+	while (token[i])
+	{
+		printf("despues e expandir token %i: %s \n", i, token[i]);
+		i++;
+	}*/
 	commands = parser(token, env);
+
 	if (!commands)
 		fr_free_prom(env, token, NULL, "Error Mem en PARSER");
 	g_is_executing = 1;
@@ -67,7 +74,7 @@ int	ft_proces(char *line, t_list **env)
 	return (0);
 }
 
-int	manage_line(char *line, int *control, t_list **env)
+int	manage_line(char *line, t_list **env)
 {
 	if (!line)
 		return (0);
@@ -79,7 +86,6 @@ int	manage_line(char *line, int *control, t_list **env)
 	if (ft_memcmp(line, "exit", 4) == 0 && (line[4] == ' '))
 	{
 		free(line);
-		control = 0;
 		return (0);
 	}
 	add_history(line);
@@ -97,10 +103,10 @@ void	prom(t_list **env)
 	int					control;
 	char				*path_act;
 	char				*aux;
-	struct sigaction	action;
+	//struct sigaction	action;
 
 	control = 1;
-	action = create_sigaction();
+	//action = create_sigaction();
 	while (control == 1)
 	{
 		path_act = ft_get_var_env(env, "..PWD");
@@ -114,7 +120,7 @@ void	prom(t_list **env)
 		line = readline(path_act);
 		printf("\033[0;37m");
 		free(path_act);
-		if (!manage_line(line, &control, env))
+		if (!manage_line(line, env))
 			return ;
 	}
 }

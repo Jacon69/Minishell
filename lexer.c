@@ -13,18 +13,18 @@
 #include "minishell.h"
 
 //adds line[i] to token[j]
-int	add_chartotoken(char *line, char **token, int i, int j)
+int	add_chartotoken(char *line, char **token, int i)
 {
 	char	*aux;
 	char	simbol[2];
 
 	simbol[1] = '\0';
 	simbol[0] = line[i];
-	aux = token[j];
-	token[j] = ft_strjoin(token[j], simbol);
+	aux = *token;
+	*token = ft_strjoin(*token, simbol);
 	if (aux)
 		free(aux);
-	if (!token[j])
+	if (!*token)
 		return (-1);
 	return (0);
 }
@@ -37,7 +37,7 @@ static int	ft_assig_token(char *line, char **token, int *paran, int *flag)
 	{
 		if (line[paran[1]] == '"' || line[paran[1]] == '\'')
 			break ;
-		if (add_chartotoken(line, token, paran[1], paran[0]) == -1)
+		if (add_chartotoken(line, token, paran[1]) == -1)
 			return (-1);
 		if (ft_is_asignsymbol(line, paran[1]) == 1)
 		{
@@ -47,7 +47,7 @@ static int	ft_assig_token(char *line, char **token, int *paran, int *flag)
 		if (ft_is_asignsymbol(line, paran[1]) == 2)
 		{
 			paran[1]++;
-			if (add_chartotoken(line, token, paran[1], paran[0]) == -1)
+			if (add_chartotoken(line, token, paran[1]) == -1)
 				return (-1);
 			paran[1]++;
 			break ;
@@ -57,29 +57,63 @@ static int	ft_assig_token(char *line, char **token, int *paran, int *flag)
 	return (paran[1]);
 }
 
+int	ft_token_join(char *line, char **token,char *new_token,int *paran)
+{
+	char	*aux_str;
+
+	if ((paran[0]>0)&&(paran[3]>0) && (!(line[paran[3]-1]== ' ' || line[paran[3]-1]== '>' || line[paran[3]-1] == '<' ||  line[paran[3]-1] == '|')))
+	{	
+		aux_str =  token[paran[0]-1];
+		token[paran[0]-1]=ft_strjoin(token[ paran[0]-1], new_token);
+		if (!token[paran[0]-1])
+		{
+			free(new_token);
+			ft_free_char(token);
+			return (1);
+		}	
+		free(aux_str);
+		paran[0]--;
+		paran[2]--;
+		return (0);
+	}
+	if (!(new_token[0] == '\0'))
+		token[paran[0]] = new_token;
+
+	return (0);
+}
+
+
+
 char	**aux_lexer(char *line, int ntoken, char **token, int *flag)
 {
-	int		paran[2];
+	int		paran[4];
+	char	*new_token;
 
 	paran[0] = 0;
 	paran[1] = 0;
-	while (paran[0] < ntoken)
+	paran[2] = ntoken;
+	while (paran[0] <= paran[2])
 	{
 		while (line[paran[1]] == ' ')
 			paran[1]++;
-		token[paran[0]] = (char *)malloc(sizeof(char));
-		if (!token[paran[0]])
+		paran[3] = paran[1]; 
+		new_token = (char *)malloc(sizeof(char));
+		if (!new_token)
 		{
 			ft_free_char(token);
 			return (NULL);
 		}
-		token[paran[0]][0] = '\0';
-		ft_assig_token(line, token, paran, flag);
+		new_token[0] = '\0';
+		ft_assig_token(line, &new_token, paran, flag);
 		if (paran[1] == -1 || *flag)
 		{
 			ft_free_char(token);
 			return (NULL);
 		}
+		
+
+		if (ft_token_join(line, token,new_token, paran)==1)
+			return (NULL);
 		paran[0]++;
 	}
 	return (token);
@@ -107,5 +141,6 @@ char	**lexer(char *line, int *flag)
 	if (!aux_lexer(line, ntoken, token, flag))
 		return (NULL);
 	token[ntoken] = NULL;
+	i=0;
 	return (token);
 }

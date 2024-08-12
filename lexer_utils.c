@@ -62,18 +62,23 @@ int	ft_count_tokens(char *line)
 			i++;
 		if ((line[i] == '"') || (line[i] == '\''))
 		{
-			tokens++;
+			if ((i == 0)||( (i>0) &&((line[i-1]== ' ' || line[i-1]== '>' || line[i-1] == '<' ||  line[i-1] == '|'))))
+				tokens++;
 			i = next_delimiter(line, line[i], i + 1) + 1;
 		}
 		else if (line[i])
 		{
-			i = ft_aux_count_tokens(line, i);
-			tokens++;
+			if (i == 0 || line[i-1]== ' ' || line[i]== '>' || line[i] == '<' ||  line[i] == '|')
+			{
+				i = ft_aux_count_tokens(line, i);
+				tokens++;
+			}
+			else
+				i = ft_aux_count_tokens(line, i);
 		}
 		if ((size_t)i >= ft_strlen(line))
 			break ;
 	}
-	printf("nº de token %d \n", tokens);
 	return (tokens);
 }
 
@@ -86,10 +91,10 @@ int	ft_aux_assig_token(char *line, char **token, int *paran, int *flag)
 		perror("do not close quote.");
 		return (-1);
 	}
-	free(token[paran[0]]);
-	token[paran[0]] = ft_substr(line, paran[1],
+	free(*token);
+	*token = ft_substr(line, paran[1],
 			next_delimiter(line, line[paran[1]], paran[1] + 1) - paran[1] + 1);
-	if (!token[paran[0]])
+	if (!*token)
 		return (-1);
 	paran[1] = next_delimiter(line, line[paran[1]], paran[1] + 1) + 1;
 	return (paran[1]);

@@ -91,7 +91,6 @@ int	ft_aux1_build_int(t_command *command_act, t_list **env)
 	{
 		if ((command_act->args[1]) == NULL)
 		{
-			printf("Por aqui\n");
 			if (ft_cd_without_argument(command_act, env) == 1)
 				return (1);
 		}
