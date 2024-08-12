@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 10:01:14 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/10 16:37:46 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/08/12 12:40:41 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,77 @@ t_command	**ft_aux3_parser(t_command **list, t_command *current_command
 	return (aux);
 }
 
+char	**free_and_nl(char **tokens)
+{
+	char	**empty_tokens;
+	int		i;
+
+	i = 1;
+	errno = 8;
+	perror("Invalid tokens");
+	empty_tokens = malloc(sizeof(char *) * count_nbr_tokens(tokens));
+	if (!empty_tokens)
+		return (NULL);
+	empty_tokens[0] = malloc(5);
+	if (!empty_tokens[0])
+	{
+		ft_free_char(empty_tokens);
+		return (NULL);
+	}
+	empty_tokens[0][0] = '\n';
+	empty_tokens[0][1] = '\0';
+	while (i < count_nbr_tokens(tokens))
+	{
+		empty_tokens[i] = NULL;
+		i++;
+	}
+	ft_free_char(tokens);
+	return (empty_tokens);
+}
+
+void	check_directory(char *token)
+{
+	DIR	*dir;
+
+	dir = opendir(token);
+	if (dir)
+	{
+		perror("minishell");
+		errno = EISDIR;
+		closedir(dir);
+	}
+	else if (errno != ENOENT)
+	{
+		perror(token);
+		errno = EACCES;
+	}
+}
+
+char	**check_tokens(char **tokens)
+{
+	int	i;
+
+	i = 0;
+	if (count_nbr_tokens(tokens) == 1 && tokens[i][0] == '/')
+	{
+		check_directory(tokens[i]);
+		return (free_and_nl(tokens));
+	}
+	while (i < count_nbr_tokens(tokens))
+	{
+		if (tokens[i][0] == '|' || tokens[i][0] == '>' || tokens[i][0] == '<')
+		{
+			if (++i == count_nbr_tokens(tokens))
+				return (free_and_nl(tokens));
+			else if (tokens[i][0] == tokens[i - 1][0])
+				return (free_and_nl(tokens));
+		}
+		if (++i == count_nbr_tokens(tokens))
+			break ;
+	}
+	return (tokens);
+}
+
 /*Recibe token y prepara los comando*/
 t_command	**parser(char **tokens, t_list **env)
 {
@@ -87,6 +158,7 @@ t_command	**parser(char **tokens, t_list **env)
 	t_command	**list;
 	t_command	**aux;
 
+	tokens = check_tokens(tokens);
 	ft_ini_dup(dup);
 	list = ft_init_com_list(tokens);
 	if (!list)

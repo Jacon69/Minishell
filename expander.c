@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 19:52:48 by jconde-a          #+#    #+#             */
-/*   Updated: 2024/08/07 19:08:03 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/12 12:41:12 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,9 +119,7 @@ int	expander(char **token, t_list **env)
 	int		i;
 	char	*aux;
 
-	
 	i = -1;
-
 	while (token[++i])
 	{
 		if (token[i][0] == '"' || token[i][0] == '\'')
@@ -139,6 +137,5 @@ int	expander(char **token, t_list **env)
 				return (0);
 		}
 	}
-	
 	return (1);
 }

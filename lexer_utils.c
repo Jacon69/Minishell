@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/07 18:52:23 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/10 19:39:34 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/08/12 12:39:30 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,13 +62,16 @@ int	ft_count_tokens(char *line)
 			i++;
 		if ((line[i] == '"') || (line[i] == '\''))
 		{
-			if ((i == 0)||( (i>0) &&((line[i-1]== ' ' || line[i-1]== '>' || line[i-1] == '<' ||  line[i-1] == '|'))))
+			if ((i == 0) || ((i > 0) && ((line[i - 1] == ' '
+							|| line[i - 1] == '>' || line[i - 1] == '<'
+							|| line[i - 1] == '|'))))
 				tokens++;
 			i = next_delimiter(line, line[i], i + 1) + 1;
 		}
 		else if (line[i])
 		{
-			if (i == 0 || line[i-1]== ' ' || line[i]== '>' || line[i] == '<' ||  line[i] == '|')
+			if (i == 0 || line[i - 1] == ' ' || line[i] == '>'
+				|| line[i] == '<' || line[i] == '|')
 			{
 				i = ft_aux_count_tokens(line, i);
 				tokens++;
