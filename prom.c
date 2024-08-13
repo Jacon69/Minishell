@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   prom.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 12:43:54 by jconde-a          #+#    #+#             */
-/*   Updated: 2024/08/10 09:29:45 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/13 19:04:34 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,20 +50,21 @@ int	ft_proces(char *line, t_list **env)
 	free(line);
 	if (!token)
 		return (no_token(env, flag));
-	int i=0;
-	/*while (token[i])
+	/*int i = 0;
+	while (token[i])
 	{
 		printf("antes de expandir token %i: %s \n", i, token[i]);
 		i++;
 	}*/
 	if (!expander(token, env))
 		fr_free_prom(env, token, NULL, "Error Mem en EXPANDER");
-	i=0;
+
+	int i = 0;
 	while (token[i])
-	/*{
+	{
 		printf("despues de expandir token %i: %s \n", i, token[i]);
 		i++;
-	}*/
+	}
 	commands = parser(token, env);
 
 	if (!commands)

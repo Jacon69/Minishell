@@ -6,7 +6,7 @@
 /*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 16:17:26 by aiturria          #+#    #+#             */
-/*   Updated: 2024/08/10 19:14:20 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/08/13 19:51:04 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,8 @@ void				put_redir2(t_command **command, char *token);
 //build_in
 int					ft_built_echo(t_command *command);
 int					ft_built_cd(t_command *command, t_list **env);
+int					ft_cd_without_argument(t_command *command_act,
+						t_list **env);
 int					ft_aux1_buil_cd(t_command *command, t_struct_path *dir);
 int					ft_aux2_buil_cd(t_command *command, t_struct_path *dir);
 int					ft_built_pwd(t_command *command);
@@ -89,10 +91,9 @@ int					ft_built_unset(t_command *command, t_list **env);
 int					ft_built_env(t_command *command, t_list **env);
 int					ft_print_list_env(t_command *command, t_list **env);
 int					ft_build_int(t_command *command, t_list **env);
+int					ft_aux1_build_int(t_command *command_act, t_list **env);
 int					is_built_in(char *command);
 
-int					ft_aux1_buil_cd(t_command *command, t_struct_path *dir);
-int					ft_aux2_buil_cd(t_command *command, t_struct_path *dir);
 int					ft_equal_dir(t_struct_path *dir);
 int					ft_minus_dir( t_struct_path *dir);
 int					ft_cd_dir(t_command *command, t_struct_path *dir);
@@ -119,8 +120,6 @@ void				**ft_free_list(t_list **list, char *msg_err);
 int					ft_pos_chr(const char *str, int c);
 char				*ft_strndup(const char *str, size_t n);
 int					ft_is_dir_ok(const char *path);
-void				*ft_free_char_n(char *par1, char *par2,
-						char *par3, char *par4);
 
 /*lexer*/
 char				**lexer(char *line, int *flag); // Creates
@@ -130,6 +129,7 @@ int					ft_aux_assig_token(char *line, char **token,
 						int *paran, int *flag);
 int					ft_is_asignsymbol(char *line, int i);
 int					ft_count_tokens(char *line);
+int					add_chartotoken(char *line, char **token, int i);
 
 /*executor*/
 char				**get_paths(t_list **env);
@@ -148,9 +148,12 @@ struct sigaction	create_sigaction(void);
 int					fr_free_prom2(t_list **env, char **token,
 						t_command **commands, char *msg);
 int					sigint_handler(void);
-
-char				*ft_ext_var_env(char *str);
+/*expander*/
 char				*ft_token_exp(char *token, int j,
 						char *var_env, int lng_var);
 char				*ft_expander_home(char *token, t_list **env);
+void				*ft_free_char_n(char *par1, char *par2,
+						char *par3, char *par4);
+char				*ft_expander_dollar(char *token, t_list **env);
+
 #endif

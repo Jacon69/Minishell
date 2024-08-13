@@ -3,31 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/06 13:22:20 by jaimecondea       #+#    #+#             */
-/*   Updated: 2024/08/12 12:38:23 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/13 17:54:27 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-//adds line[i] to token[j]
-int	add_chartotoken(char *line, char **token, int i)
-{
-	char	*aux;
-	char	simbol[2];
-
-	simbol[1] = '\0';
-	simbol[0] = line[i];
-	aux = *token;
-	*token = ft_strjoin(*token, simbol);
-	if (aux)
-		free(aux);
-	if (!*token)
-		return (-1);
-	return (0);
-}
 
 static int	ft_assig_token(char *line, char **token, int *paran, int *flag)
 {
@@ -61,11 +44,13 @@ int	ft_token_join(char *line, char **token, char *new_token, int *paran)
 {
 	char	*aux_str;
 
-	if ((paran[0]>0)&&(paran[2]>0) && (!(line[paran[2]-1]== ' ' || line[paran[2]-1]== '>' || line[paran[2]-1] == '<' ||  line[paran[2]-1] == '|')))
-	{	
-		aux_str =  token[paran[0]-1];
-		token[paran[0]-1]=ft_strjoin(token[ paran[0]-1], new_token);
-		if (!token[paran[0]-1])
+	if ((paran[0] > 0) && (paran[2] > 0) && (!(line[paran[2] - 1] == ' '
+				|| line[paran[2] - 1] == '>' || line[paran[2] - 1] == '<'
+				|| line[paran[2] - 1] == '|')))
+	{
+		aux_str = token[paran[0] - 1];
+		token[paran[0] - 1] = ft_strjoin(token[paran[0] - 1], new_token);
+		if (!token[paran[0] - 1])
 		{
 			free(new_token);
 			ft_free_char(token);
@@ -93,22 +78,20 @@ char	**aux_lexer(char *line, char **token, int *flag)
 
 	paran[0] = 0;
 	paran[1] = 0;
-
-	while (line[paran[1]]!='\0')
+	while (line[paran[1]] != '\0')
 	{
 		while (line[paran[1]] == ' ')
 			paran[1]++;
-		paran[2] = paran[1]; 
+		paran[2] = paran[1];
 		new_token = (char *)malloc(sizeof(char));
 		if (!new_token)
-			free_and_return(char token);
+			free_and_return(token);
 		new_token[0] = '\0';
 		ft_assig_token(line, &new_token, paran, flag);
 		if (paran[1] == -1 || *flag)
-			free_and_return(char token);
+			free_and_return(token);
 		if (ft_token_join(line, token, new_token, paran) == 1)
 			return (NULL);
-		
 		paran[0]++;
 	}
 	return (token);

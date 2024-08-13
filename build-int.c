@@ -6,7 +6,7 @@
 /*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 05:32:30 by jaimecondea       #+#    #+#             */
-/*   Updated: 2024/08/10 19:35:44 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/08/13 17:47:35 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,35 +76,6 @@ int	ft_cd_without_argument(t_command *command_act, t_list **env)
 		return (1);
 	}
 	return (0);
-}
-
-int	ft_aux1_build_int(t_command *command_act, t_list **env)
-{
-	char	*comando;
-	int		ok;
-
-	comando = command_act -> command;
-	ok = 0;
-	if (ft_memcmp(comando, "echo", 4) == 0)
-		ok = ft_built_echo(command_act);
-	else if (ft_memcmp(comando, "cd", 2) == 0)
-	{
-		if ((command_act->args[1]) == NULL)
-		{
-			if (ft_cd_without_argument(command_act, env) == 1)
-				return (1);
-		}
-		ft_built_cd(command_act, env);
-	}
-	else if (ft_memcmp(comando, "pwd", 3) == 0)
-		ok = ft_built_pwd(command_act);
-	else if (ft_memcmp(comando, "export", 6) == 0)
-		ok = ft_built_export(command_act, env);
-	else if (ft_memcmp(comando, "unset", 5) == 0)
-		ok = ft_built_unset(command_act, env);
-	else if (ft_memcmp(comando, "env", 3) == 0)
-		ok = ft_built_env(command_act, env);
-	return (ok);
 }
 
 /* ft_build_int: Handles built-in commands of the 

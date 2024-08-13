@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 10:01:14 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/12 12:40:41 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/13 19:35:56 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,8 +114,8 @@ void	check_directory(char *token)
 	dir = opendir(token);
 	if (dir)
 	{
-		perror("minishell");
 		errno = EISDIR;
+		perror("minishell");
 		closedir(dir);
 	}
 	else if (errno != ENOENT)

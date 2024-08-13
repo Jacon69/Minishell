@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/07 18:52:23 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/12 12:39:30 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/13 19:00:47 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,19 @@ int	ft_aux_count_tokens(char *line, int i)
 	return (i);
 }
 
+int	ft_aux2_count_tokens(char *line, int i, int *tokens)
+{
+	if (i == 0 || line[i - 1] == ' ' || line[i] == '>'
+		|| line[i] == '<' || line[i] == '|')
+	{
+		i = ft_aux_count_tokens(line, i);
+		*tokens += 1;
+	}
+	else
+		i = ft_aux_count_tokens(line, i);
+	return (i);
+}
+
 /*counts tokens*/
 int	ft_count_tokens(char *line)
 {
@@ -69,16 +82,7 @@ int	ft_count_tokens(char *line)
 			i = next_delimiter(line, line[i], i + 1) + 1;
 		}
 		else if (line[i])
-		{
-			if (i == 0 || line[i - 1] == ' ' || line[i] == '>'
-				|| line[i] == '<' || line[i] == '|')
-			{
-				i = ft_aux_count_tokens(line, i);
-				tokens++;
-			}
-			else
-				i = ft_aux_count_tokens(line, i);
-		}
+			i = ft_aux2_count_tokens(line, i, &tokens);
 		if ((size_t)i >= ft_strlen(line))
 			break ;
 	}
@@ -101,19 +105,4 @@ int	ft_aux_assig_token(char *line, char **token, int *paran, int *flag)
 		return (-1);
 	paran[1] = next_delimiter(line, line[paran[1]], paran[1] + 1) + 1;
 	return (paran[1]);
-}
-
-//Checks if line[i] is a symbol <>| >><<
-int	ft_is_asignsymbol(char *line, int i)
-{
-	int	position;
-
-	position = 0;
-	if (((line[i] == '<') && (line[i + 1] != '<')) || ((line[i] == '>')
-			&& (line[i + 1] != '>')) || (line[i] == '|')
-		|| (line[i + 1] == '|'))
-		position = 1;
-	if (line[i] == line[i + 1] && ((line[i] == '<') || (line[i] == '>')))
-		position = 2;
-	return (position);
 }
