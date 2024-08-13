@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/06 13:22:20 by jaimecondea       #+#    #+#             */
-/*   Updated: 2024/08/09 20:06:48 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/08/12 12:38:23 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ static int	ft_assig_token(char *line, char **token, int *paran, int *flag)
 	return (paran[1]);
 }
 
-int	ft_token_join(char *line, char **token,char *new_token,int *paran)
+int	ft_token_join(char *line, char **token, char *new_token, int *paran)
 {
 	char	*aux_str;
 
@@ -70,18 +70,21 @@ int	ft_token_join(char *line, char **token,char *new_token,int *paran)
 			free(new_token);
 			ft_free_char(token);
 			return (1);
-		}	
+		}
 		free(aux_str);
 		paran[0]--;
 		return (0);
 	}
 	if (!(new_token[0] == '\0'))
 		token[paran[0]] = new_token;
-
 	return (0);
 }
 
-
+char	**free_and_return(char **token)
+{
+	ft_free_char(token);
+	return (NULL);
+}
 
 char	**aux_lexer(char *line, char **token, int *flag)
 {
@@ -98,20 +101,12 @@ char	**aux_lexer(char *line, char **token, int *flag)
 		paran[2] = paran[1]; 
 		new_token = (char *)malloc(sizeof(char));
 		if (!new_token)
-		{
-			ft_free_char(token);
-			return (NULL);
-		}
+			free_and_return(char token);
 		new_token[0] = '\0';
 		ft_assig_token(line, &new_token, paran, flag);
 		if (paran[1] == -1 || *flag)
-		{
-			ft_free_char(token);
-			return (NULL);
-		}
-		
-
-		if (ft_token_join(line, token,new_token, paran)==1)
+			free_and_return(char token);
+		if (ft_token_join(line, token, new_token, paran) == 1)
 			return (NULL);
 		
 		paran[0]++;
@@ -142,6 +137,6 @@ char	**lexer(char *line, int *flag)
 	if (!aux_lexer(line, token, flag))
 		return (NULL);
 	token[ntoken] = NULL;
-	i=0;
+	i = 0;
 	return (token);
 }
