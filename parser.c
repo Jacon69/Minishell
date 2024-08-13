@@ -6,7 +6,7 @@
 /*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 10:01:14 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/13 19:35:56 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/08/13 20:19:26 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,8 +120,8 @@ void	check_directory(char *token)
 	}
 	else if (errno != ENOENT)
 	{
-		perror(token);
 		errno = EACCES;
+		perror(token);
 	}
 }
 
@@ -139,9 +139,9 @@ char	**check_tokens(char **tokens)
 	{
 		if (tokens[i][0] == '|' || tokens[i][0] == '>' || tokens[i][0] == '<')
 		{
-			if (++i == count_nbr_tokens(tokens))
+			if ((i + 1) == count_nbr_tokens(tokens))
 				return (free_and_nl(tokens));
-			else if (tokens[i][0] == tokens[i - 1][0])
+			else if (tokens[i][0] == tokens[i + 1][0])
 				return (free_and_nl(tokens));
 		}
 		if (++i == count_nbr_tokens(tokens))

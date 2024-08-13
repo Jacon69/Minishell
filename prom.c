@@ -6,7 +6,7 @@
 /*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 12:43:54 by jconde-a          #+#    #+#             */
-/*   Updated: 2024/08/13 19:04:34 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/08/13 20:20:13 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ int	ft_proces(char *line, t_list **env)
 	t_command			**commands;
 	int					last_return;
 	int					flag;
+	int					i;
 
 	flag = 0;
 	token = lexer(line, &flag);
@@ -66,7 +67,6 @@ int	ft_proces(char *line, t_list **env)
 		i++;
 	}
 	commands = parser(token, env);
-
 	if (!commands)
 		fr_free_prom(env, token, NULL, "Error Mem en PARSER");
 	g_is_executing = 1;
@@ -120,12 +120,11 @@ void	prom(t_list **env)
 		if (!path_act)
 			return ;
 		aux = path_act;
-		path_act = ft_strjoin(path_act, " XXX$ ");
+		path_act = ft_strjoin(path_act, " XXX$ \033[0;37m");
 		free(aux);
 		if (!path_act)
 			return ;
 		line = readline(path_act);
-		printf("\033[0;37m");
 		free(path_act);
 		if (!manage_line(line, env))
 			return ;
