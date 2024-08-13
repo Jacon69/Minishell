@@ -119,7 +119,7 @@ void				**ft_free_list(t_list **list, char *msg_err);
 int					ft_pos_chr(const char *str, int c);
 char				*ft_strndup(const char *str, size_t n);
 int					ft_is_dir_ok(const char *path);
-char				*ft_free_char_n(char *par1, char *par2,
+void				*ft_free_char_n(char *par1, char *par2,
 						char *par3, char *par4);
 
 /*lexer*/

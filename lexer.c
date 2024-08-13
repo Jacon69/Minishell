@@ -33,7 +33,7 @@ static int	ft_assig_token(char *line, char **token, int *paran, int *flag)
 {
 	if ((line[paran[1]] == '"') || (line[paran[1]] == '\''))
 		return (ft_aux_assig_token(line, token, paran, flag));
-	while (line[paran[1]] != ' ' && line[paran[1]])
+	while (line[paran[1]] && line[paran[1]] != ' ')
 	{
 		if (line[paran[1]] == '"' || line[paran[1]] == '\'')
 			break ;
@@ -61,7 +61,7 @@ int	ft_token_join(char *line, char **token,char *new_token,int *paran)
 {
 	char	*aux_str;
 
-	if ((paran[0]>0)&&(paran[3]>0) && (!(line[paran[3]-1]== ' ' || line[paran[3]-1]== '>' || line[paran[3]-1] == '<' ||  line[paran[3]-1] == '|')))
+	if ((paran[0]>0)&&(paran[2]>0) && (!(line[paran[2]-1]== ' ' || line[paran[2]-1]== '>' || line[paran[2]-1] == '<' ||  line[paran[2]-1] == '|')))
 	{	
 		aux_str =  token[paran[0]-1];
 		token[paran[0]-1]=ft_strjoin(token[ paran[0]-1], new_token);
@@ -73,7 +73,6 @@ int	ft_token_join(char *line, char **token,char *new_token,int *paran)
 		}	
 		free(aux_str);
 		paran[0]--;
-		paran[2]--;
 		return (0);
 	}
 	if (!(new_token[0] == '\0'))
@@ -84,19 +83,19 @@ int	ft_token_join(char *line, char **token,char *new_token,int *paran)
 
 
 
-char	**aux_lexer(char *line, int ntoken, char **token, int *flag)
+char	**aux_lexer(char *line, char **token, int *flag)
 {
-	int		paran[4];
+	int		paran[3];
 	char	*new_token;
 
 	paran[0] = 0;
 	paran[1] = 0;
-	paran[2] = ntoken;
-	while (paran[0] <= paran[2])
+
+	while (line[paran[1]]!='\0')
 	{
 		while (line[paran[1]] == ' ')
 			paran[1]++;
-		paran[3] = paran[1]; 
+		paran[2] = paran[1]; 
 		new_token = (char *)malloc(sizeof(char));
 		if (!new_token)
 		{
@@ -114,6 +113,7 @@ char	**aux_lexer(char *line, int ntoken, char **token, int *flag)
 
 		if (ft_token_join(line, token,new_token, paran)==1)
 			return (NULL);
+		
 		paran[0]++;
 	}
 	return (token);
@@ -127,6 +127,7 @@ char	**lexer(char *line, int *flag)
 	int		i;
 
 	ntoken = ft_count_tokens(line);
+	printf ("nº toke: %d \n", ntoken);
 	if (!line)
 		return (NULL);
 	token = (char **) malloc(sizeof(char *) * (ntoken + 1));
@@ -138,7 +139,7 @@ char	**lexer(char *line, int *flag)
 		token[i] = NULL;
 		i++;
 	}
-	if (!aux_lexer(line, ntoken, token, flag))
+	if (!aux_lexer(line, token, flag))
 		return (NULL);
 	token[ntoken] = NULL;
 	i=0;

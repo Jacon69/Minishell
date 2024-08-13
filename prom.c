@@ -50,12 +50,18 @@ int	ft_proces(char *line, t_list **env)
 	free(line);
 	if (!token)
 		return (no_token(env, flag));
+	int i=0;
+	/*while (token[i])
+	{
+		printf("antes de expandir token %i: %s \n", i, token[i]);
+		i++;
+	}*/
 	if (!expander(token, env))
 		fr_free_prom(env, token, NULL, "Error Mem en EXPANDER");
-	/*int i=0;
+	i=0;
 	while (token[i])
-	{
-		printf("despues e expandir token %i: %s \n", i, token[i]);
+	/*{
+		printf("despues de expandir token %i: %s \n", i, token[i]);
 		i++;
 	}*/
 	commands = parser(token, env);
