@@ -6,7 +6,7 @@
 /*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 17:56:30 by jconde-a          #+#    #+#             */
-/*   Updated: 2024/08/13 19:31:02 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/08/13 20:53:04 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,8 +100,8 @@ char	*ft_add_expander(char *token, char *aux_str, t_list **env, int *param)
 		if ((aux_str) && (crtl != '\''))
 			aux_str = ft_expander_dollar(aux_str, env);
 	}
-		if ((aux_str))
-			aux_str = ft_expander_home(aux_str, env);
+	if ((aux_str))
+		aux_str = ft_expander_home_pwd(aux_str, env);
 	return (aux_str);
 }
 

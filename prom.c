@@ -6,7 +6,7 @@
 /*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 12:43:54 by jconde-a          #+#    #+#             */
-/*   Updated: 2024/08/13 20:20:13 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/08/13 20:23:53 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,6 @@ int	ft_proces(char *line, t_list **env)
 	t_command			**commands;
 	int					last_return;
 	int					flag;
-	int					i;
 
 	flag = 0;
 	token = lexer(line, &flag);

@@ -6,7 +6,7 @@
 /*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/07 19:07:40 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/13 20:10:26 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/08/13 21:04:18 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,64 +26,33 @@ void	*ft_free_char_n(char *par1, char *par2, char *par3, char *txt_err)
 	return (NULL);
 }
 
-char	*ft_expander_PWD(char *token, t_list **env)
-{
-	char	*var_env;
-	char	*aux;
-	char	*aux1;
-
-	token = ft_strdup(token);
-	if (!token)
-		return (NULL);
-	if (token[0] == '.' && token[1] == '/')
-	{
-		var_env = ft_get_var_env(env, "..PWD");
-		if (!var_env)
-			return ((char *)ft_free_char_n(token, NULL,
-					NULL, "Mem error getting \"HOME\""));
-		aux1 = ft_substr(token, 1, ft_strlen(token) - 1);
-		if (!aux1)
-			return ((char *)ft_free_char_n(token, var_env, NULL, "Mem err1.5"));
-		aux = token;
-		token = ft_strjoin(var_env, aux1);
-		ft_free_char_n(aux, var_env, aux1, NULL);
-		if (!token)
-			return (NULL);
-	}
-	return (token);
-}
 
 /* ft_expander_home:
    - Converts relative paths into absolute paths.
    - Uses the home directory as a reference for expansion.
 */
-char	*ft_expander_home(char *token, t_list **env)
+char	*ft_expander_home_pwd(char *token, t_list **env)
 {
-	char	*var_env;
 	char	*aux;
-	char	*aux1;
 
+	aux = token;
 	token = ft_strdup(token);
+	free(aux);
 	if (!token)
 		return (NULL);
-	if ((token[0] == '~' && token[1] == '/')
-		|| (token[0] == '~' && ft_strlen(token) == 1))
-	{
-		var_env = ft_get_var_env(env, "..HOME");
-		if (!var_env)
-			return ((char *)ft_free_char_n(token, NULL,
-					NULL, "Mem error getting \"HOME\""));
-		aux1 = ft_substr(token, 1, ft_strlen(token) - 1);
-		if (!aux1)
-			return ((char *)ft_free_char_n(token, var_env, NULL, "Mem err1"));
-		aux = token;
-		token = ft_strjoin(var_env, aux1);
-		ft_free_char_n(aux, var_env, aux1, NULL);
-		if (!token)
-			return (NULL);
-	}
+	
+	if ((ft_strlen(token) > 1 && (token[0] == '~' && token[1] == '/'))
+		|| (ft_strlen(token) > 0 && token[0] == '~' && ft_strlen(token) == 1))
+		token = ft_expander_home(token, env);
+	if ((ft_strlen(token) > 1 && token[0] == '.' && token[1] == '/'))
+		token = ft_expander_pwd(token, env);
+	/*if ((ft_strlen(token) > 2 && token[0] == '.' && token[1] == '.'
+			&& token[2] == '/'))
+		token = ft_expander_minuspwd(token, env); TODO*/
 	return (token);
 }
+
+
 
 // Extracts var from str[0] and returns its value if it exists
 static char	*ft_ext_var_env(char *str)

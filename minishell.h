@@ -6,7 +6,7 @@
 /*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 16:17:26 by aiturria          #+#    #+#             */
-/*   Updated: 2024/08/13 19:51:04 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/08/13 21:01:40 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,6 +152,8 @@ int					sigint_handler(void);
 char				*ft_token_exp(char *token, int j,
 						char *var_env, int lng_var);
 char				*ft_expander_home(char *token, t_list **env);
+char				*ft_expander_pwd(char *token, t_list **env);
+char				*ft_expander_home_pwd(char *token, t_list **env);
 void				*ft_free_char_n(char *par1, char *par2,
 						char *par3, char *par4);
 char				*ft_expander_dollar(char *token, t_list **env);
