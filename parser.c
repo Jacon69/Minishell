@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 10:01:14 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/12 12:40:41 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/13 19:57:12 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,14 +114,14 @@ void	check_directory(char *token)
 	dir = opendir(token);
 	if (dir)
 	{
-		perror("minishell");
 		errno = EISDIR;
+		perror("minishell");
 		closedir(dir);
 	}
 	else if (errno != ENOENT)
 	{
-		perror(token);
 		errno = EACCES;
+		perror(token);
 	}
 }
 
@@ -139,9 +139,9 @@ char	**check_tokens(char **tokens)
 	{
 		if (tokens[i][0] == '|' || tokens[i][0] == '>' || tokens[i][0] == '<')
 		{
-			if (++i == count_nbr_tokens(tokens))
+			if ((i + 1) == count_nbr_tokens(tokens))
 				return (free_and_nl(tokens));
-			else if (tokens[i][0] == tokens[i - 1][0])
+			else if (tokens[i][0] == tokens[i + 1][0])
 				return (free_and_nl(tokens));
 		}
 		if (++i == count_nbr_tokens(tokens))

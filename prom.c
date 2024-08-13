@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 12:43:54 by jconde-a          #+#    #+#             */
-/*   Updated: 2024/08/10 09:29:45 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/13 16:55:20 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,28 +44,17 @@ int	ft_proces(char *line, t_list **env)
 	t_command			**commands;
 	int					last_return;
 	int					flag;
+	int					i;
 
 	flag = 0;
 	token = lexer(line, &flag);
 	free(line);
 	if (!token)
 		return (no_token(env, flag));
-	int i=0;
-	/*while (token[i])
-	{
-		printf("antes de expandir token %i: %s \n", i, token[i]);
-		i++;
-	}*/
 	if (!expander(token, env))
 		fr_free_prom(env, token, NULL, "Error Mem en EXPANDER");
-	i=0;
-	while (token[i])
-	/*{
-		printf("despues de expandir token %i: %s \n", i, token[i]);
-		i++;
-	}*/
+	i = 0;
 	commands = parser(token, env);
-
 	if (!commands)
 		fr_free_prom(env, token, NULL, "Error Mem en PARSER");
 	g_is_executing = 1;
@@ -119,12 +108,11 @@ void	prom(t_list **env)
 		if (!path_act)
 			return ;
 		aux = path_act;
-		path_act = ft_strjoin(path_act, " XXX$ ");
+		path_act = ft_strjoin(path_act, " XXX$ \033[0;37m");
 		free(aux);
 		if (!path_act)
 			return ;
 		line = readline(path_act);
-		printf("\033[0;37m");
 		free(path_act);
 		if (!manage_line(line, env))
 			return ;

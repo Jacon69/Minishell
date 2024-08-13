@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/10 09:26:20 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/10 09:26:25 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/13 19:31:03 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,19 @@ t_command	**end_list(t_command *command, t_command **list, int *dup)
 
 void	fill_args(char **tokens, int *i, t_command **com, int *k)
 {
+	if (tokens[*i][0] == '>')
+	{
+		put_redir2(com, tokens[*i]);
+		right_redir(tokens, i, com);
+	}
+	else if (tokens[*i][0] == '<')
+	{
+		put_redir1(com, tokens[*i]);
+		left_redir(tokens, i, com);
+		printf("%s\n", tokens[*i]);
+		if ((*com)-> redir1 == 1)
+			*i += 1;
+	}
 	while (tokens[*i] && tokens[*i][0] != '|'
 		&& tokens[*i][0] != '>' && tokens[*i][0] != '<')
 	{
