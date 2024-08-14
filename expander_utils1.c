@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander_utils1.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/07 19:07:40 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/13 21:04:18 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/08/14 18:01:24 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@ void	*ft_free_char_n(char *par1, char *par2, char *par3, char *txt_err)
 	return (NULL);
 }
 
-
 /* ft_expander_home:
    - Converts relative paths into absolute paths.
    - Uses the home directory as a reference for expansion.
@@ -40,7 +39,6 @@ char	*ft_expander_home_pwd(char *token, t_list **env)
 	free(aux);
 	if (!token)
 		return (NULL);
-	
 	if ((ft_strlen(token) > 1 && (token[0] == '~' && token[1] == '/'))
 		|| (ft_strlen(token) > 0 && token[0] == '~' && ft_strlen(token) == 1))
 		token = ft_expander_home(token, env);
@@ -51,8 +49,6 @@ char	*ft_expander_home_pwd(char *token, t_list **env)
 		token = ft_expander_minuspwd(token, env); TODO*/
 	return (token);
 }
-
-
 
 // Extracts var from str[0] and returns its value if it exists
 static char	*ft_ext_var_env(char *str)

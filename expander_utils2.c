@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander_utils2.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 17:26:12 by jconde-a          #+#    #+#             */
-/*   Updated: 2024/08/13 21:03:15 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/08/14 18:00:06 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,6 @@ char	*ft_expander_home(char *token, t_list **env)
 	char	*aux;
 	char	*aux1;
 
-	
 	printf("aqui \n");
 	var_env = ft_get_var_env(env, "..HOME");
 	if (!var_env)

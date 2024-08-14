@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 10:01:14 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/13 20:19:26 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/08/14 18:30:03 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,15 +79,15 @@ t_command	**ft_aux3_parser(t_command **list, t_command *current_command
 	return (aux);
 }
 
-char	**free_and_nl(char **tokens)
+char	**free_and_nl(char **tokens, int *flag)
 {
-	char	**empty_tokens;
-	int		i;
+	//char	**empty_tokens;
+	//int		i;
 
-	i = 1;
+	//i = 1;
 	errno = 8;
 	perror("Invalid tokens");
-	empty_tokens = malloc(sizeof(char *) * count_nbr_tokens(tokens));
+	/*empty_tokens = malloc(sizeof(char *) * count_nbr_tokens(tokens));
 	if (!empty_tokens)
 		return (NULL);
 	empty_tokens[0] = malloc(5);
@@ -102,12 +102,14 @@ char	**free_and_nl(char **tokens)
 	{
 		empty_tokens[i] = NULL;
 		i++;
-	}
+	}*/
 	ft_free_char(tokens);
-	return (empty_tokens);
+	*flag += 1;
+	//return (empty_tokens);
+	return (NULL);
 }
 
-void	check_directory(char *token)
+char	**check_directory(char *token, char **tokens, int *flag)
 {
 	DIR	*dir;
 
@@ -117,32 +119,35 @@ void	check_directory(char *token)
 		errno = EISDIR;
 		perror("minishell");
 		closedir(dir);
+		return (free_and_nl(tokens, flag));
 	}
 	else if (errno != ENOENT)
 	{
-		errno = EACCES;
-		perror(token);
+		if (access(token, X_OK) != 0)
+		{
+			errno = EACCES;
+			perror(token);
+			return (free_and_nl(tokens, flag));
+		}
 	}
+	return (tokens);
 }
 
-char	**check_tokens(char **tokens)
+char	**check_tokens(char **tokens, int *flag)
 {
 	int	i;
 
 	i = 0;
 	if (count_nbr_tokens(tokens) == 1 && tokens[i][0] == '/')
-	{
-		check_directory(tokens[i]);
-		return (free_and_nl(tokens));
-	}
+		return (check_directory(tokens[i], tokens, flag));
 	while (i < count_nbr_tokens(tokens))
 	{
 		if (tokens[i][0] == '|' || tokens[i][0] == '>' || tokens[i][0] == '<')
 		{
 			if ((i + 1) == count_nbr_tokens(tokens))
-				return (free_and_nl(tokens));
+				return (free_and_nl(tokens, flag));
 			else if (tokens[i][0] == tokens[i + 1][0])
-				return (free_and_nl(tokens));
+				return (free_and_nl(tokens, flag));
 		}
 		if (++i == count_nbr_tokens(tokens))
 			break ;
@@ -151,14 +156,16 @@ char	**check_tokens(char **tokens)
 }
 
 /*Recibe token y prepara los comando*/
-t_command	**parser(char **tokens, t_list **env)
+t_command	**parser(char **tokens, t_list **env, int *flag)
 {
 	int			dup[4];
 	t_command	*current_command;
 	t_command	**list;
 	t_command	**aux;
 
-	tokens = check_tokens(tokens);
+	tokens = check_tokens(tokens, flag);
+	if (*flag != 0)
+		return (NULL);
 	ft_ini_dup(dup);
 	list = ft_init_com_list(tokens);
 	if (!list)

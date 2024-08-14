@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   prom.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 12:43:54 by jconde-a          #+#    #+#             */
-/*   Updated: 2024/08/13 20:23:53 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/08/14 18:29:28 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,25 +58,29 @@ int	ft_proces(char *line, t_list **env)
 	}*/
 	if (!expander(token, env))
 		fr_free_prom(env, token, NULL, "Error Mem en EXPANDER");
-
 	int i = 0;
 	while (token[i])
 	{
 		printf("despues de expandir token %i: %s \n", i, token[i]);
 		i++;
 	}
-	commands = parser(token, env);
-	if (!commands)
+	commands = parser(token, env, &flag);
+	if (!commands && flag == 0)
 		fr_free_prom(env, token, NULL, "Error Mem en PARSER");
-	g_is_executing = 1;
-	last_return = executor(commands, env);
-	g_is_executing = 0;
-	if (last_return == -1)
-		fr_free_prom(env, token, commands, "Error Mem en EXECUTOR");
-	if (last_return == -2)
-		return (fr_free_prom2(NULL, token, commands, NULL));
-	ft_save_last_return(last_return, env);
-	fr_free_prom2(NULL, token, commands, NULL);
+	else if (commands)
+	{
+		g_is_executing = 1;
+		last_return = executor(commands, env);
+		g_is_executing = 0;
+		if (last_return == -1)
+			fr_free_prom(env, token, commands, "Error Mem en EXECUTOR");
+		if (last_return == -2)
+			return (fr_free_prom2(NULL, token, commands, NULL));
+		ft_save_last_return(last_return, env);
+		fr_free_prom2(NULL, token, commands, NULL);
+	}
+	else
+		ft_save_last_return(1, env);
 	return (0);
 }
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 16:17:26 by aiturria          #+#    #+#             */
-/*   Updated: 2024/08/13 21:01:40 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/08/14 18:29:44 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ typedef struct s_path
 
 //global funtions
 //parsing
-t_command			**parser(char **tokens, t_list **env);
+t_command			**parser(char **tokens, t_list **env, int *flag);
 int					count_nbr_tokens(char **tokens);
 int					check_piped(t_command **list, int j, t_command **command);
 void				check_pipe_token(char *token, t_command **command, int *i);
