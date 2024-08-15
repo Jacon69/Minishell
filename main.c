@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 12:43:45 by jconde-a          #+#    #+#             */
-/*   Updated: 2024/08/09 17:01:14 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/08/15 23:06:27 by jaimecondea      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int	main(int narg, char *carg[], char **environment)
 	env = ft_ini_env(environment);
 	if (env == NULL)
 		return (1);
-	ft_save_var_env("?", "0", env);
+	ft_save_var_env("?", "0", env, 1);
 	tcgetattr(STDIN_FILENO, &attributes);
 	attributes.c_lflag &= ~ECHOCTL;
 	tcsetattr(STDIN_FILENO, TCSAFLUSH, &attributes);

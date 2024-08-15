@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander_utils1.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/07 19:07:40 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/14 18:01:24 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/15 19:46:37 by jaimecondea      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,24 +30,27 @@ void	*ft_free_char_n(char *par1, char *par2, char *par3, char *txt_err)
    - Converts relative paths into absolute paths.
    - Uses the home directory as a reference for expansion.
 */
-char	*ft_expander_home_pwd(char *token, t_list **env)
+char	*ft_expander_home_pwd(char **token, t_list **env)
 {
 	char	*aux;
-
-	aux = token;
-	token = ft_strdup(token);
+	char	*ptoken;
+	
+	ptoken = *token;
+	aux = ptoken;
+	ptoken = ft_strdup(ptoken);
 	free(aux);
-	if (!token)
+	if (!ptoken)
 		return (NULL);
-	if ((ft_strlen(token) > 1 && (token[0] == '~' && token[1] == '/'))
-		|| (ft_strlen(token) > 0 && token[0] == '~' && ft_strlen(token) == 1))
-		token = ft_expander_home(token, env);
-	if ((ft_strlen(token) > 1 && token[0] == '.' && token[1] == '/'))
-		token = ft_expander_pwd(token, env);
-	/*if ((ft_strlen(token) > 2 && token[0] == '.' && token[1] == '.'
-			&& token[2] == '/'))
-		token = ft_expander_minuspwd(token, env); TODO*/
-	return (token);
+	if ((ft_strlen(ptoken) > 1 && (ptoken[0] == '~' && ptoken[1] == '/'))
+		|| (ft_strlen(ptoken) > 0 && ptoken[0] == '~'
+			&& ft_strlen(ptoken) == 1))
+		ptoken = ft_expander_home(&ptoken, env);
+	if ((ptoken[0] == '.') && (ft_strlen(ptoken)== 1 || ptoken[1] == '/' ))
+		ptoken = ft_expander_pwd(&ptoken, env);
+	if ((ptoken[0] == '.' && ptoken[1] == '.') && (ft_strlen(ptoken) == 2
+			|| ptoken[2] == '/'))
+		ptoken = ft_expander_minuspwd(&ptoken, env);
+	return (ptoken);
 }
 
 // Extracts var from str[0] and returns its value if it exists
@@ -59,7 +62,7 @@ static char	*ft_ext_var_env(char *str)
 
 	var_long = 0;
 	i = 0;
-	while (str[i] && str[i] != ' ')
+	while (str[i] && str[i] != ' ' && str[i] != '$')
 	{
 		var_long++;
 		i++;
@@ -102,23 +105,25 @@ static	int	ft_aux_expander_dollar(char **token, t_list **env, int i)
 
 /*Modifies a token by replacing environment variables
  (preceded by '$') with their values. */
-char	*ft_expander_dollar(char *token, t_list **env)
+char	*ft_expander_dollar(char **token, t_list **env)
 {
 	int	i;
+	char *ptoken;
 
 	i = 0;
-	token = ft_strdup(token);
-	if (!token)
+	ptoken = *token;
+	ptoken = ft_strdup(ptoken);
+	if (!ptoken)
 		return (NULL);
-	while ((size_t)i < ft_strlen(token))
+	while ((size_t)i < ft_strlen(ptoken))
 	{
-		if (token[i] == '$')
+		if (ptoken[i] == '$')
 		{
-			i = ft_aux_expander_dollar(&token, env, i);
+			i = ft_aux_expander_dollar(&ptoken, env, i);
 			if (i == -1)
 				return (NULL);
 		}
 		++i;
 	}
-	return (token);
+	return (ptoken);
 }

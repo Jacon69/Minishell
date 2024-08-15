@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   environment_utils.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/07 19:11:01 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/09 20:32:09 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/08/15 23:40:02 by jaimecondea      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ int	ft_aux_add_v_env(char *var_env, t_list **env, char	*var)
 }
 
 /*add enviroment variable*/
-void	ft_add_v_env(char *var_env, t_list **env)
+void	ft_add_v_env(char *var_env, t_list **env, int create)
 {
 	t_list	*p_env;
 	char	*var;
@@ -106,7 +106,7 @@ void	ft_add_v_env(char *var_env, t_list **env)
 		ft_free_list(env, "Mem error5 enviroment");
 		exit(EXIT_FAILURE);
 	}
-	if (ft_aux_add_v_env(var_env, env, var) == 0)
+	if (ft_aux_add_v_env(var_env, env, var) == 0 && create == 1)
 	{
 		p_env = ft_lstnew(ft_strdup(var_env));
 		free(var);
@@ -119,7 +119,8 @@ void	ft_add_v_env(char *var_env, t_list **env)
 	}
 }
 
-void	ft_save_var_env(char *var, char *val_var, t_list **env)
+/*guardo variable de entorno si existe o la crea si no existe */
+void	ft_save_var_env(char *var, char *val_var, t_list **env, int create)
 {
 	char	*str_var;
 	char	*aux;
@@ -137,6 +138,6 @@ void	ft_save_var_env(char *var, char *val_var, t_list **env)
 		perror("Error en malloc");
 		exit(EXIT_FAILURE);
 	}
-	ft_add_v_env(str_var, env);
+	ft_add_v_env(str_var, env, create);
 	free(str_var);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/24 16:17:26 by aiturria          #+#    #+#             */
-/*   Updated: 2024/08/14 18:29:44 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/16 00:02:33 by jaimecondea      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@
 # include <termios.h>
 
 extern int	g_is_executing; //global variable
+extern int	g_exit; 
 
 typedef struct s_command
 {
@@ -108,9 +109,10 @@ void				prom(t_list **env);
 t_list				**ft_ini_env(char **environment);
 char				**ft_get_env(t_list **env);
 char				*ft_del_v_env(char *var_env, t_list **env);
-void				ft_add_v_env(char *var_env, t_list **env);
+void				ft_add_v_env(char *var_env, t_list **env, int create);
 char				*ft_get_var_env(t_list **env, char *var_env);
-void				ft_save_var_env(char *var, char *val_var, t_list **env);
+void				ft_save_var_env(char *var, char *val_var, t_list **env,
+						int create);
 void				ft_aux_del_v_env(t_list **env, t_list **p_env,
 						t_list **aux2, char *str_aux);
 
@@ -141,21 +143,22 @@ t_list				**ft_aux_dup_ord_list(t_list **dup_env, t_list *p_env,
 						t_list *p_env_ori);
 int					ft_smaller(int val_1, int val_2);
 
-void				fr_free_prom(t_list **env, char **token,
+void				ft_free_prom(t_list **env, char **token,
 						t_command **commands, char *msg);
 void				ft_save_last_return(int last_return, t_list **env);
 struct sigaction	create_sigaction(void);
-int					fr_free_prom2(t_list **env, char **token,
+int					ft_free_prom2(t_list **env, char **token,
 						t_command **commands, char *msg);
 int					sigint_handler(void);
 /*expander*/
 char				*ft_token_exp(char *token, int j,
 						char *var_env, int lng_var);
-char				*ft_expander_home(char *token, t_list **env);
-char				*ft_expander_pwd(char *token, t_list **env);
-char				*ft_expander_home_pwd(char *token, t_list **env);
+char				*ft_expander_home(char **token, t_list **env);
+char				*ft_expander_pwd(char **token, t_list **env);
+char				*ft_expander_home_pwd(char **token, t_list **env);
 void				*ft_free_char_n(char *par1, char *par2,
 						char *par3, char *par4);
-char				*ft_expander_dollar(char *token, t_list **env);
+char				*ft_expander_dollar(char **token, t_list **env);
+char				*ft_expander_minuspwd(char **token, t_list **env);
 
 #endif

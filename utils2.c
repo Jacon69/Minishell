@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   utils2.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 10:19:58 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/10 09:27:24 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/16 00:04:17 by jaimecondea      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 int	g_is_executing = 0;
+int	g_exit = 0;
 
 int	count_nbr_tokens(char **tokens)
 {

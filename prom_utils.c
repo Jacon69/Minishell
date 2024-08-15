@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   prom_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/07 19:01:12 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/10 09:26:03 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/15 23:43:12 by jaimecondea      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 /*Frees and returns prom*/
-int	fr_free_prom2(t_list **env, char **token, t_command **commands, char *msg)
+int	ft_free_prom2(t_list **env, char **token, t_command **commands, char *msg)
 {
 	if (env)
 		ft_free_list(env, msg);
@@ -25,7 +25,7 @@ int	fr_free_prom2(t_list **env, char **token, t_command **commands, char *msg)
 }
 
 /*Frees and exits program*/
-void	fr_free_prom(t_list **env, char **token,
+void	ft_free_prom(t_list **env, char **token,
 	t_command **commands, char *msg)
 {
 	if (env)
@@ -47,7 +47,7 @@ void	ft_save_last_return(int last_return, t_list **env)
 	else
 		printf("\033[0;31m");
 	str_last_return = ft_itoa(last_return);
-	ft_save_var_env("?", str_last_return, env);
+	ft_save_var_env("?", str_last_return, env, 1);
 	free(str_last_return);
 }
 

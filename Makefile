@@ -18,6 +18,7 @@ SRC = main.c \
 		expander.c \
 		expander_utils1.c \
 		expander_utils2.c \
+		expander_utils3.c \
 		parser.c \
 		init_commands.c \
 		pipes.c \

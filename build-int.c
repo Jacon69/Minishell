@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   build-int.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 05:32:30 by jaimecondea       #+#    #+#             */
-/*   Updated: 2024/08/13 17:47:35 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/08/16 00:15:58 by jaimecondea      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,19 +22,24 @@
 int	ft_built_export(t_command *command, t_list **env)
 {
 	int	ok;
+	int i;
 
+	i = 1;
 	if (command -> args[1] == NULL)
 	{
 		ok = ft_print_list_env(command, env);
 		return (ok);
 	}
-	if (ft_memchr(command->args[1], '=', ft_strlen(command -> args[1])) != NULL)
+	while (command -> args[i])
 	{
-		if (ft_check_export_arg(command->args[1]) == 1)
-			return (1);
-		printf("variable completa %s \n", command->args[1]);
-		ft_add_v_env(command->args[1], env);
-		return (0);
+		if (ft_memchr(command->args[i], '=',
+				ft_strlen(command -> args[i])) != NULL)
+		{
+			if (ft_check_export_arg(command->args[i]) == 1)
+				return (1);
+			ft_add_v_env(command->args[i], env, 1);
+		}
+		i++;
 	}
 	return (0);
 }
@@ -92,7 +97,11 @@ int	ft_build_int(t_command *command_act, t_list **env)
 		|| (ft_memcmp(com, "unset", 5) == 0) || (ft_memcmp(com, "env", 3) == 0))
 		ft_aux1_build_int(command_act, env);
 	else if (ft_memcmp(com, "exit", 4) == 0)
+	{
+		//  g_exit = ft_exit(command_act); TODO
+		printf("aqui \n");
 		return (-2);
+	}
 	if (command_act -> file_input != 1)
 		close(command_act -> file_input);
 	if (command_act -> file_output != 1)
