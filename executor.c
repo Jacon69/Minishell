@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 10:12:42 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/16 10:34:33 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/16 11:19:22 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,8 +110,8 @@ int	try_call(char **paths, t_command *com, t_list **env)
 /*
 For each command received as an argument, checks if it's a built-in or not
 and proceeds accordingly by calling either ft_built_in or try_call.
-Returns -1 in case of memory-related errors, 0 it there's nothing and 1
-if something else fails.
+Returns -1 in case of memory-related errors, 0 it there's nothing, 1
+if something else fails and -2 if there is 'exit'
 */
 int	executor(t_command **command_list, t_list **env)
 {

@@ -6,34 +6,11 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 12:43:54 by jconde-a          #+#    #+#             */
-/*   Updated: 2024/08/16 11:08:44 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/16 11:18:47 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-int	sigint_handler(void)
-{
-	if (g_is_executing == 0)
-	{
-		rl_replace_line("", 1);
-		printf("\n");
-		rl_on_new_line();
-		rl_redisplay();
-		return (0);
-	}
-	else// if (g_is_executing == 1)
-	{
-		g_is_executing = 0;
-		return (1);
-	}
-	//return (1);
-	/*else
-	{
-		close(STDIN_FILENO);
-		return (1);
-	}*/
-}
 
 int	no_token(t_list **env, int flag)
 {
@@ -43,12 +20,30 @@ int	no_token(t_list **env, int flag)
 	return (0);
 }
 
+int	ft_aux_proces(t_list **env, char **token, t_command **commands)
+{
+	int	last_return;
+
+	g_is_executing = 1;
+	last_return = executor(commands, env);
+	g_is_executing = 0;
+	if (last_return == -1)
+		ft_free_prom(env, token, commands, "Error Mem en EXECUTOR");
+	if (last_return == -2)
+	{
+		ft_free_prom2(NULL, token, commands, NULL);
+		return (1);
+	}
+	ft_save_last_return(last_return, env);
+	ft_free_prom2(NULL, token, commands, NULL);
+	return (0);
+}
+
 //Processes line and returns 1 if there's exit after a pipe
 int	ft_proces(char *line, t_list **env)
 {
 	char				**token;
 	t_command			**commands;
-	int					last_return;
 	int					flag;
 
 	flag = 0;
@@ -63,24 +58,15 @@ int	ft_proces(char *line, t_list **env)
 		ft_free_prom(env, token, NULL, "Error Mem en PARSER");
 	else if (commands)
 	{
-		g_is_executing = 1;
-		last_return = executor(commands, env);
-		g_is_executing = 0;
-		if (last_return == -1)
-			ft_free_prom(env, token, commands, "Error Mem en EXECUTOR");
-		if (last_return == -2)
-		{
-			ft_free_prom2(NULL, token, commands, NULL);
-			return (g_exit);
-		}
-		ft_save_last_return(last_return, env);
-		ft_free_prom2(NULL, token, commands, NULL);
+		if (ft_aux_proces(env, token, commands) == 1)
+			return (1);
 	}
 	else
 		ft_save_last_return(1, env);
 	return (0);
 }
 
+/*if the function returns 0 them it goes out*/
 int	manage_line(char *line, t_list **env)
 {
 	if (!line)
@@ -88,11 +74,13 @@ int	manage_line(char *line, t_list **env)
 	if (line[0] == '\0')
 	{
 		free(line);
+		g_exit = 1;
 		return (1);
 	}
-	if (ft_memcmp(line, "exit", 4) == 0 && (line[4] == ' '))
+	if (ft_memcmp(line, "exit", 4) == 0 && (ft_strlen(line) == 5))
 	{
 		free(line);
+		g_exit = 0;
 		return (0);
 	}
 	add_history(line);

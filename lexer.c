@@ -6,7 +6,7 @@
 /*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/06 13:22:20 by jaimecondea       #+#    #+#             */
-/*   Updated: 2024/08/13 20:20:38 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/08/16 11:12:18 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,6 @@ char	**lexer(char *line, int *flag)
 	int		i;
 
 	ntoken = ft_count_tokens(line);
-	printf ("nº toke: %d \n", ntoken);
 	if (!line)
 		return (NULL);
 	token = (char **) malloc(sizeof(char *) * (ntoken + 1));
