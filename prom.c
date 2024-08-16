@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   prom.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
+/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 12:43:54 by jconde-a          #+#    #+#             */
-/*   Updated: 2024/08/16 00:13:32 by jaimecondea      ###   ########.fr       */
+/*   Updated: 2024/08/16 11:08:44 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,11 +22,17 @@ int	sigint_handler(void)
 		rl_redisplay();
 		return (0);
 	}
-	else
+	else// if (g_is_executing == 1)
 	{
 		g_is_executing = 0;
 		return (1);
 	}
+	//return (1);
+	/*else
+	{
+		close(STDIN_FILENO);
+		return (1);
+	}*/
 }
 
 int	no_token(t_list **env, int flag)
@@ -50,20 +56,8 @@ int	ft_proces(char *line, t_list **env)
 	free(line);
 	if (!token)
 		return (no_token(env, flag));
-	int i = 0;
-	while (token[i])
-	{
-		printf("antes de expandir token %i: %s \n", i, token[i]);
-		i++;
-	}
 	if (!expander(token, env))
 		ft_free_prom(env, token, NULL, "Error Mem en EXPANDER");
-	i = 0;
-	while (token[i])
-	{
-		printf("despues de expandir token %i: %s \n", i, token[i]);
-		i++;
-	}
 	commands = parser(token, env, &flag);
 	if (!commands && flag == 0)
 		ft_free_prom(env, token, NULL, "Error Mem en PARSER");
@@ -116,10 +110,10 @@ void	prom(t_list **env)
 	int					control;
 	char				*path_act;
 	char				*aux;
-	//struct sigaction	action;
+	struct sigaction	action;
 
 	control = 1;
-	//action = create_sigaction();
+	action = create_sigaction();
 	while (control == 1)
 	{
 		path_act = ft_get_var_env(env, "..PWD");

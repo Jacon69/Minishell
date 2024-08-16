@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   build-int.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
+/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 05:32:30 by jaimecondea       #+#    #+#             */
-/*   Updated: 2024/08/16 00:15:58 by jaimecondea      ###   ########.fr       */
+/*   Updated: 2024/08/16 10:48:06 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 int	ft_built_export(t_command *command, t_list **env)
 {
 	int	ok;
-	int i;
+	int	i;
 
 	i = 1;
 	if (command -> args[1] == NULL)
@@ -97,11 +97,7 @@ int	ft_build_int(t_command *command_act, t_list **env)
 		|| (ft_memcmp(com, "unset", 5) == 0) || (ft_memcmp(com, "env", 3) == 0))
 		ft_aux1_build_int(command_act, env);
 	else if (ft_memcmp(com, "exit", 4) == 0)
-	{
-		//  g_exit = ft_exit(command_act); TODO
-		printf("aqui \n");
 		return (-2);
-	}
 	if (command_act -> file_input != 1)
 		close(command_act -> file_input);
 	if (command_act -> file_output != 1)

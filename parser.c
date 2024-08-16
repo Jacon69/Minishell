@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 10:01:14 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/14 18:30:03 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/16 10:53:21 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,23 +15,27 @@
 t_command	**ft_aux1_parser(char **tokens, int *i,
 	t_command **current_command, t_command **list)
 {
-	while ((tokens[*i][0] == '>') && (*i < count_nbr_tokens(tokens)))
+	while (((tokens[*i][0] == '>') || (tokens[*i][0] == '<'))
+			&& (*i < count_nbr_tokens(tokens)))
 	{
-		put_redir2(current_command, tokens[*i]);
-		right_redir(tokens, i, current_command);
-		*i += 1;
-		if (*i >= count_nbr_tokens(tokens))
-			return (current_command);
-	}
-	while ((tokens[*i][0] == '<') && (*i < count_nbr_tokens(tokens)))
-	{
-		put_redir1(current_command, tokens[*i]);
-		*current_command = left_redir(tokens, i, current_command);
-		*i += 1;
-		if (!*current_command)
-			return (free_commands(list));
-		if (*i >= count_nbr_tokens(tokens))
-			return (current_command);
+		if (tokens[*i][0] == '>')
+		{
+			put_redir2(current_command, tokens[*i]);
+			right_redir(tokens, i, current_command);
+			*i += 1;
+			if (*i >= count_nbr_tokens(tokens))
+				return (current_command);
+		}
+		else
+		{
+			put_redir1(current_command, tokens[*i]);
+			*current_command = left_redir(tokens, i, current_command);
+			*i += 1;
+			if (!*current_command)
+				return (free_commands(list));
+			if (*i >= count_nbr_tokens(tokens))
+				return (current_command);
+		}
 	}
 	return (current_command);
 }
@@ -81,31 +85,10 @@ t_command	**ft_aux3_parser(t_command **list, t_command *current_command
 
 char	**free_and_nl(char **tokens, int *flag)
 {
-	//char	**empty_tokens;
-	//int		i;
-
-	//i = 1;
 	errno = 8;
 	perror("Invalid tokens");
-	/*empty_tokens = malloc(sizeof(char *) * count_nbr_tokens(tokens));
-	if (!empty_tokens)
-		return (NULL);
-	empty_tokens[0] = malloc(5);
-	if (!empty_tokens[0])
-	{
-		ft_free_char(empty_tokens);
-		return (NULL);
-	}
-	empty_tokens[0][0] = '\n';
-	empty_tokens[0][1] = '\0';
-	while (i < count_nbr_tokens(tokens))
-	{
-		empty_tokens[i] = NULL;
-		i++;
-	}*/
 	ft_free_char(tokens);
 	*flag += 1;
-	//return (empty_tokens);
 	return (NULL);
 }
 

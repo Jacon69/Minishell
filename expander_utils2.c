@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander_utils2.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
+/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 17:26:12 by jconde-a          #+#    #+#             */
-/*   Updated: 2024/08/15 23:24:16 by jaimecondea      ###   ########.fr       */
+/*   Updated: 2024/08/16 10:46:53 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ static char	*ft_decrease_dir(char *str)
 	dir = ft_split(str, '/');
 	if (!dir)
 		return (NULL);
-	nw_dir = (char *) malloc(sizeof(char)*2);
+	nw_dir = (char *) malloc(sizeof(char) * 2);
 	if (!nw_dir)
 	{
 		ft_free_char(dir);

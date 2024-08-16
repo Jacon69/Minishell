@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/10 09:26:44 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/10 09:26:50 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/16 11:09:30 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ void	write_in_heredoc(char *token, int *heredoc)
 {
 	char	*line;
 
+	//g_is_executing = 2;
 	line = readline(" heredoc> ");
 	if (!line)
 		return ;
@@ -75,6 +76,7 @@ t_command	*left_redir(char **tokens, int *i, t_command **command)
 		if (pipe(heredoc) == 0)
 		{
 			write_in_heredoc(tokens[*i], heredoc);
+			g_is_executing = 0;
 			(*command)-> file_input = heredoc[0];
 		}
 		else

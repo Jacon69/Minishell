@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander_utils1.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
+/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/07 19:07:40 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/15 19:46:37 by jaimecondea      ###   ########.fr       */
+/*   Updated: 2024/08/16 10:48:58 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ char	*ft_expander_home_pwd(char **token, t_list **env)
 {
 	char	*aux;
 	char	*ptoken;
-	
+
 	ptoken = *token;
 	aux = ptoken;
 	ptoken = ft_strdup(ptoken);
@@ -45,7 +45,7 @@ char	*ft_expander_home_pwd(char **token, t_list **env)
 		|| (ft_strlen(ptoken) > 0 && ptoken[0] == '~'
 			&& ft_strlen(ptoken) == 1))
 		ptoken = ft_expander_home(&ptoken, env);
-	if ((ptoken[0] == '.') && (ft_strlen(ptoken)== 1 || ptoken[1] == '/' ))
+	if ((ptoken[0] == '.') && (ft_strlen(ptoken) == 1 || ptoken[1] == '/' ))
 		ptoken = ft_expander_pwd(&ptoken, env);
 	if ((ptoken[0] == '.' && ptoken[1] == '.') && (ft_strlen(ptoken) == 2
 			|| ptoken[2] == '/'))
@@ -107,8 +107,8 @@ static	int	ft_aux_expander_dollar(char **token, t_list **env, int i)
  (preceded by '$') with their values. */
 char	*ft_expander_dollar(char **token, t_list **env)
 {
-	int	i;
-	char *ptoken;
+	int		i;
+	char	*ptoken;
 
 	i = 0;
 	ptoken = *token;
