@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 05:32:30 by jaimecondea       #+#    #+#             */
-/*   Updated: 2024/08/16 11:19:07 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/16 11:21:45 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,7 @@ int	ft_build_int(t_command *command_act, t_list **env)
 	{
 		g_exit = ft_exit(command_act -> args[1]);
 		return (-2);
+	}
 	if (command_act -> file_input != 1)
 		close(command_act -> file_input);
 	if (command_act -> file_output != 1)

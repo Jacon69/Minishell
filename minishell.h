@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/24 16:17:26 by aiturria          #+#    #+#             */
-/*   Updated: 2024/08/16 11:20:19 by alexigar         ###   ########.fr       */
+/*   Created: 2024/08/16 11:22:01 by alexigar          #+#    #+#             */
+/*   Updated: 2024/08/16 11:24:28 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,9 @@ void				right_redir(char **tokens, int *i, t_command **command);
 t_command			*left_redir(char **tokens, int *i, t_command **command);
 void				put_redir1(t_command **command, char *token);
 void				put_redir2(t_command **command, char *token);
+char				**free_and_nl(char **tokens, int *flag);
+char				**check_directory(char *token, char **tokens, int *flag);
+char				**check_tokens(char **tokens, int *flag);
 
 //build_in
 int					ft_built_echo(t_command *command);

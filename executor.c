@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 10:12:42 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/16 11:19:22 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/16 13:06:33 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,8 +128,12 @@ int	executor(t_command **command_list, t_list **env)
 	{
 		if (!command_list[i]-> command)
 			return (0);
-		if (command_list[i]-> file_input == -1)
-			to_return = 1;
+		if (command_list[i]-> redir1 == -1)
+		{
+			printf("No such file or directory\n");
+			i++;
+			continue ;
+		}
 		else if (is_built_in(command_list[i]-> command))
 			to_return = ft_build_int(command_list[i], env);
 		else

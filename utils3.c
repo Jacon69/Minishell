@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils3.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/07 18:47:56 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/16 10:30:04 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/08/16 12:43:05 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ int	ft_exit(char *num_error)
 {
 	int	nerror;
 
-	nerror = atoi (num_error);
+	nerror = ft_atoi (num_error);
 	if (nerror < 0)
 		nerror += 256;
 	nerror %= 256;

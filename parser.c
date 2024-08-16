@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 10:01:14 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/16 10:53:21 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/16 12:59:00 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,12 @@ t_command	**ft_aux1_parser(char **tokens, int *i,
 		{
 			put_redir1(current_command, tokens[*i]);
 			*current_command = left_redir(tokens, i, current_command);
+			if ((*current_command)-> file_input == -1)
+			{
+				(*current_command)-> redir1 = -1;
+				while (*i < count_nbr_tokens(tokens) && tokens[*i][0] == '<')
+					*i += 2;
+			}
 			*i += 1;
 			if (!*current_command)
 				return (free_commands(list));
@@ -81,61 +87,6 @@ t_command	**ft_aux3_parser(t_command **list, t_command *current_command
 		check_pipe_token(tokens[dup[2]], &current_command, &dup[2]);
 	}
 	return (aux);
-}
-
-char	**free_and_nl(char **tokens, int *flag)
-{
-	errno = 8;
-	perror("Invalid tokens");
-	ft_free_char(tokens);
-	*flag += 1;
-	return (NULL);
-}
-
-char	**check_directory(char *token, char **tokens, int *flag)
-{
-	DIR	*dir;
-
-	dir = opendir(token);
-	if (dir)
-	{
-		errno = EISDIR;
-		perror("minishell");
-		closedir(dir);
-		return (free_and_nl(tokens, flag));
-	}
-	else if (errno != ENOENT)
-	{
-		if (access(token, X_OK) != 0)
-		{
-			errno = EACCES;
-			perror(token);
-			return (free_and_nl(tokens, flag));
-		}
-	}
-	return (tokens);
-}
-
-char	**check_tokens(char **tokens, int *flag)
-{
-	int	i;
-
-	i = 0;
-	if (count_nbr_tokens(tokens) == 1 && tokens[i][0] == '/')
-		return (check_directory(tokens[i], tokens, flag));
-	while (i < count_nbr_tokens(tokens))
-	{
-		if (tokens[i][0] == '|' || tokens[i][0] == '>' || tokens[i][0] == '<')
-		{
-			if ((i + 1) == count_nbr_tokens(tokens))
-				return (free_and_nl(tokens, flag));
-			else if (tokens[i][0] == tokens[i + 1][0])
-				return (free_and_nl(tokens, flag));
-		}
-		if (++i == count_nbr_tokens(tokens))
-			break ;
-	}
-	return (tokens);
 }
 
 /*Recibe token y prepara los comando*/

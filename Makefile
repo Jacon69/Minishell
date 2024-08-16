@@ -23,6 +23,7 @@ SRC = main.c \
 		init_commands.c \
 		pipes.c \
 		redirs.c \
+		parser_checks.c \
 		executor.c \
 		utils2.c \
 		utils3.c \

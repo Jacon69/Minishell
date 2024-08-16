@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/10 09:26:44 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/16 11:09:30 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/16 11:22:28 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ void	write_in_heredoc(char *token, int *heredoc)
 {
 	char	*line;
 
-	//g_is_executing = 2;
 	line = readline(" heredoc> ");
 	if (!line)
 		return ;
