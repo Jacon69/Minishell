@@ -3,31 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   prom.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
+/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 12:43:54 by jconde-a          #+#    #+#             */
-/*   Updated: 2024/08/16 00:13:32 by jaimecondea      ###   ########.fr       */
+/*   Updated: 2024/08/16 11:11:44 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-int	sigint_handler(void)
-{
-	if (g_is_executing == 0)
-	{
-		rl_replace_line("", 1);
-		printf("\n");
-		rl_on_new_line();
-		rl_redisplay();
-		return (0);
-	}
-	else
-	{
-		g_is_executing = 0;
-		return (1);
-	}
-}
 
 int	no_token(t_list **env, int flag)
 {
@@ -37,12 +20,30 @@ int	no_token(t_list **env, int flag)
 	return (0);
 }
 
+int	ft_aux_proces(t_list **env, char **token, t_command **commands)
+{
+	int	last_return;
+
+	g_is_executing = 1;
+	last_return = executor(commands, env);
+	g_is_executing = 0;
+	if (last_return == -1)
+		ft_free_prom(env, token, commands, "Error Mem en EXECUTOR");
+	if (last_return == -2)
+	{
+		ft_free_prom2(NULL, token, commands, NULL);
+		return (1);
+	}
+	ft_save_last_return(last_return, env);
+	ft_free_prom2(NULL, token, commands, NULL);
+	return (0);
+}
+
 //Processes line and returns 1 if there's exit after a pipe
 int	ft_proces(char *line, t_list **env)
 {
 	char				**token;
 	t_command			**commands;
-	int					last_return;
 	int					flag;
 
 	flag = 0;
@@ -50,43 +51,22 @@ int	ft_proces(char *line, t_list **env)
 	free(line);
 	if (!token)
 		return (no_token(env, flag));
-	int i = 0;
-	while (token[i])
-	{
-		printf("antes de expandir token %i: %s \n", i, token[i]);
-		i++;
-	}
 	if (!expander(token, env))
 		ft_free_prom(env, token, NULL, "Error Mem en EXPANDER");
-	i = 0;
-	while (token[i])
-	{
-		printf("despues de expandir token %i: %s \n", i, token[i]);
-		i++;
-	}
 	commands = parser(token, env, &flag);
 	if (!commands && flag == 0)
 		ft_free_prom(env, token, NULL, "Error Mem en PARSER");
 	else if (commands)
 	{
-		g_is_executing = 1;
-		last_return = executor(commands, env);
-		g_is_executing = 0;
-		if (last_return == -1)
-			ft_free_prom(env, token, commands, "Error Mem en EXECUTOR");
-		if (last_return == -2)
-		{
-			ft_free_prom2(NULL, token, commands, NULL);
-			return (g_exit);
-		}
-		ft_save_last_return(last_return, env);
-		ft_free_prom2(NULL, token, commands, NULL);
+		if (ft_aux_proces(env, token, commands) == 1)
+			return (1);
 	}
 	else
 		ft_save_last_return(1, env);
 	return (0);
 }
 
+/*if the function returns 0 them it goes out*/
 int	manage_line(char *line, t_list **env)
 {
 	if (!line)
@@ -94,11 +74,13 @@ int	manage_line(char *line, t_list **env)
 	if (line[0] == '\0')
 	{
 		free(line);
+		g_exit = 1;
 		return (1);
 	}
-	if (ft_memcmp(line, "exit", 4) == 0 && (line[4] == ' '))
+	if (ft_memcmp(line, "exit", 4) == 0 && (ft_strlen(line) == 5))
 	{
 		free(line);
+		g_exit = 0;
 		return (0);
 	}
 	add_history(line);
@@ -116,10 +98,10 @@ void	prom(t_list **env)
 	int					control;
 	char				*path_act;
 	char				*aux;
-	//struct sigaction	action;
+	struct sigaction	action;
 
 	control = 1;
-	//action = create_sigaction();
+	action = create_sigaction();
 	while (control == 1)
 	{
 		path_act = ft_get_var_env(env, "..PWD");

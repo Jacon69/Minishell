@@ -3,14 +3,31 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
+/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 12:43:45 by jconde-a          #+#    #+#             */
-/*   Updated: 2024/08/15 23:06:27 by jaimecondea      ###   ########.fr       */
+/*   Updated: 2024/08/16 11:03:02 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int	sigint_handler(void)
+{
+	if (g_is_executing == 0)
+	{
+		rl_replace_line("", 1);
+		printf("\n");
+		rl_on_new_line();
+		rl_redisplay();
+		return (0);
+	}
+	else
+	{
+		g_is_executing = 0;
+		return (1);
+	}
+}
 
 int	main(int narg, char *carg[], char **environment)
 {
@@ -29,5 +46,5 @@ int	main(int narg, char *carg[], char **environment)
 	tcsetattr(STDIN_FILENO, TCSAFLUSH, &attributes);
 	prom(env);
 	ft_free_list(env, NULL);
-	return (0);
+	return (g_exit);
 }

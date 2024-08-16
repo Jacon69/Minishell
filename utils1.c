@@ -6,7 +6,7 @@
 /*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/06 11:45:27 by jaimecondea       #+#    #+#             */
-/*   Updated: 2024/08/09 17:19:56 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/08/16 11:06:45 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	**ft_free_list(t_list **list, char *msg_err)
 		free(*list);
 		free(list);
 	}
-	if (!msg_err)
+	if (msg_err)
 		perror(msg_err);
 	return (NULL);
 }
