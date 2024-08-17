@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/16 11:22:01 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/16 11:24:28 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/16 20:19:32 by jaimecondea      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,7 @@ void				prom(t_list **env);
 t_list				**ft_ini_env(char **environment);
 char				**ft_get_env(t_list **env);
 char				*ft_del_v_env(char *var_env, t_list **env);
+void				ft_join_v_env(char *var_env, t_list **env, int create);
 void				ft_add_v_env(char *var_env, t_list **env, int create);
 char				*ft_get_var_env(t_list **env, char *var_env);
 void				ft_save_var_env(char *var, char *val_var, t_list **env,

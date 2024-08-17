@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils1.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/06 11:45:27 by jaimecondea       #+#    #+#             */
-/*   Updated: 2024/08/16 11:06:45 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/08/16 20:02:23 by jaimecondea      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ int	ft_pos_chr(const char *str, int c)
 	int	i;
 
 	i = 0;
-	while (*str != (char) c)
+	while (*str != (char) c && str)
 	{
 		if (!*str)
 			return (-1);

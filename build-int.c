@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   build-int.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 05:32:30 by jaimecondea       #+#    #+#             */
-/*   Updated: 2024/08/16 11:21:45 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/17 08:10:40 by jaimecondea      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,24 +21,21 @@
 */
 int	ft_built_export(t_command *command, t_list **env)
 {
-	int	ok;
-	int	i;
+	int		i;
+	char	*ptr;
 
 	i = 1;
 	if (command -> args[1] == NULL)
-	{
-		ok = ft_print_list_env(command, env);
-		return (ok);
-	}
+		return (ft_print_list_env(command, env));
 	while (command -> args[i])
 	{
-		if (ft_memchr(command->args[i], '=',
-				ft_strlen(command -> args[i])) != NULL)
-		{
-			if (ft_check_export_arg(command->args[i]) == 1)
-				return (1);
+		ptr = ft_memchr(command->args[i], '+', ft_strlen(command->args[i]));
+		if (ft_check_export_arg(command->args[i]) == 1)
+			return (1);
+		if (ptr != NULL && ptr[1] == '=')
+			ft_join_v_env(command->args[i], env, 1);
+		else
 			ft_add_v_env(command->args[i], env, 1);
-		}
 		i++;
 	}
 	return (0);
@@ -49,12 +46,15 @@ int	ft_built_export(t_command *command, t_list **env)
    If the variable doesn't exist, it is ignored. */
 int	ft_built_unset(t_command *command, t_list **env)
 {
+	int		i;
+
 	(void)command;
 	(void)env;
-	if ((command -> args[1]) && (ft_strlen(command -> args[1])) > 1)
+	i = 0;
+	while ((command -> args[i]) && (ft_strlen(command -> args[i])) > 1)
 	{
-		ft_del_v_env(command -> args[1], env);
-		return (0);
+		ft_del_v_env(command -> args[i], env);
+		i++;
 	}
 	return (0);
 }

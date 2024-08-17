@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 10:12:42 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/16 13:06:33 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/17 09:56:53 by jaimecondea      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,6 +107,21 @@ int	try_call(char **paths, t_command *com, t_list **env)
 	return (127);
 }
 
+int	ft_executor_aux(t_command **command_list,
+	t_list **env, char	**paths, int i)
+{
+	if (is_built_in(command_list[i]-> command))
+		return (ft_build_int(command_list[i], env));
+	else
+		return (try_call(paths, command_list[i], env));
+}
+
+void	ft_print_up(int i)
+{
+	(void ) i;
+	printf("No such file or directory\n");
+}
+
 /*
 For each command received as an argument, checks if it's a built-in or not
 and proceeds accordingly by calling either ft_built_in or try_call.
@@ -119,28 +134,24 @@ int	executor(t_command **command_list, t_list **env)
 	char	**paths;
 	int		to_return;
 
-	i = 0;
+	i = -1;
 	to_return = 0;
 	paths = get_paths(env);
 	if (!paths)
 		return (-1);
-	while (command_list[i])
+	while (command_list[++i])
 	{
 		if (!command_list[i]-> command)
 			return (0);
 		if (command_list[i]-> redir1 == -1)
 		{
-			printf("No such file or directory\n");
-			i++;
+			ft_print_up(++i);
 			continue ;
 		}
-		else if (is_built_in(command_list[i]-> command))
-			to_return = ft_build_int(command_list[i], env);
 		else
-			to_return = try_call(paths, command_list[i], env);
+			to_return = ft_executor_aux(command_list, env, paths, i);
 		if (command_list[i]-> returned_output == -1)
 			return (1);
-		i++;
 	}
 	ft_free_char(paths);
 	return (to_return);

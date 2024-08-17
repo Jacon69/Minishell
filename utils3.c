@@ -3,15 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   utils3.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/07 18:47:56 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/16 12:43:05 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/16 19:39:54 by jaimecondea      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+/*Devuelve el puntero a un duplicado de la cadena
+apuntada por el puntero pasado y el nº de caracteres indicados*/
 char	*ft_strndup(const char *str, size_t n)
 {
 	char	*dup;

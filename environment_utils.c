@@ -6,62 +6,11 @@
 /*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/07 19:11:01 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/15 23:40:02 by jaimecondea      ###   ########.fr       */
+/*   Updated: 2024/08/17 08:00:10 by jaimecondea      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-/*delete enviroment variable*/
-char	*ft_del_v_env(char *var_env, t_list **env)
-{
-	t_list	*p_env;
-	t_list	*aux2;
-	char	*str_aux;
-
-	str_aux = ft_strdup((const char *)var_env);
-	if (!str_aux)
-	{
-		ft_free_list(env, "Mem error4 enviroment");
-		return (NULL);
-	}
-	p_env = *env;
-	aux2 = NULL;
-	while (p_env)
-		ft_aux_del_v_env(env, &p_env, &aux2, str_aux);
-	free(str_aux);
-	return (NULL);
-}
-
-/*get enviroment variable*/
-char	*ft_get_var_env(t_list **env, char *var_env)
-{
-	t_list	*p_env;
-	char	*var;
-	char	*val_var;
-
-	p_env = *env;
-	var = NULL;
-	while (p_env)
-	{
-		val_var = p_env->content;
-		if (ft_strncmp(val_var, var_env, ft_strlen(var_env)) == 0
-			&& ((val_var[ft_strlen(var_env)] == '=')))
-		{
-			var = ft_substr(val_var, ft_strlen(var_env) + 1,
-					ft_strlen(val_var) - (ft_strlen(var_env) + 1));
-			if (!var)
-				return (NULL);
-			return (var);
-		}
-		p_env = p_env->next;
-	}
-	var = malloc(sizeof(char));
-	if (!var)
-		return (NULL);
-	var[0] = '\0';
-	return (var);
-}
 
 /*finds and changes the variable*/
 int	ft_aux_add_v_env(char *var_env, t_list **env, char	*var)
@@ -140,4 +89,55 @@ void	ft_save_var_env(char *var, char *val_var, t_list **env, int create)
 	}
 	ft_add_v_env(str_var, env, create);
 	free(str_var);
+}
+
+/*get enviroment variable*/
+char	*ft_get_var_env(t_list **env, char *var_env)
+{
+	t_list	*p_env;
+	char	*var;
+	char	*val_var;
+
+	p_env = *env;
+	var = NULL;
+	while (p_env)
+	{
+		val_var = p_env->content;
+		if (ft_strncmp(val_var, var_env, ft_strlen(var_env)) == 0
+			&& ((val_var[ft_strlen(var_env)] == '=')))
+		{
+			var = ft_substr(val_var, ft_strlen(var_env) + 1,
+					ft_strlen(val_var) - (ft_strlen(var_env) + 1));
+			if (!var)
+				return (NULL);
+			return (var);
+		}
+		p_env = p_env->next;
+	}
+	var = malloc(sizeof(char));
+	if (!var)
+		return (NULL);
+	var[0] = '\0';
+	return (var);
+}
+
+/*delete enviroment variable*/
+char	*ft_del_v_env(char *var_env, t_list **env)
+{
+	t_list	*p_env;
+	t_list	*aux2;
+	char	*str_aux;
+
+	str_aux = ft_strdup((const char *)var_env);
+	if (!str_aux)
+	{
+		ft_free_list(env, "Mem error4 enviroment");
+		return (NULL);
+	}
+	p_env = *env;
+	aux2 = NULL;
+	while (p_env)
+		ft_aux_del_v_env(env, &p_env, &aux2, str_aux);
+	free(str_aux);
+	return (NULL);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   build_in_cd.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 19:42:49 by jconde-a          #+#    #+#             */
-/*   Updated: 2024/08/10 09:27:14 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/17 08:07:23 by jaimecondea      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,10 +139,10 @@ int	ft_cd_dir(t_command *command, t_struct_path *dir)
 	}
 	if (!ft_is_dir_ok(dir->route))
 	{
-		write(command -> file_output, "Not a directory\n", 16);
+		printf("minishell  %s:  %s: No such file or directory\n",
+			command -> command, dir ->route);
 		free(dir->route);
 		dir->route = aux;
-		free(aux);
 		return (1);
 	}
 	free(aux);

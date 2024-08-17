@@ -3,16 +3,51 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 10:01:14 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/16 12:59:00 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/17 09:57:28 by jaimecondea      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_command	**ft_aux1_parser(char **tokens, int *i,
+void	ft_aux4_parse(char **tokens, t_command **cmd, int *i)
+{
+	put_redir2(cmd, tokens[*i]);
+	right_redir(tokens, i, cmd);
+}
+
+t_command	**aux1_par(char **tokens, int *i, t_command **cmd, t_command **list)
+{
+	int	token_count;
+
+	token_count = count_nbr_tokens(tokens);
+	while ((tokens[*i][0] == '>' || tokens[*i][0] == '<') && (*i < token_count))
+	{
+		if (tokens[*i][0] == '>')
+			ft_aux4_parse(tokens, cmd, i);
+		else
+		{
+			put_redir1(cmd, tokens[*i]);
+			*cmd = left_redir(tokens, i, cmd);
+			if ((*cmd)->file_input == -1)
+			{
+				(*cmd)->redir1 = -1;
+				while (*i < token_count && tokens[*i][0] == '<')
+					*i += 2;
+			}
+			if (!*cmd)
+				return (free_commands(list));
+		}
+		*i += 1;
+		if (*i >= token_count)
+			break ;
+	}
+	return (cmd);
+}
+
+/*t_command	**ft_aux1_parser(char **tokens, int *i,
 	t_command **current_command, t_command **list)
 {
 	while (((tokens[*i][0] == '>') || (tokens[*i][0] == '<'))
@@ -44,7 +79,7 @@ t_command	**ft_aux1_parser(char **tokens, int *i,
 		}
 	}
 	return (current_command);
-}
+}*/
 
 void	ft_ini_dup(int *dup)
 {
@@ -77,7 +112,7 @@ t_command	**ft_aux3_parser(t_command **list, t_command *current_command
 		aux = end_list(current_command, list, dup);
 	else
 	{
-		if (!ft_aux1_parser(tokens, &dup[2], &current_command, list))
+		if (!aux1_par(tokens, &dup[2], &current_command, list))
 			dup[3] = 1;
 		if (dup[2] >= count_nbr_tokens(tokens))
 		{

@@ -6,7 +6,7 @@
 /*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/07 18:59:47 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/15 23:25:27 by jaimecondea      ###   ########.fr       */
+/*   Updated: 2024/08/17 08:55:32 by jaimecondea      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,31 +95,4 @@ int	ft_built_pwd(t_command *command)
 	else
 		ok = 0;
 	return (ok);
-}
-
-int	ft_check_export_arg(char *argument)
-{
-	char	*error;
-
-	error = ft_strjoin(argument, " export: not a valid identifier");
-	if (!error)
-		return (1);
-	if (argument[0] >= '0' && argument[0] <= '9')
-	{
-		perror(error);
-		free (error);
-		return (1);
-	}
-	while (*argument != '=')
-	{
-		if ((ft_isalnum(*argument) == 0))
-		{
-			perror(error);
-			free (error);
-			return (1);
-		}
-		argument++;
-	}
-	free (error);
-	return (0);
 }

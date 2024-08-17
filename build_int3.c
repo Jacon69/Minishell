@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   build_int3.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 18:04:00 by jconde-a          #+#    #+#             */
-/*   Updated: 2024/08/13 18:04:49 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/08/17 08:55:27 by jaimecondea      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,4 +39,39 @@ int	ft_aux1_build_int(t_command *command_act, t_list **env)
 	else if (ft_memcmp(comando, "env", 3) == 0)
 		ok = ft_built_env(command_act, env);
 	return (ok);
+}
+
+int	ft_do_error_arg(char *argument)
+{
+	char	*error;
+
+	error = ft_strjoin(argument, " export: not a valid identifier");
+	if (!error)
+		return (1);
+	perror(error);
+	free (error);
+	return (1);
+}
+
+/*Check that it is ok the variable's name*/
+int	ft_check_export_arg(char *argument)
+{
+	char	*ptr;
+
+	ptr = argument;
+	if (argument[0] >= '0' && argument[0] <= '9')
+		return (ft_do_error_arg(ptr));
+	while (*argument != '=' && *argument != '+' && *argument != '\0')
+	{
+		if ((ft_isalnum(*argument) == 0))
+			return (ft_do_error_arg(ptr));
+		argument++;
+	}
+	if (*argument == '+')
+	{
+		argument++;
+		if (*argument != '=')
+			return (ft_do_error_arg(ptr));
+	}
+	return (0);
 }

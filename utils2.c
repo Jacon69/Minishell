@@ -6,7 +6,7 @@
 /*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 10:19:58 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/16 00:04:17 by jaimecondea      ###   ########.fr       */
+/*   Updated: 2024/08/17 07:46:52 by jaimecondea      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,10 +98,7 @@ int	ft_is_dir_ok(const char *path)
 	struct stat	statbuf;
 
 	if (stat(path, &statbuf) != 0)
-	{
-		perror("stat");
 		return (0);
-	}
 	if (S_ISDIR(statbuf.st_mode))
 		return (1);
 	else
