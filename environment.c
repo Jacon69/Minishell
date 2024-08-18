@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   environment.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
+/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/06 11:45:02 by jaimecondea       #+#    #+#             */
-/*   Updated: 2024/08/15 23:06:30 by jaimecondea      ###   ########.fr       */
+/*   Updated: 2024/08/18 10:51:36 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,16 @@
 static void	ft_ini_empty_env(t_list **env)
 {
 	char	buffer[1024];
+	char	*aux;
 
 	if (getcwd(buffer, sizeof(buffer)) != NULL)
 	{
 		ft_save_var_env("PWD", buffer, env, 0);
 		ft_save_var_env("SHLVL", "1", env, 0);
-		ft_save_var_env("..PWD", ft_get_var_env(env, "PWD"), env, 1);
-		ft_save_var_env("..HOME", ft_get_var_env(env, "PWD"), env, 1);
+		aux = ft_get_var_env(env, "PWD");
+		ft_save_var_env("..PWD", aux, env, 1);
+		ft_save_var_env("..HOME", aux, env, 1);
+		free(aux);
 	}
 	else
 		perror("getcwd() error");
@@ -96,6 +99,7 @@ t_list	**ft_aux_ini_env(char **environment, t_list	**env)
 t_list	**ft_ini_env(char **environment)
 {
 	t_list	**env;
+	char	*aux;
 
 	env = (t_list **)malloc(sizeof(t_list *));
 	if (!env)
@@ -107,7 +111,11 @@ t_list	**ft_ini_env(char **environment)
 		return (env);
 	}
 	env = ft_aux_ini_env(environment, env);
-	ft_save_var_env("..PWD", ft_get_var_env(env, "PWD"), env, 1);
-	ft_save_var_env("..HOME", ft_get_var_env(env, "HOME"), env, 1);
+	aux = ft_get_var_env(env, "PWD");
+	ft_save_var_env("..PWD", aux, env, 1);
+	free(aux);
+	aux = ft_get_var_env(env, "HOME");
+	ft_save_var_env("..HOME", aux, env, 1);
+	free(aux);
 	return (env);
 }

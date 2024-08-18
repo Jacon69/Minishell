@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   build-int.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
+/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 05:32:30 by jaimecondea       #+#    #+#             */
-/*   Updated: 2024/08/17 08:10:40 by jaimecondea      ###   ########.fr       */
+/*   Updated: 2024/08/18 09:36:59 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,10 @@ int	ft_build_int(t_command *command_act, t_list **env)
 		ft_aux1_build_int(command_act, env);
 	else if (ft_memcmp(com, "exit", 4) == 0)
 	{
-		g_exit = ft_exit(command_act -> args[1]);
+		if (command_act -> args[1])
+			g_exit = ft_exit(command_act -> args[1]);
+		else
+			g_exit = 0;
 		return (-2);
 	}
 	if (command_act -> file_input != 1)

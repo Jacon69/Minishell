@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander_utils1.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/07 19:07:40 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/16 11:19:34 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/18 11:32:39 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,13 +32,11 @@ void	*ft_free_char_n(char *par1, char *par2, char *par3, char *txt_err)
 */
 char	*ft_expander_home_pwd(char **token, t_list **env)
 {
-	char	*aux;
 	char	*ptoken;
 
 	ptoken = *token;
-	aux = ptoken;
 	ptoken = ft_strdup(ptoken);
-	free(aux);
+	free(*token);
 	if (!ptoken)
 		return (NULL);
 	if ((ft_strlen(ptoken) > 1 && (ptoken[0] == '~' && ptoken[1] == '/'))
@@ -67,6 +65,8 @@ static char	*ft_ext_var_env(char *str)
 		var_long++;
 		i++;
 	}
+	if (str[0] == '?')
+		var_long = 1;
 	aux = ft_substr(str, 0, var_long);
 	if (!aux)
 		return (NULL);
@@ -105,14 +105,15 @@ static	int	ft_aux_expander_dollar(char **token, t_list **env, int i)
 
 /*Modifies a token by replacing environment variables
  (preceded by '$') with their values. */
-char	*ft_expander_dollar(char **token, t_list **env)
+char	*ft_expander_dollar(char **aux_str, t_list **env)
 {
 	int		i;
 	char	*ptoken;
 
 	i = 0;
-	ptoken = *token;
+	ptoken = *aux_str;
 	ptoken = ft_strdup(ptoken);
+	free(*aux_str);
 	if (!ptoken)
 		return (NULL);
 	while ((size_t)i < ft_strlen(ptoken))

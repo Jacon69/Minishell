@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
+/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 17:56:30 by jconde-a          #+#    #+#             */
-/*   Updated: 2024/08/15 19:40:02 by jaimecondea      ###   ########.fr       */
+/*   Updated: 2024/08/18 10:34:41 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,9 @@ int	ft_add_quote_aux(char *token, char **aux_str, int *param, char *letter)
 	{
 		ptr = *aux_str;
 		*aux_str = ft_strjoin(*aux_str, letter);
+		free(ptr);
 		if (!*aux_str)
 			return (0);
-		free(ptr);
 		param[1]++;
 		param[2]++;
 		letter[0] = token[param[2]];
@@ -76,9 +76,9 @@ char	*ft_add_normal(char *token, char **aux_str, int *param)
 	{
 		ptr = *aux_str;
 		*aux_str = ft_strjoin(*aux_str, letter);
+		free(ptr);
 		if (!*aux_str)
 			return (NULL);
-		free(ptr);
 		param[2]++;
 		param[1]++;
 		letter[0] = token[param[2]];
@@ -86,7 +86,7 @@ char	*ft_add_normal(char *token, char **aux_str, int *param)
 	return (*aux_str);
 }
 
-char	*ft_add_expander(char *token, char *aux_str, t_list **env, int *param)
+char	**ft_add_expander(char *token, char **aux_str, t_list **env, int *param)
 {
 	char	crtl;
 
@@ -94,14 +94,14 @@ char	*ft_add_expander(char *token, char *aux_str, t_list **env, int *param)
 	{
 		crtl = token[param[2]];
 		if (crtl != '"' && crtl != '\'')
-			aux_str = ft_add_normal(token, &aux_str, param);
+			ft_add_normal(token, aux_str, param);
 		else
-			aux_str = ft_add_quote(token, &aux_str, param);
+			ft_add_quote(token, aux_str, param);
 		if ((aux_str) && (crtl != '\''))
-			aux_str = ft_expander_dollar(&aux_str, env);
+			*aux_str = ft_expander_dollar(aux_str, env);
 	}
 	if ((aux_str))
-		aux_str = ft_expander_home_pwd(&aux_str, env);
+		*aux_str = ft_expander_home_pwd(aux_str, env);
 	return (aux_str);
 }
 
@@ -128,7 +128,7 @@ int	expander(char **token, t_list **env)
 		param[1] = 0;
 		while ((token[param[0]][param[1]] != '\0'))
 		{
-			aux_str = ft_add_expander(token[param[0]], aux_str, env, param);
+			ft_add_expander(token[param[0]], &aux_str, env, param);
 			if (!aux_str)
 				return (0);
 			param[2] = 0;
