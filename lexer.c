@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/06 13:22:20 by jaimecondea       #+#    #+#             */
-/*   Updated: 2024/08/16 11:12:18 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/08/26 11:55:51 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,8 @@ char	**aux_lexer(char *line, char **token, int *flag)
 	{
 		while (line[paran[1]] == ' ')
 			paran[1]++;
+		if (line[paran[1]] == '\0')
+			return (token);
 		paran[2] = paran[1];
 		new_token = (char *)malloc(sizeof(char));
 		if (!new_token)

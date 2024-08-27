@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/07 18:52:23 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/13 19:00:47 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/08/26 11:51:40 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,9 @@ int	ft_aux2_count_tokens(char *line, int i, int *tokens)
 	if (i == 0 || line[i - 1] == ' ' || line[i] == '>'
 		|| line[i] == '<' || line[i] == '|')
 	{
+		if ((line[i] == '>' || line[i] == '<' || line[i] == '|')
+			&& (size_t)i < (ft_strlen(line) - 1))
+			*tokens += 1;
 		i = ft_aux_count_tokens(line, i);
 		*tokens += 1;
 	}

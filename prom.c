@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   prom.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
+/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 12:43:54 by jconde-a          #+#    #+#             */
-/*   Updated: 2024/08/16 19:01:05 by jaimecondea      ###   ########.fr       */
+/*   Updated: 2024/08/26 09:41:21 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,10 +98,10 @@ void	prom(t_list **env)
 	int					control;
 	char				*path_act;
 	char				*aux;
-	// struct sigaction	action;
+	struct sigaction	action;
 
 	control = 1;
-	// action = create_sigaction();
+	action = create_sigaction();
 	while (control == 1)
 	{
 		path_act = ft_get_var_env(env, "..PWD");

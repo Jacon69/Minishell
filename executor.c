@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
+/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 10:12:42 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/17 09:56:53 by jaimecondea      ###   ########.fr       */
+/*   Updated: 2024/08/26 12:05:39 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,21 +105,6 @@ int	try_call(char **paths, t_command *com, t_list **env)
 	}
 	printf("Error: command not found\n");
 	return (127);
-}
-
-int	ft_executor_aux(t_command **command_list,
-	t_list **env, char	**paths, int i)
-{
-	if (is_built_in(command_list[i]-> command))
-		return (ft_build_int(command_list[i], env));
-	else
-		return (try_call(paths, command_list[i], env));
-}
-
-void	ft_print_up(int i)
-{
-	(void ) i;
-	printf("No such file or directory\n");
 }
 
 /*

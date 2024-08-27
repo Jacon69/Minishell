@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
+/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/16 11:22:01 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/16 20:19:32 by jaimecondea      ###   ########.fr       */
+/*   Updated: 2024/08/26 12:16:26 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,7 @@ void				put_redir2(t_command **command, char *token);
 char				**free_and_nl(char **tokens, int *flag);
 char				**check_directory(char *token, char **tokens, int *flag);
 char				**check_tokens(char **tokens, int *flag);
+void				ft_ini_dup(int *dup);
 
 //build_in
 int					ft_built_echo(t_command *command);
@@ -143,6 +144,10 @@ char				**get_paths(t_list **env);
 char				*get_function_call(char *command, char *path);
 void				free_function_call(t_command *com, char *function_call);
 void				fail_fork(t_command *com, char *function_call);
+int					ft_executor_aux(t_command **command_list, t_list **env,
+						char **paths, int i);
+void				ft_print_up(int i);
+int					try_call(char **paths, t_command *com, t_list **env);
 
 t_list				**ft_aux_dup_ord_list(t_list **dup_env, t_list *p_env,
 						t_list *p_env_ori);

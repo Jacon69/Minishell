@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/10 09:26:44 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/16 11:22:28 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/27 10:00:35 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ void	right_redir(char **tokens, int *i, t_command **command)
 {
 	while (tokens[*i] && tokens[*i][0] == '>')
 	{
+		put_redir2(command, tokens[*i]);
 		*i += 1;
 		if ((*command)-> file_output != 1)
 			close((*command)-> file_output);

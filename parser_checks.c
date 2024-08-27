@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/16 11:23:07 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/16 11:23:39 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/26 12:16:10 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,4 +65,12 @@ char	**check_tokens(char **tokens, int *flag)
 			break ;
 	}
 	return (tokens);
+}
+
+void	ft_ini_dup(int *dup)
+{
+	dup[0] = 0;
+	dup[1] = 0;
+	dup[2] = 0;
+	dup[3] = 0;
 }
