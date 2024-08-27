@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 10:12:42 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/26 12:05:39 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/27 13:26:29 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,13 @@ int	try_call(char **paths, t_command *com, t_list **env)
 	struct stat	buf;
 
 	i = 0;
+	if (!paths[i] && com -> command[0] == '/')
+	{
+		function_call = com -> command;
+		if (stat(function_call, &buf) == 0
+			&& S_ISREG(buf.st_mode) && (buf.st_mode & S_IXUSR))
+			return (fork_function(com, function_call, env));
+	}
 	while (paths[i])
 	{
 		if (com -> command[0] == '/')

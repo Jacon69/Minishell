@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/10 09:26:44 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/27 10:00:35 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/27 12:44:23 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,8 @@ void	write_in_heredoc(char *token, int *heredoc)
 	line = readline(" heredoc> ");
 	if (!line)
 		return ;
-	while (ft_strncmp(token, line, ft_strlen(token)))
+	while (ft_strlen(token) != ft_strlen(line)
+		|| ft_strncmp(token, line, ft_strlen(token)))
 	{
 		write(heredoc[1], line, ft_strlen(line));
 		write(heredoc[1], "\n", 1);
