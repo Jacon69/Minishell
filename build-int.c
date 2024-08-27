@@ -6,7 +6,7 @@
 /*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 05:32:30 by jaimecondea       #+#    #+#             */
-/*   Updated: 2024/08/18 09:36:59 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/08/27 18:05:41 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ int	ft_built_unset(t_command *command, t_list **env)
 	(void)command;
 	(void)env;
 	i = 0;
-	while ((command -> args[i]) && (ft_strlen(command -> args[i])) > 1)
+	while ((command -> args[i]) && (ft_strlen(command -> args[i])) > 0)
 	{
 		ft_del_v_env(command -> args[i], env);
 		i++;
@@ -97,13 +97,7 @@ int	ft_build_int(t_command *command_act, t_list **env)
 		|| (ft_memcmp(com, "unset", 5) == 0) || (ft_memcmp(com, "env", 3) == 0))
 		ft_aux1_build_int(command_act, env);
 	else if (ft_memcmp(com, "exit", 4) == 0)
-	{
-		if (command_act -> args[1])
-			g_exit = ft_exit(command_act -> args[1]);
-		else
-			g_exit = 0;
-		return (-2);
-	}
+		return (ft_exit(command_act));
 	if (command_act -> file_input != 1)
 		close(command_act -> file_input);
 	if (command_act -> file_output != 1)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils3.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
+/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/07 18:47:56 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/16 19:39:54 by jaimecondea      ###   ########.fr       */
+/*   Updated: 2024/08/27 18:13:27 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,14 +89,3 @@ t_list	**ft_aux_dup_ord_list(t_list **dup_env, t_list *p_env
 	return (dup_env);
 }
 
-/*convert arg[1] from command exit to number for exit*/
-int	ft_exit(char *num_error)
-{
-	int	nerror;
-
-	nerror = ft_atoi (num_error);
-	if (nerror < 0)
-		nerror += 256;
-	nerror %= 256;
-	return (nerror);
-}

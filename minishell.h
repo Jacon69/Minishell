@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/16 11:22:01 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/26 12:16:26 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/27 18:11:59 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,7 +128,7 @@ void				**ft_free_list(t_list **list, char *msg_err);
 int					ft_pos_chr(const char *str, int c);
 char				*ft_strndup(const char *str, size_t n);
 int					ft_is_dir_ok(const char *path);
-int					ft_exit(char *num_error);
+int					ft_exit(t_command *command_act);
 /*lexer*/
 char				**lexer(char *line, int *flag); // Creates
 void				free_token(char **token);
