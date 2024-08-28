@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/06 13:22:20 by jaimecondea       #+#    #+#             */
-/*   Updated: 2024/08/26 11:55:51 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/28 08:00:09 by jaimecondea      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ char	**aux_lexer(char *line, char **token, int *flag)
 		ft_assig_token(line, &new_token, paran, flag);
 		if (paran[1] == -1 || *flag)
 			free_and_return(token);
-		if (ft_token_join(line, token, new_token, paran) == 1)
+		if (*flag == 1 || ft_token_join(line, token, new_token, paran) == 1)
 			return (NULL);
 		paran[0]++;
 	}

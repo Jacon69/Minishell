@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 17:56:30 by jconde-a          #+#    #+#             */
-/*   Updated: 2024/08/18 10:34:41 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/08/28 08:04:48 by jaimecondea      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,8 @@ char	**ft_add_expander(char *token, char **aux_str, t_list **env, int *param)
 		if (crtl != '"' && crtl != '\'')
 			ft_add_normal(token, aux_str, param);
 		else
-			ft_add_quote(token, aux_str, param);
+			if (ft_add_quote(token, aux_str, param) == NULL)
+				return (NULL);
 		if ((aux_str) && (crtl != '\''))
 			*aux_str = ft_expander_dollar(aux_str, env);
 	}
@@ -128,7 +129,8 @@ int	expander(char **token, t_list **env)
 		param[1] = 0;
 		while ((token[param[0]][param[1]] != '\0'))
 		{
-			ft_add_expander(token[param[0]], &aux_str, env, param);
+			if (ft_add_expander(token[param[0]], &aux_str, env, param) == NULL)
+				return (0);
 			if (!aux_str)
 				return (0);
 			param[2] = 0;
