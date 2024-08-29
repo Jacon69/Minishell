@@ -3,13 +3,12 @@
 /*                                                        :::      ::::::::   */
 /*   utils4.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/27 17:38:21 by jconde-a          #+#    #+#             */
-/*   Updated: 2024/08/27 18:03:01 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/08/29 12:22:38 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "minishell.h"
 
@@ -25,7 +24,6 @@ int	ft_chck_nbs(char *numero)
 		numero++;
 	}
 	return (1);
-
 }
 
 int	ft_count_argument(char **arg)
@@ -33,31 +31,37 @@ int	ft_count_argument(char **arg)
 	int	count;
 
 	count = 0;
-
 	while (arg[count])
 		count++;
 	return (--count);
+}
+
+int	ft_exit_wrong_args(char *arg, int errcode)
+{
+	if (errcode == -2)
+	{
+		printf("exit: %s numeric argument required\n", arg);
+		g_exit = 2;
+	}
+	else if (errcode == 0)
+		printf("exit: too many arguments \n");
+	return (errcode);
 }
 
 /*convert arg[1] from command exit to number for exit*/
 int	ft_exit(t_command *command_act)
 {
 	int	nerror;
-	int narg;
+	int	narg;
 
 	g_exit = 0;
-	if (!ft_chck_nbs(command_act -> args[1]))
-	{
-		printf("exit: %s numeric argument required\n", command_act -> args[1]);
-		g_exit = 2;
+	if (!command_act -> args[1])
 		return (-2);
-	}
+	if (!ft_chck_nbs(command_act -> args[1]))
+		return (ft_exit_wrong_args(command_act -> args[1], -2));
 	narg = ft_count_argument(command_act -> args);
 	if (narg > 1)
-	{
-		printf("exit: too many arguments \n");
-		return (0);
-	}
+		return (ft_exit_wrong_args(command_act -> args[1], 0));
 	if (narg == 1)
 	{
 		nerror = ft_atoi (command_act -> args[1]);
@@ -68,4 +72,3 @@ int	ft_exit(t_command *command_act)
 	}
 	return (-2);
 }
-

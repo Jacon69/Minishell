@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/16 11:22:01 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/27 18:11:59 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/08/29 12:11:05 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,6 +148,14 @@ int					ft_executor_aux(t_command **command_list, t_list **env,
 						char **paths, int i);
 void				ft_print_up(int i);
 int					try_call(char **paths, t_command *com, t_list **env);
+int					ft_count_commands(t_command **command_list);
+void				ft_kill_children(pid_t *children, int n_commands);
+int					try_call_child(char **paths, t_command *com, t_list **env);
+int					execute_child(t_command *com, t_list **env, char **paths);
+int					manage_pipes(t_command **command_list,
+						t_list **env, char **paths);
+void				execute_function(t_command *com, char *function_call,
+						t_list **env);
 
 t_list				**ft_aux_dup_ord_list(t_list **dup_env, t_list *p_env,
 						t_list *p_env_ori);

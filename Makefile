@@ -36,6 +36,7 @@ SRC = main.c \
 		build_in_cd_aux.c \
 		executor_utils.c\
 		executor_utils2.c \
+		executor_children.c \
 
 OBJ = $(SRC:.c=.o)
 
