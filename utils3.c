@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils3.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/07 18:47:56 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/27 18:13:27 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/09/02 09:54:16 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,4 +88,3 @@ t_list	**ft_aux_dup_ord_list(t_list **dup_env, t_list *p_env
 	}
 	return (dup_env);
 }
-

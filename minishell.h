@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/16 11:22:01 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/27 18:11:59 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/09/02 10:02:58 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,6 +160,9 @@ struct sigaction	create_sigaction(void);
 int					ft_free_prom2(t_list **env, char **token,
 						t_command **commands, char *msg);
 int					sigint_handler(void);
+int					no_envs(t_command *com, t_list **env);
+int					fork_function(t_command *com, char *function_call,
+						t_list **env);
 /*expander*/
 char				*ft_token_exp(char *token, int j,
 						char *var_env, int lng_var);
