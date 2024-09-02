@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/07 18:52:23 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/29 11:46:43 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/26 11:51:40 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,6 @@ int	ft_aux_assig_token(char *line, char **token, int *paran, int *flag)
 	if (!line[next_delimiter(line, line[paran[1]], paran[1] + 1)])
 	{
 		*flag = 1;
-		free(*token);
 		perror("do not close quote.");
 		return (-1);
 	}

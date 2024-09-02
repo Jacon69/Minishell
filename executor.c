@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 10:12:42 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/29 13:13:19 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/08/27 13:26:29 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,22 +74,6 @@ int	fork_function(t_command *com, char *function_call, t_list **env)
 	return (-1);
 }
 
-int	no_envs(t_command *com, t_list **env)
-{
-	char		*function_call;
-	struct stat	buf;
-
-	function_call = com -> command;
-	if (stat(function_call, &buf) == 0
-		&& S_ISREG(buf.st_mode) && (buf.st_mode & S_IXUSR))
-		return (fork_function(com, function_call, env));
-	else
-	{
-		printf("Error: command not found\n");
-		return (127);
-	}
-}
-
 /*
 Tries to execute the command passed as an
 argument using the paths in the other argument.
@@ -101,10 +85,15 @@ int	try_call(char **paths, t_command *com, t_list **env)
 	char		*function_call;
 	struct stat	buf;
 
-	i = -1;
-	if (!paths[0] && com -> command[0] == '/')
-		return (no_envs(com, env));
-	while (paths[++i])
+	i = 0;
+	if (!paths[i] && com -> command[0] == '/')
+	{
+		function_call = com -> command;
+		if (stat(function_call, &buf) == 0
+			&& S_ISREG(buf.st_mode) && (buf.st_mode & S_IXUSR))
+			return (fork_function(com, function_call, env));
+	}
+	while (paths[i])
 	{
 		if (com -> command[0] == '/')
 			function_call = com -> command;
@@ -116,7 +105,10 @@ int	try_call(char **paths, t_command *com, t_list **env)
 			&& S_ISREG(buf.st_mode) && (buf.st_mode & S_IXUSR))
 			return (fork_function(com, function_call, env));
 		else
+		{
 			free_function_call(com, function_call);
+			i++;
+		}
 	}
 	printf("Error: command not found\n");
 	return (127);
@@ -143,11 +135,6 @@ int	executor(t_command **command_list, t_list **env)
 	{
 		if (!command_list[i]-> command)
 			return (0);
-		if (command_list[i]-> piped)
-		{
-			to_return = manage_pipes(command_list, env, paths);
-			break ;
-		}
 		if (command_list[i]-> redir1 == -1)
 		{
 			ft_print_up(++i);
