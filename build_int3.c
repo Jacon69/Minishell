@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   build_int3.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
+/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 18:04:00 by jconde-a          #+#    #+#             */
-/*   Updated: 2024/08/17 08:55:27 by jaimecondea      ###   ########.fr       */
+/*   Updated: 2024/09/02 12:42:02 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,16 @@ int	ft_aux1_build_int(t_command *command_act, t_list **env)
 	{
 		if ((command_act->args[1]) == NULL)
 		{
+			ok = 1;
 			if (ft_cd_without_argument(command_act, env) == 1)
 				return (1);
 		}
 		ft_built_cd(command_act, env);
+		if (ok != 0)
+		{
+			free(command_act -> args[1]);
+			ok = 0;
+		}
 	}
 	else if (ft_memcmp(comando, "pwd", 3) == 0)
 		ok = ft_built_pwd(command_act);

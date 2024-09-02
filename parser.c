@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/06 10:01:14 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/27 10:04:17 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/09/02 12:32:38 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@ t_command	**aux1_par(char **tokens, int *i, t_command **cmd, t_command **list)
 			if (!*cmd)
 				return (free_commands(list));
 		}
-		*i += 1;
 		if (*i >= token_count)
 			break ;
 	}
