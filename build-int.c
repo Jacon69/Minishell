@@ -6,7 +6,7 @@
 /*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 05:32:30 by jaimecondea       #+#    #+#             */
-/*   Updated: 2024/08/27 18:05:41 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/09/02 12:55:39 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,11 @@ int	ft_built_export(t_command *command, t_list **env)
 	i = 1;
 	if (command -> args[1] == NULL)
 		return (ft_print_list_env(command, env));
+if (command -> args[1][0] == '\0')
+	{
+		perror("export: not valid in this context:");
+		return (1);
+	}
 	while (command -> args[i])
 	{
 		ptr = ft_memchr(command->args[i], '+', ft_strlen(command->args[i]));
@@ -95,7 +100,7 @@ int	ft_build_int(t_command *command_act, t_list **env)
 	if ((ft_memcmp(com, "echo", 4) == 0) || (ft_memcmp(com, "cd", 2) == 0)
 		|| (ft_memcmp(com, "pwd", 3) == 0) || (ft_memcmp(com, "export", 6) == 0)
 		|| (ft_memcmp(com, "unset", 5) == 0) || (ft_memcmp(com, "env", 3) == 0))
-		ft_aux1_build_int(command_act, env);
+		ok = ft_aux1_build_int(command_act, env);
 	else if (ft_memcmp(com, "exit", 4) == 0)
 		return (ft_exit(command_act));
 	if (command_act -> file_input != 1)

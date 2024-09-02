@@ -6,7 +6,7 @@
 /*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 17:53:07 by jconde-a          #+#    #+#             */
-/*   Updated: 2024/08/13 18:31:59 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/09/02 18:02:26 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,16 @@ int	ft_is_asignsymbol(char *line, int i)
 	if (((line[i] == '<') && (line[i + 1] != '<')) || ((line[i] == '>')
 			&& (line[i + 1] != '>')) || (line[i] == '|')
 		|| (line[i + 1] == '|'))
+	{
 		position = 1;
+		return (position);
+	}
 	if (line[i] == line[i + 1] && ((line[i] == '<') || (line[i] == '>')))
+	{
 		position = 2;
+	return (position);
+}
+	if (line[i + 1] == '<' || line[i + 1] == '>' || line[i + 1] == '|')
+		position = 3;
 	return (position);
 }

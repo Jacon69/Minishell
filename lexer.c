@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
+/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/06 13:22:20 by jaimecondea       #+#    #+#             */
-/*   Updated: 2024/08/28 08:00:09 by jaimecondea      ###   ########.fr       */
+/*   Updated: 2024/09/02 18:56:14 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,8 @@ static int	ft_assig_token(char *line, char **token, int *paran, int *flag)
 			break ;
 		if (add_chartotoken(line, token, paran[1]) == -1)
 			return (-1);
-		if (ft_is_asignsymbol(line, paran[1]) == 1)
+		if (ft_is_asignsymbol(line, paran[1]) == 3
+			|| ft_is_asignsymbol(line, paran[1]) == 1)
 		{
 			paran[1]++;
 			break ;
@@ -46,7 +47,8 @@ int	ft_token_join(char *line, char **token, char *new_token, int *paran)
 
 	if ((paran[0] > 0) && (paran[2] > 0) && (!(line[paran[2] - 1] == ' '
 				|| line[paran[2] - 1] == '>' || line[paran[2] - 1] == '<'
-				|| line[paran[2] - 1] == '|')))
+				|| line[paran[2] - 1] == '|')) && (!(line[paran[2]]=='>'
+				||line[paran[2]] == '<' || line[paran[2]] == '|')))
 	{
 		aux_str = token[paran[0] - 1];
 		token[paran[0] - 1] = ft_strjoin(token[paran[0] - 1], new_token);
@@ -121,6 +123,5 @@ char	**lexer(char *line, int *flag)
 	if (!aux_lexer(line, token, flag))
 		return (NULL);
 	token[ntoken] = NULL;
-	i = 0;
 	return (token);
 }
