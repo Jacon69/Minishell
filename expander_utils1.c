@@ -6,7 +6,7 @@
 /*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/07 19:07:40 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/18 11:32:39 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/09/02 12:51:27 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ static char	*ft_ext_var_env(char *str)
 
 	var_long = 0;
 	i = 0;
-	while (str[i] && str[i] != ' ' && str[i] != '$')
+	while (str[i] && str[i] != ' ' && str[i] != '=' && str[i] != '$')
 	{
 		var_long++;
 		i++;
