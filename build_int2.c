@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   build_int2.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
+/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/07 18:59:47 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/17 08:55:32 by jaimecondea      ###   ########.fr       */
+/*   Updated: 2024/09/03 18:37:40 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,11 @@ int	ft_built_echo(t_command *command)
 	int	ok;
 
 	ok = 0;
-	if (!command -> args[1])
+	if (!(command -> args[1]))
+	{
+		write(command -> file_output, "\n", 1);
 		return (ok);
+	}
 	i = (1 + ft_checkwithout_n(command -> args[1]));
 	while (command -> args[i])
 	{
