@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/07 18:59:47 by alexigar          #+#    #+#             */
-/*   Updated: 2024/09/03 18:37:40 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/09/03 18:54:52 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,9 @@ int	ft_built_echo(t_command *command)
 		return (ok);
 	}
 	i = (1 + ft_checkwithout_n(command -> args[1]));
+	while (command -> args[i] && !ft_strncmp(command -> args[i], "-n", 2)
+		&& ft_strlen(command -> args[i]) == 2)
+		i++;
 	while (command -> args[i])
 	{
 		if (0 > write(command -> file_output, command -> args[i],
@@ -63,6 +66,11 @@ int	ft_built_cd(t_command *command, t_list **env)
 	int				ok;
 	t_struct_path	*dir;
 
+	if (command -> args[1][0] == '\0')
+	{
+		perror("No set HOME");
+		return (1);
+	}
 	dir = malloc(sizeof(t_struct_path));
 	if (dir == NULL)
 		return (-1);
