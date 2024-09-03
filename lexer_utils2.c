@@ -45,8 +45,8 @@ int	ft_is_asignsymbol(char *line, int i)
 	if (line[i] == line[i + 1] && ((line[i] == '<') || (line[i] == '>')))
 	{
 		position = 2;
-	return (position);
-}
+		return (position);
+	}
 	if (line[i + 1] == '<' || line[i + 1] == '>' || line[i + 1] == '|')
 		position = 3;
 	return (position);

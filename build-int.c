@@ -27,7 +27,7 @@ int	ft_built_export(t_command *command, t_list **env)
 	i = 1;
 	if (command -> args[1] == NULL)
 		return (ft_print_list_env(command, env));
-if (command -> args[1][0] == '\0')
+	if (command -> args[1][0] == '\0')
 	{
 		perror("export: not valid in this context:");
 		return (1);
