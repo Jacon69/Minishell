@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/10 09:26:20 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/13 19:31:03 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/09/02 12:24:00 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,6 @@ void	fill_args(char **tokens, int *i, t_command **com, int *k)
 	{
 		put_redir1(com, tokens[*i]);
 		left_redir(tokens, i, com);
-		printf("%s\n", tokens[*i]);
 		if ((*com)-> redir1 == 1)
 			*i += 1;
 	}

@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 10:12:42 by alexigar          #+#    #+#             */
-/*   Updated: 2024/09/02 10:01:59 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/09/02 12:13:45 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,7 @@ int	try_call(char **paths, t_command *com, t_list **env)
 			free_function_call(com, function_call);
 		i++;
 	}
-	printf("Error: command not found\n");
+	printf("Error: command %s not found\n", com -> command);
 	return (127);
 }
 
@@ -127,7 +127,10 @@ int	executor(t_command **command_list, t_list **env)
 	while (command_list[++i])
 	{
 		if (!command_list[i]-> command)
+		{
+			ft_free_char(paths);
 			return (0);
+		}
 		if (command_list[i]-> redir1 == -1)
 		{
 			ft_print_up(++i);
