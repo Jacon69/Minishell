@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/16 11:23:07 by alexigar          #+#    #+#             */
-/*   Updated: 2024/09/02 11:44:10 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/09/03 17:33:47 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,8 @@ char	**check_tokens(char **tokens, int *flag)
 	int	i;
 
 	i = 0;
+	if (!tokens[0])
+		return (free_and_nl(tokens, flag));
 	if (count_nbr_tokens(tokens) == 1 && tokens[i][0] == '/')
 		return (check_directory(tokens[i], tokens, flag));
 	if (tokens[0][0] == '|')

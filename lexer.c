@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/06 13:22:20 by jaimecondea       #+#    #+#             */
-/*   Updated: 2024/09/02 18:56:14 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/09/03 17:46:04 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ int	ft_token_join(char *line, char **token, char *new_token, int *paran)
 
 	if ((paran[0] > 0) && (paran[2] > 0) && (!(line[paran[2] - 1] == ' '
 				|| line[paran[2] - 1] == '>' || line[paran[2] - 1] == '<'
-				|| line[paran[2] - 1] == '|')) && (!(line[paran[2]]=='>'
+				|| line[paran[2] - 1] == '|')) && (!(line[paran[2]] == '>'
 				||line[paran[2]] == '<' || line[paran[2]] == '|')))
 	{
 		aux_str = token[paran[0] - 1];

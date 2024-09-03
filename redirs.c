@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/10 09:26:44 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/27 12:44:23 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/09/03 17:49:16 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,8 +82,8 @@ t_command	*left_redir(char **tokens, int *i, t_command **command)
 		}
 		else
 			return (NULL);
-		*i += 1;
 	}
+	*i += 1;
 	return (*command);
 }
 

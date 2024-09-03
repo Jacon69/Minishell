@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   build-int.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 05:32:30 by jaimecondea       #+#    #+#             */
-/*   Updated: 2024/09/02 12:55:39 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/09/03 17:52:30 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,10 @@ int	ft_built_env(t_command *command, t_list **env)
 		perror("env: No such file or directory");
 		return (1);
 	}
-	ok = ft_print_list_env(command, env);
+	if (ft_print_list_env(command, env) == 1)
+		ok = 0;
+	else
+		ok = 1;
 	return (ok);
 }
 
