@@ -6,7 +6,7 @@
 /*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/19 05:32:30 by jaimecondea       #+#    #+#             */
-/*   Updated: 2024/09/03 17:52:30 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/09/03 18:26:19 by alexigar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,7 @@ int	ft_cd_without_argument(t_command *command_act, t_list **env)
 	if (command_act->args[1][0] == '\0')
 	{
 		perror("cd: HOME not set");
+		free(command_act->args[1]);
 		return (1);
 	}
 	return (0);
