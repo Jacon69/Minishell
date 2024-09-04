@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 10:12:42 by alexigar          #+#    #+#             */
-/*   Updated: 2024/09/03 17:48:05 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/09/04 15:15:04 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,11 +126,8 @@ int	executor(t_command **command_list, t_list **env)
 		return (-1);
 	while (command_list[++i])
 	{
-		if (!command_list[i]-> command)
-		{
-			ft_free_char(paths);
+		if (!ft_1executor(command_list, paths, i))
 			return (0);
-		}
 		if (command_list[i]-> redir1 == -1)
 		{
 			ft_print_up(++i);

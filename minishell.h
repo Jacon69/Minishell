@@ -6,7 +6,7 @@
 /*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/16 11:22:01 by alexigar          #+#    #+#             */
-/*   Updated: 2024/09/04 15:01:12 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/09/04 15:14:19 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,6 +146,7 @@ int					ft_executor_aux(t_command **command_list, t_list **env,
 						char **paths, int i);
 void				ft_print_up(int i);
 int					try_call(char **paths, t_command *com, t_list **env);
+int					ft_1executor(t_command **command_list, char **paths, int i);
 
 t_list				**ft_aux_dup_ord_list(t_list **dup_env, t_list *p_env,
 						t_list *p_env_ori);
