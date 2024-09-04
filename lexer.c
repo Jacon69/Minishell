@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/06 13:22:20 by jaimecondea       #+#    #+#             */
-/*   Updated: 2024/09/03 17:46:04 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/09/04 10:55:12 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,10 +54,12 @@ int	ft_token_join(char *line, char **token, char *new_token, int *paran)
 		token[paran[0] - 1] = ft_strjoin(token[paran[0] - 1], new_token);
 		if (!token[paran[0] - 1])
 		{
+			printf("hola\n");
 			free(new_token);
 			ft_free_char(token);
 			return (1);
 		}
+		free (new_token);
 		free(aux_str);
 		paran[0]--;
 		return (0);
