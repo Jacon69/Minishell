@@ -6,7 +6,7 @@
 /*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/07 18:55:17 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/10 18:00:37 by jconde-a         ###   ########.fr       */
+/*   Updated: 2024/09/04 14:45:51 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,21 +20,7 @@ int	ft_aux2_buil_cd(t_command *command, t_struct_path *dir)
 
 	arg = command -> args[1];
 	ok = 0;
-	if ((((!ft_memcmp(arg, "..", 2)
-					&& ft_strlen(arg) == 2))
-			|| (!ft_memcmp(arg, "../", 3)
-				&& (ft_strlen(arg) == 3)))
-		&& !(command -> args[2]))
-		ok = ft_minus_dir(dir);
-	else if (((((arg[0] == '.'
-						&& ft_strlen(arg) == 1))
-				|| (!ft_memcmp(command->args[1], "./", 2)
-					&& ft_strlen(arg) == 2)))
-		&& !(command -> args[2]))
-		ok = ft_equal_dir(dir);
-	else if (((arg[0] == '.') && (command -> args[2]))
-		|| (((!ft_memcmp(arg, "./", 2)
-					|| !ft_memcmp(arg, "../", 3)) && (command -> args[2]))))
+	if (command -> args[2])
 		perror("Error cd: too many arguments");
 	else if (ft_strlen(arg) > 0)
 		ok = ft_cd_dir(command, dir);
@@ -50,7 +36,7 @@ int	ft_aux1_buil_cd(t_command *command, t_struct_path *dir)
 	dir->route = malloc(2);
 	if (!dir->route)
 	{
-		perror("Error built_in");
+		perror("Error built_in cd:");
 		return (-1);
 	}
 	dir->route[0] = '/';

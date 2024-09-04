@@ -3,14 +3,34 @@
 /*                                                        :::      ::::::::   */
 /*   build_int3.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 18:04:00 by jconde-a          #+#    #+#             */
-/*   Updated: 2024/09/02 12:42:02 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/09/04 12:39:00 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int	ft_aux1_cd(t_command *command_act, t_list **env)
+{
+	int	ok;
+
+	ok = 0;
+	if ((command_act->args[1]) == NULL)
+	{
+		ok = 1;
+		if (ft_cd_without_argument(command_act, env) == 1)
+			return (1);
+	}
+	ft_built_cd(command_act, env);
+	if (ok != 0)
+	{
+		free(command_act -> args[1]);
+		ok = 0;
+	}
+	return (ok);
+}
 
 int	ft_aux1_build_int(t_command *command_act, t_list **env)
 {
@@ -22,20 +42,7 @@ int	ft_aux1_build_int(t_command *command_act, t_list **env)
 	if (ft_memcmp(comando, "echo", 4) == 0)
 		ok = ft_built_echo(command_act);
 	else if (ft_memcmp(comando, "cd", 2) == 0)
-	{
-		if ((command_act->args[1]) == NULL)
-		{
-			ok = 1;
-			if (ft_cd_without_argument(command_act, env) == 1)
-				return (1);
-		}
-		ft_built_cd(command_act, env);
-		if (ok != 0)
-		{
-			free(command_act -> args[1]);
-			ok = 0;
-		}
-	}
+		ok = ft_aux1_cd (command_act, env);
 	else if (ft_memcmp(comando, "pwd", 3) == 0)
 		ok = ft_built_pwd(command_act);
 	else if (ft_memcmp(comando, "export", 6) == 0)

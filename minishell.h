@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/16 11:22:01 by alexigar          #+#    #+#             */
-/*   Updated: 2024/09/02 10:02:58 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/09/04 15:01:12 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,8 +100,6 @@ int					ft_build_int(t_command *command, t_list **env);
 int					ft_aux1_build_int(t_command *command_act, t_list **env);
 int					is_built_in(char *command);
 
-int					ft_equal_dir(t_struct_path *dir);
-int					ft_minus_dir( t_struct_path *dir);
 int					ft_cd_dir(t_command *command, t_struct_path *dir);
 int					ft_check_export_arg(char *argument);
 

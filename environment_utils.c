@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   environment_utils.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
+/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/07 19:11:01 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/17 08:00:10 by jaimecondea      ###   ########.fr       */
+/*   Updated: 2024/09/04 14:40:20 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

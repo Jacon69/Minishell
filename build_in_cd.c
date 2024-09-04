@@ -3,68 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   build_in_cd.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/01 19:42:49 by jconde-a          #+#    #+#             */
-/*   Updated: 2024/09/03 18:43:08 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/09/04 14:45:53 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-//Establish the path to the new directory, which is current minus one level
-int	ft_minus_dir( t_struct_path *dir)
-{
-	int		i;
-	char	*aux;
-
-	i = 0;
-	while ((i < dir->num_dir - 1) && ft_strlen(dir->line_path) > 1)
-	{
-		aux = dir->route;
-		dir->route = ft_strjoin(dir->route, dir->path[i]);
-		free(aux);
-		if (!dir->route)
-			return (-1);
-		if (i < (dir->num_dir - 2))
-		{
-			aux = dir->route;
-			dir->route = ft_strjoin(dir->route, "/");
-			free(aux);
-			if (!dir->route)
-				return (-1);
-		}
-		i++;
-	}
-	return (0);
-}
-
-//Establish the path to the new directory, which is the same as current
-int	ft_equal_dir(t_struct_path *dir)
-{
-	int		i;
-	char	*aux;
-
-	i = 0;
-	while ((i < dir->num_dir) && ft_strlen(dir->line_path) > 1)
-	{
-		aux = dir->route;
-		dir->route = ft_strjoin(dir->route, dir->path[i]);
-		free(aux);
-		if (!dir->route)
-			return (-1);
-		if (i < (dir->num_dir - 1))
-		{
-			aux = dir->route;
-			dir->route = ft_strjoin(dir->route, "/");
-			free(aux);
-			if (!dir->route)
-				return (-1);
-		}
-		i++;
-	}
-	return (0);
-}
 
 //Create the path in route
 int	ft_aux2_cd_dir(t_struct_path *dir)

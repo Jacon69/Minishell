@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   build_int2.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexigar <alexigar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/07 18:59:47 by alexigar          #+#    #+#             */
-/*   Updated: 2024/09/03 18:54:52 by alexigar         ###   ########.fr       */
+/*   Updated: 2024/09/04 14:47:36 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,11 +66,6 @@ int	ft_built_cd(t_command *command, t_list **env)
 	int				ok;
 	t_struct_path	*dir;
 
-	if (command -> args[1][0] == '\0')
-	{
-		perror("No set HOME");
-		return (1);
-	}
 	dir = malloc(sizeof(t_struct_path));
 	if (dir == NULL)
 		return (-1);
