@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils2.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jaimecondea <jaimecondea@student.42.fr>    +#+  +:+       +#+        */
+/*   By: jconde-a <jconde-a@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/17 10:19:58 by alexigar          #+#    #+#             */
-/*   Updated: 2024/08/17 07:46:52 by jaimecondea      ###   ########.fr       */
+/*   Updated: 2024/09/04 11:35:39 by jconde-a         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ int	ft_export_print_list_env(t_command *command, t_list **env)
 	ft_print_list_env(command, dup_env);
 	ft_free_list(dup_env, NULL);
 	dup_env = NULL;
-	return (1);
+	return (0);
 }
 
 //Prints the list of environment variables.
@@ -89,6 +89,8 @@ int	ft_print_list_env(t_command *command, t_list **env)
 		}
 		p_env = p_env -> next;
 	}
+	if (ok == 1)
+		ok = 0;
 	return (ok);
 }
 
